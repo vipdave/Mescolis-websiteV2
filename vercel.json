@@ -1,25 +1,4 @@
-# MesColis.ca
-
-Plateforme canadienne de comparaison de tarifs d'expédition multi-transporteurs.  
-Canadian multi-carrier shipping rate comparison platform.
-
-## Structure
-
-```
-public/
-  index.html   ← Landing page (bilingual FR/EN)
-  auth.html    ← Authentication page (login/signup)
-```
-
-## Deployment
-
-Deployed on [Vercel](https://vercel.com) as a static site.
-
-- `cleanUrls` enabled → `/auth` serves `auth.html`
-- Security headers configured in `vercel.json`
-
-## Local Preview
-
-```bash
-npx serve public
-```
+{
+  "cleanUrls": true,
+  "trailingSlash": false
+}
