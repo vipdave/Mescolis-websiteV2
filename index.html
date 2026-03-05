@@ -161,18 +161,24 @@ section{position:relative;background:var(--bg-primary);}
 .feat-metric .val{font-size:26px;font-weight:800;color:var(--mc-blue);}
 .feat-metric .desc{font-size:13px;color:var(--text-muted);}
 
-/* === STEPS === */
+/* === STEPS (Illustrated) === */
 .how-it-works{padding:100px 0;background:var(--bg-secondary);}
-.steps-container{max-width:860px;margin:0 auto;position:relative;}
-.steps-container::before{content:'';position:absolute;left:39px;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--mc-blue),var(--mc-orange),#22c55e);border-radius:3px;opacity:0.2;}
-.step{display:flex;gap:36px;padding:36px 0;}
-.step-circle{width:80px;min-width:80px;display:flex;justify-content:center;}
-.step-num{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;position:relative;z-index:2;}
-.step-body{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;flex:1;transition:all 0.3s;}
+.steps-container{max-width:1060px;margin:0 auto;position:relative;}
+.steps-container::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:3px;transform:translateX(-50%);background:linear-gradient(180deg,transparent,var(--mc-blue) 10%,var(--mc-orange) 50%,#22c55e 90%,transparent);border-radius:3px;opacity:0.15;}
+.step{display:grid;grid-template-columns:1fr 60px 1fr;gap:0;padding:32px 0;align-items:center;}
+.step.reverse .step-body{order:3;}
+.step.reverse .step-illust{order:1;}
+.step-circle{display:flex;justify-content:center;align-items:center;order:2;}
+.step-num{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;position:relative;z-index:2;background:white;box-shadow:var(--shadow-sm);}
+.step-body{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;transition:all 0.3s;order:1;}
 .step-body:hover{box-shadow:var(--shadow-md);border-color:var(--mc-blue);}
+.step.reverse .step-body{text-align:left;}
 .step-body h3{font-size:20px;font-weight:700;margin-bottom:6px;}
 .step-body p{font-size:15px;color:var(--text-secondary);line-height:1.7;}
 .step-tag{display:inline-block;margin-top:12px;padding:4px 14px;border-radius:6px;font-size:12px;font-weight:700;}
+.step-illust{order:3;display:flex;justify-content:center;align-items:center;padding:0 16px;}
+.step.reverse .step-illust{justify-content:center;}
+.step-illust svg{width:100%;max-width:300px;height:auto;}
 
 /* === SMART LOCKERS === */
 .smart-lockers{padding:100px 0;background:var(--bg-primary);}
@@ -344,6 +350,8 @@ footer{border-top:1px solid var(--border);padding:64px 0 32px;background:var(--b
   .pricing-grid{grid-template-columns:1fr;max-width:480px;margin-left:auto;margin-right:auto;}
   .test-grid{grid-template-columns:1fr;max-width:540px;margin-left:auto;margin-right:auto;}
   .locker-grid{grid-template-columns:1fr;gap:48px;}
+  .step{grid-template-columns:1fr 50px 1fr;}
+  .step-illust svg{max-width:240px;}
   .integ-grid{grid-template-columns:repeat(2,1fr);}
   .footer-grid{grid-template-columns:1fr 1fr;}
 }
@@ -420,10 +428,15 @@ footer{border-top:1px solid var(--border);padding:64px 0 32px;background:var(--b
   .feat-metric .val{font-size:22px;}
 
   /* Steps */
-  .step{gap:18px;padding:20px 0;}
-  .step-circle{width:52px;min-width:52px;}
+  .step{grid-template-columns:1fr;gap:12px;padding:20px 0;}
+  .step-circle{order:0 !important;justify-content:flex-start;padding-left:4px;}
+  .step-body{order:1 !important;}
+  .step.reverse .step-body{order:1 !important;text-align:left;}
+  .step-illust{order:2 !important;padding:0;}
+  .step.reverse .step-illust{order:2 !important;}
+  .step-illust svg{max-width:260px;}
   .step-num{width:40px;height:40px;font-size:16px;border-radius:10px;}
-  .steps-container::before{left:25px;}
+  .steps-container::before{display:none;}
   .step-body{padding:20px;}
   .step-body h3{font-size:17px;}
   .step-body p{font-size:14px;}
@@ -691,42 +704,261 @@ footer{border-top:1px solid var(--border);padding:64px 0 32px;background:var(--b
       <p data-lang="en">From quote to delivery, MesColis handles the complexity so you can focus on growing your business.</p>
     </div>
     <div class="steps-container">
+
+      <!-- STEP 01 -->
       <div class="step fade-in">
-        <div class="step-circle"><div class="step-num" style="background:rgba(59,139,210,0.12);color:var(--mc-blue);">01</div></div>
         <div class="step-body">
           <h3 data-lang="fr">Entrez les détails de votre envoi</h3><h3 data-lang="en">Enter Your Shipment Details</h3>
           <p data-lang="fr">Saisissez l'origine, la destination et les dimensions du colis. L'autocomplétion intelligente et les contacts enregistrés rendent le processus ultra rapide.</p>
           <p data-lang="en">Enter origin, destination, and package dimensions. Smart address autocomplete and saved contacts make it lightning fast.</p>
           <span class="step-tag" style="background:rgba(59,139,210,0.08);color:var(--mc-blue);"><span data-lang="fr">Moy. 15 secondes</span><span data-lang="en">Avg. 15 seconds</span></span>
         </div>
+        <div class="step-circle"><div class="step-num" style="border:2px solid var(--mc-blue);color:var(--mc-blue);">01</div></div>
+        <div class="step-illust">
+          <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="30" y="20" width="220" height="160" rx="14" fill="#f7f9fc" stroke="#dfe6ef" stroke-width="1.5"/>
+            <rect x="30" y="20" width="220" height="36" rx="14" fill="var(--mc-blue)" opacity="0.07"/>
+            <circle cx="52" cy="38" r="5" fill="var(--mc-blue)" opacity="0.3"/>
+            <circle cx="68" cy="38" r="5" fill="var(--mc-orange)" opacity="0.3"/>
+            <circle cx="84" cy="38" r="5" fill="#22c55e" opacity="0.3"/>
+            <text x="140" y="42" font-size="9" fill="var(--mc-blue)" font-family="Plus Jakarta Sans, sans-serif" font-weight="700" text-anchor="middle">MesColis.ca</text>
+            <text x="52" y="76" font-size="8" fill="#8096b0" font-family="Plus Jakarta Sans, sans-serif" font-weight="600">ORIGINE</text>
+            <rect x="50" y="80" width="130" height="18" rx="5" fill="white" stroke="#dfe6ef" stroke-width="1"/>
+            <text x="58" y="93" font-size="9" fill="#0f1b2d" font-family="Plus Jakarta Sans, sans-serif">Montréal, QC</text>
+            <text x="52" y="113" font-size="8" fill="#8096b0" font-family="Plus Jakarta Sans, sans-serif" font-weight="600">DESTINATION</text>
+            <rect x="50" y="117" width="130" height="18" rx="5" fill="white" stroke="var(--mc-blue)" stroke-width="1.5"/>
+            <text x="58" y="130" font-size="9" fill="#0f1b2d" font-family="Plus Jakarta Sans, sans-serif">Toronto, ON</text>
+            <rect x="152" y="119" width="2" height="13" rx="1" fill="var(--mc-orange)"><animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/></rect>
+            <g transform="translate(196, 68)">
+              <circle cx="18" cy="14" r="22" fill="var(--mc-blue)" opacity="0.08"/>
+              <path d="M18 4C13 4 9 8 9 13C9 20 18 30 18 30C18 30 27 20 27 13C27 8 23 4 18 4ZM18 17C16 17 14 15 14 13C14 11 16 9 18 9C20 9 22 11 22 13C22 15 20 17 18 17Z" fill="var(--mc-blue)"/>
+            </g>
+            <g transform="translate(196, 112)">
+              <rect x="4" y="6" width="34" height="28" rx="4" fill="var(--mc-orange)" opacity="0.12" stroke="var(--mc-orange)" stroke-width="1.2"/>
+              <line x1="21" y1="6" x2="21" y2="34" stroke="var(--mc-orange)" stroke-width="0.8" stroke-dasharray="2 2"/>
+              <line x1="4" y1="20" x2="38" y2="20" stroke="var(--mc-orange)" stroke-width="0.8" stroke-dasharray="2 2"/>
+              <text x="21" y="52" font-size="7" fill="#8096b0" font-family="Plus Jakarta Sans, sans-serif" text-anchor="middle">L×W×H</text>
+            </g>
+            <rect x="50" y="136" width="130" height="28" rx="5" fill="white" stroke="#dfe6ef" stroke-width="1" opacity="0.7"/>
+            <rect x="56" y="142" width="80" height="6" rx="2" fill="var(--mc-blue)" opacity="0.12"/>
+            <rect x="56" y="152" width="60" height="6" rx="2" fill="var(--mc-blue)" opacity="0.07"/>
+          </svg>
+        </div>
       </div>
-      <div class="step fade-in">
-        <div class="step-circle"><div class="step-num" style="background:rgba(240,144,48,0.12);color:var(--mc-orange-dark);">02</div></div>
+
+      <!-- STEP 02 -->
+      <div class="step reverse fade-in">
         <div class="step-body">
           <h3 data-lang="fr">Comparez les tarifs et choisissez</h3><h3 data-lang="en">Compare Rates & Choose Carrier</h3>
           <p data-lang="fr">Visualisez instantanément les tarifs réduits de tous les transporteurs disponibles, triés par prix, rapidité ou fiabilité.</p>
           <p data-lang="en">Instantly view discounted rates from all available carriers, sorted by price, speed, or reliability.</p>
           <span class="step-tag" style="background:rgba(240,144,48,0.08);color:var(--mc-orange-dark);">250+ services</span>
         </div>
+        <div class="step-circle"><div class="step-num" style="border:2px solid var(--mc-orange);color:var(--mc-orange-dark);">02</div></div>
+        <div class="step-illust">
+          <svg viewBox="0 0 280 210" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(10, 30)">
+              <rect x="0" y="0" width="78" height="100" rx="10" fill="white" stroke="#dfe6ef" stroke-width="1.5"/>
+              <rect x="14" y="14" width="50" height="12" rx="4" fill="#fee2e2"/>
+              <text x="22" y="23" font-size="7" fill="#dc2626" font-family="Plus Jakarta Sans, sans-serif" font-weight="700">Purolator</text>
+              <text x="14" y="52" font-size="16" fill="#0f1b2d" font-family="Plus Jakarta Sans, sans-serif" font-weight="800">12,50$</text>
+              <rect x="14" y="60" width="50" height="5" rx="2" fill="#f7f9fc"/>
+              <rect x="14" y="69" width="35" height="5" rx="2" fill="#f7f9fc"/>
+              <text x="14" y="90" font-size="7" fill="#8096b0" font-family="Plus Jakarta Sans, sans-serif">3-5 jours</text>
+            </g>
+            <g transform="translate(98, 18)">
+              <rect x="0" y="0" width="84" height="116" rx="10" fill="white" stroke="var(--mc-blue)" stroke-width="2"/>
+              <rect x="18" y="-9" width="48" height="18" rx="9" fill="var(--mc-blue)"/>
+              <text x="26" y="3" font-size="7" fill="white" font-family="Plus Jakarta Sans, sans-serif" font-weight="700">Meilleur</text>
+              <rect x="16" y="20" width="52" height="12" rx="4" fill="rgba(59,139,210,0.1)"/>
+              <text x="20" y="29" font-size="7" fill="var(--mc-blue)" font-family="Plus Jakarta Sans, sans-serif" font-weight="700">Postes Canada</text>
+              <text x="16" y="58" font-size="18" fill="var(--mc-blue)" font-family="Plus Jakarta Sans, sans-serif" font-weight="800">8,75$</text>
+              <rect x="16" y="66" width="52" height="5" rx="2" fill="#f7f9fc"/>
+              <rect x="16" y="75" width="38" height="5" rx="2" fill="#f7f9fc"/>
+              <text x="16" y="96" font-size="7" fill="var(--mc-blue)" font-family="Plus Jakarta Sans, sans-serif">2-3 jours</text>
+              <circle cx="64" cy="94" r="9" fill="#dcfce7"/>
+              <path d="M59 94L62 97L69 90" stroke="#16a34a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+            <g transform="translate(192, 30)">
+              <rect x="0" y="0" width="78" height="100" rx="10" fill="white" stroke="#dfe6ef" stroke-width="1.5"/>
+              <rect x="14" y="14" width="50" height="12" rx="4" fill="#fef3c7"/>
+              <text x="28" y="23" font-size="7" fill="#d97706" font-family="Plus Jakarta Sans, sans-serif" font-weight="700">UPS</text>
+              <text x="14" y="52" font-size="16" fill="#0f1b2d" font-family="Plus Jakarta Sans, sans-serif" font-weight="800">15,20$</text>
+              <rect x="14" y="60" width="50" height="5" rx="2" fill="#f7f9fc"/>
+              <rect x="14" y="69" width="35" height="5" rx="2" fill="#f7f9fc"/>
+              <text x="14" y="90" font-size="7" fill="#8096b0" font-family="Plus Jakarta Sans, sans-serif">1-2 jours</text>
+            </g>
+            <g transform="translate(30, 150)">
+              <rect x="0" y="0" width="56" height="20" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+              <text x="12" y="14" font-size="8" fill="#16a34a" font-family="Plus Jakarta Sans, sans-serif" font-weight="600">↓ Prix</text>
+              <rect x="64" y="0" width="66" height="20" rx="10" fill="#f7f9fc" stroke="#dfe6ef" stroke-width="1"/>
+              <text x="74" y="14" font-size="8" fill="#8096b0" font-family="Plus Jakarta Sans, sans-serif">Rapidité</text>
+              <rect x="138" y="0" width="62" height="20" rx="10" fill="#f7f9fc" stroke="#dfe6ef" stroke-width="1"/>
+              <text x="148" y="14" font-size="8" fill="#8096b0" font-family="Plus Jakarta Sans, sans-serif">Fiabilité</text>
+            </g>
+            <g transform="translate(100, 180)">
+              <rect x="0" y="0" width="80" height="20" rx="10" fill="var(--mc-orange)" opacity="0.1"/>
+              <text x="10" y="14" font-size="8" fill="var(--mc-orange-dark)" font-family="Plus Jakarta Sans, sans-serif" font-weight="700">Économie: 42%</text>
+            </g>
+          </svg>
+        </div>
       </div>
+
+      <!-- STEP 03 -->
       <div class="step fade-in">
-        <div class="step-circle"><div class="step-num" style="background:rgba(34,197,94,0.12);color:#16a34a;">03</div></div>
         <div class="step-body">
           <h3 data-lang="fr">Imprimez et planifiez la cueillette</h3><h3 data-lang="en">Print Label & Schedule Pickup</h3>
           <p data-lang="fr">Générez votre étiquette, facture commerciale et documents douaniers en un clic. Planifiez la cueillette par le transporteur — sans frais supplémentaires.</p>
           <p data-lang="en">Generate your shipping label, commercial invoice, and customs docs with one click. Schedule a carrier pickup — no extra charge.</p>
           <span class="step-tag" style="background:rgba(34,197,94,0.08);color:#16a34a;"><span data-lang="fr">Impression 1 clic</span><span data-lang="en">One-click print</span></span>
         </div>
+        <div class="step-circle"><div class="step-num" style="border:2px solid #22c55e;color:#16a34a;">03</div></div>
+        <div class="step-illust">
+          <svg viewBox="0 0 280 210" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(20, 10)">
+              <rect x="0" y="0" width="130" height="170" rx="8" fill="white" stroke="#dfe6ef" stroke-width="1.5"/>
+              <rect x="0" y="0" width="130" height="30" rx="8" fill="var(--mc-blue)"/>
+              <rect x="0" y="20" width="130" height="10" fill="var(--mc-blue)"/>
+              <text x="14" y="20" font-size="10" fill="white" font-family="Plus Jakarta Sans, sans-serif" font-weight="800">MesColis.ca</text>
+              <rect x="86" y="9" width="34" height="13" rx="4" fill="rgba(255,255,255,0.2)"/>
+              <text x="92" y="19" font-size="7" fill="rgba(255,255,255,0.8)" font-family="Plus Jakarta Sans, sans-serif" font-weight="600">EXP</text>
+              <g transform="translate(15, 40)">
+                <rect x="0" y="0" width="3" height="28" fill="#0f1b2d"/>
+                <rect x="5" y="0" width="1.5" height="22" fill="#0f1b2d"/>
+                <rect x="8" y="0" width="3" height="28" fill="#0f1b2d"/>
+                <rect x="13" y="0" width="1.5" height="22" fill="#0f1b2d"/>
+                <rect x="17" y="0" width="2" height="28" fill="#0f1b2d"/>
+                <rect x="21" y="0" width="3" height="22" fill="#0f1b2d"/>
+                <rect x="26" y="0" width="1.5" height="28" fill="#0f1b2d"/>
+                <rect x="30" y="0" width="2" height="22" fill="#0f1b2d"/>
+                <rect x="34" y="0" width="3" height="28" fill="#0f1b2d"/>
+                <rect x="39" y="0" width="1.5" height="22" fill="#0f1b2d"/>
+                <rect x="42" y="0" width="2" height="28" fill="#0f1b2d"/>
+                <rect x="46" y="0" width="3" height="22" fill="#0f1b2d"/>
+                <rect x="51" y="0" width="1.5" height="28" fill="#0f1b2d"/>
+                <rect x="55" y="0" width="3" height="22" fill="#0f1b2d"/>
+                <rect x="60" y="0" width="2" height="28" fill="#0f1b2d"/>
+                <rect x="64" y="0" width="1.5" height="22" fill="#0f1b2d"/>
+                <rect x="68" y="0" width="3" height="28" fill="#0f1b2d"/>
+                <rect x="73" y="0" width="2" height="22" fill="#0f1b2d"/>
+                <rect x="77" y="0" width="3" height="28" fill="#0f1b2d"/>
+                <rect x="82" y="0" width="1.5" height="22" fill="#0f1b2d"/>
+                <rect x="86" y="0" width="2" height="28" fill="#0f1b2d"/>
+                <rect x="90" y="0" width="3" height="22" fill="#0f1b2d"/>
+                <rect x="95" y="0" width="1.5" height="28" fill="#0f1b2d"/>
+              </g>
+              <text x="15" y="78" font-size="7" fill="#8096b0" font-family="JetBrains Mono, monospace">MC-2025-00847</text>
+              <text x="15" y="94" font-size="7" fill="#8096b0" font-family="Plus Jakarta Sans, sans-serif" font-weight="600">DE:</text>
+              <rect x="15" y="98" width="90" height="5" rx="2" fill="#eef2f7"/>
+              <rect x="15" y="106" width="65" height="5" rx="2" fill="#eef2f7"/>
+              <line x1="12" y1="118" x2="118" y2="118" stroke="#dfe6ef" stroke-width="1" stroke-dasharray="3 2"/>
+              <text x="15" y="130" font-size="7" fill="#8096b0" font-family="Plus Jakarta Sans, sans-serif" font-weight="600">À:</text>
+              <rect x="15" y="134" width="95" height="5" rx="2" fill="#c7d2e0"/>
+              <rect x="15" y="142" width="70" height="5" rx="2" fill="#c7d2e0"/>
+              <rect x="15" y="150" width="80" height="5" rx="2" fill="#c7d2e0"/>
+            </g>
+            <g transform="translate(165, 30)">
+              <rect x="8" y="22" width="72" height="46" rx="8" fill="#f7f9fc" stroke="#c7d2e0" stroke-width="1.5"/>
+              <rect x="18" y="10" width="52" height="18" rx="4" fill="#eef2f7" stroke="#c7d2e0" stroke-width="1"/>
+              <rect x="22" y="56" width="44" height="24" rx="3" fill="white" stroke="#dfe6ef" stroke-width="1">
+                <animate attributeName="y" values="52;66;52" dur="2.5s" repeatCount="indefinite"/>
+              </rect>
+              <circle cx="68" cy="38" r="4" fill="#22c55e">
+                <animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/>
+              </circle>
+              <rect x="16" y="86" width="56" height="22" rx="11" fill="#dcfce7"/>
+              <text x="24" y="100" font-size="9" fill="#16a34a" font-family="Plus Jakarta Sans, sans-serif" font-weight="700">1 clic ✓</text>
+            </g>
+            <g transform="translate(168, 130)">
+              <rect x="0" y="0" width="70" height="58" rx="8" fill="white" stroke="var(--mc-orange)" stroke-width="1.5"/>
+              <rect x="0" y="0" width="70" height="18" rx="8" fill="var(--mc-orange)" opacity="0.08"/>
+              <rect x="0" y="12" width="70" height="6" fill="var(--mc-orange)" opacity="0.08"/>
+              <circle cx="16" cy="9" r="3" fill="var(--mc-orange)" opacity="0.5"/>
+              <circle cx="54" cy="9" r="3" fill="var(--mc-orange)" opacity="0.5"/>
+              <text x="10" y="32" font-size="7" fill="#8096b0" font-family="Plus Jakarta Sans, sans-serif">Lu  Ma  Me  Je</text>
+              <circle cx="38" cy="46" r="8" fill="var(--mc-orange)" opacity="0.12"/>
+              <text x="35" y="49" font-size="9" fill="var(--mc-orange)" font-family="Plus Jakarta Sans, sans-serif" font-weight="800">5</text>
+              <text x="10" y="49" font-size="8" fill="#c7d2e0" font-family="Plus Jakarta Sans, sans-serif">3  4</text>
+              <text x="52" y="49" font-size="8" fill="#c7d2e0" font-family="Plus Jakarta Sans, sans-serif">6</text>
+            </g>
+          </svg>
+        </div>
       </div>
-      <div class="step fade-in">
-        <div class="step-circle"><div class="step-num" style="background:rgba(59,139,210,0.12);color:var(--mc-blue);">04</div></div>
+
+      <!-- STEP 04 -->
+      <div class="step reverse fade-in">
         <div class="step-body">
           <h3 data-lang="fr">Suivez et livrez (ou Casier Intelligent)</h3><h3 data-lang="en">Track & Deliver (or Smart Locker)</h3>
           <p data-lang="fr">Surveillez chaque envoi en temps réel. Acheminez les colis vers des casiers intelligents pour une cueillette sans contact 24/7.</p>
           <p data-lang="en">Monitor every shipment in real-time. Route packages to Smart Lockers for 24/7 contactless pickup.</p>
           <span class="step-tag" style="background:rgba(59,139,210,0.08);color:var(--mc-blue);"><span data-lang="fr">Visibilité totale</span><span data-lang="en">Full visibility</span></span>
         </div>
+        <div class="step-circle"><div class="step-num" style="border:2px solid var(--mc-blue);color:var(--mc-blue);">04</div></div>
+        <div class="step-illust">
+          <svg viewBox="0 0 280 210" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(15, 15)">
+              <rect x="0" y="0" width="130" height="55" rx="10" fill="white" stroke="#dfe6ef" stroke-width="1.5"/>
+              <circle cx="22" cy="22" r="13" fill="rgba(59,139,210,0.1)"/>
+              <text x="16" y="26" font-size="14">📦</text>
+              <rect x="42" y="14" width="72" height="6" rx="2" fill="#0f1b2d" opacity="0.6"/>
+              <rect x="42" y="24" width="55" height="5" rx="2" fill="#8096b0" opacity="0.4"/>
+              <text x="42" y="45" font-size="7" fill="#22c55e" font-family="Plus Jakarta Sans, sans-serif" font-weight="700">● En temps réel</text>
+            </g>
+            <g transform="translate(155, 15)">
+              <rect x="0" y="0" width="110" height="62" rx="8" fill="#f7f9fc" stroke="#c7d2e0" stroke-width="1.5"/>
+              <rect x="8" y="10" width="17" height="17" rx="3" fill="#eef2f7" stroke="#c7d2e0" stroke-width="1"/>
+              <rect x="28" y="10" width="17" height="17" rx="3" fill="#eef2f7" stroke="#c7d2e0" stroke-width="1"/>
+              <rect x="48" y="10" width="17" height="17" rx="3" fill="#dcfce7" stroke="#22c55e" stroke-width="1.2"/>
+              <rect x="68" y="10" width="17" height="17" rx="3" fill="#eef2f7" stroke="#c7d2e0" stroke-width="1"/>
+              <rect x="88" y="10" width="17" height="17" rx="3" fill="#eef2f7" stroke="#c7d2e0" stroke-width="1"/>
+              <rect x="8" y="30" width="17" height="17" rx="3" fill="#eef2f7" stroke="#c7d2e0" stroke-width="1"/>
+              <rect x="28" y="30" width="17" height="17" rx="3" fill="#eef2f7" stroke="#c7d2e0" stroke-width="1"/>
+              <rect x="48" y="30" width="17" height="17" rx="3" fill="#eef2f7" stroke="#c7d2e0" stroke-width="1"/>
+              <rect x="68" y="30" width="17" height="17" rx="3" fill="#eef2f7" stroke="#c7d2e0" stroke-width="1"/>
+              <rect x="88" y="30" width="17" height="17" rx="3" fill="#eef2f7" stroke="#c7d2e0" stroke-width="1"/>
+              <circle cx="56" cy="18" r="4" fill="#22c55e">
+                <animate attributeName="opacity" values="1;0.3;1" dur="1s" repeatCount="indefinite"/>
+              </circle>
+              <text x="22" y="58" font-size="7" fill="#8096b0" font-family="Plus Jakarta Sans, sans-serif">Casier Intelligent 24/7</text>
+            </g>
+            <g transform="translate(20, 100)">
+              <line x1="15" y1="0" x2="245" y2="0" stroke="#eef2f7" stroke-width="4" stroke-linecap="round"/>
+              <line x1="15" y1="0" x2="185" y2="0" stroke="var(--mc-blue)" stroke-width="4" stroke-linecap="round">
+                <animate attributeName="x2" values="15;185;15" dur="4s" repeatCount="indefinite"/>
+              </line>
+              <circle cx="15" cy="0" r="10" fill="var(--mc-blue)"/>
+              <path d="M11 0L14 3L20 -3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <text x="2" y="20" font-size="7" fill="#8096b0" font-family="Plus Jakarta Sans, sans-serif">Expédié</text>
+              <circle cx="92" cy="0" r="10" fill="var(--mc-blue)"/>
+              <path d="M88 0L91 3L97 -3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <text x="76" y="20" font-size="7" fill="#8096b0" font-family="Plus Jakarta Sans, sans-serif">En transit</text>
+              <circle cx="170" cy="0" r="10" fill="var(--mc-orange)" stroke="#fed7aa" stroke-width="2">
+                <animate attributeName="r" values="10;12;10" dur="1.5s" repeatCount="indefinite"/>
+              </circle>
+              <text x="148" y="20" font-size="7" fill="var(--mc-orange)" font-family="Plus Jakarta Sans, sans-serif" font-weight="600">En livraison</text>
+              <circle cx="245" cy="0" r="10" fill="#eef2f7"/>
+              <text x="234" y="20" font-size="7" fill="#c7d2e0" font-family="Plus Jakarta Sans, sans-serif">Livré</text>
+            </g>
+            <g transform="translate(35, 140)">
+              <rect x="20" y="6" width="46" height="28" rx="5" fill="rgba(59,139,210,0.1)" stroke="var(--mc-blue)" stroke-width="1.5"/>
+              <rect x="60" y="14" width="24" height="20" rx="3" fill="var(--mc-blue)"/>
+              <rect x="63" y="16" width="12" height="10" rx="2" fill="var(--mc-blue-light)" opacity="0.5"/>
+              <circle cx="34" cy="38" r="6" fill="#334155" stroke="#0f1b2d" stroke-width="2"/>
+              <circle cx="34" cy="38" r="2.5" fill="#8096b0"/>
+              <circle cx="72" cy="38" r="6" fill="#334155" stroke="#0f1b2d" stroke-width="2"/>
+              <circle cx="72" cy="38" r="2.5" fill="#8096b0"/>
+              <text x="28" y="24" font-size="6" fill="var(--mc-blue)" font-family="Plus Jakarta Sans, sans-serif" font-weight="700">MC</text>
+            </g>
+            <g transform="translate(200, 140)">
+              <circle cx="18" cy="22" r="20" fill="var(--mc-orange)" opacity="0.06"/>
+              <circle cx="18" cy="22" r="12" fill="var(--mc-orange)" opacity="0.1"/>
+              <path d="M18 12C14 12 11 15 11 19C11 24 18 32 18 32C18 32 25 24 25 19C25 15 22 12 18 12Z" fill="var(--mc-orange)"/>
+              <circle cx="18" cy="19" r="3" fill="white"/>
+            </g>
+          </svg>
+        </div>
       </div>
+
     </div>
   </div>
 </section>
