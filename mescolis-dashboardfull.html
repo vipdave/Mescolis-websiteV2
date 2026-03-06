@@ -671,7 +671,7 @@ select.form-input{cursor:pointer}
     <div class="sidebar-user-avatar">DK</div>
     <div class="sidebar-user-info">
       <h4>David Kosal</h4>
-      <span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="87e3e6f1eee3c7eae2f4e4e8ebeef4a9e4e6">[email&#160;protected]</a></span>
+      <span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b2d6d3c4dbd6f2dfd7c1d1dddedbc19cd1d3">[email&#160;protected]</a></span>
     </div>
   </div>
   <div id="sidebarLogout" style="padding:6px 12px 10px"><button class="btn btn-sm" style="width:100%;justify-content:center;background:transparent;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.5);border-radius:10px;cursor:pointer" onmouseenter="this.style.background='rgba(255,255,255,.08)';this.style.color='#fff'" onmouseleave="this.style.background='transparent';this.style.color='rgba(255,255,255,.5)'"><i class="bi bi-box-arrow-left"></i> <span class="sidebar-text">Logout</span></button></div>
@@ -1158,7 +1158,7 @@ select.form-input{cursor:pointer}
           <div style="border-top:2px solid var(--text-heading);padding-top:14px">
             <div style="font-size:14px;font-weight:700;color:var(--text-heading);font-style:italic;margin-bottom:6px">You're Shipping From :</div>
             <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px">This address and contact information will be shown on the receiver's package and used for the courier pickup.</p>
-            <p style="font-size:13px;color:var(--text-heading);font-weight:600;line-height:1.6"><b>MesColis Inc.,</b> David Kosal, +15145550123<br>1234 Rue Sainte-Catherine O, Montreal, QC, H3G 1P7, CA, <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="375356415e53775a524454585b5e44195456">[email&#160;protected]</a></p>
+            <p style="font-size:13px;color:var(--text-heading);font-weight:600;line-height:1.6"><b>MesColis Inc.,</b> David Kosal, +15145550123<br>1234 Rue Sainte-Catherine O, Montreal, QC, H3G 1P7, CA, <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1c787d6a75785c71796f7f7370756f327f7d">[email&#160;protected]</a></p>
           </div>
         </div>
         <!-- Non-delivery instructions -->
@@ -2489,5 +2489,158 @@ function renderShipmentRow(s, withRecipient) {
   document.getElementById('storeGrid').innerHTML = STORES.map(s => `<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius-lg);cursor:pointer;transition:all var(--transition);background:var(--bg-white)" onmouseenter="this.style.borderColor='var(--accent)';this.style.boxShadow='var(--shadow-md)'" onmouseleave="this.style.borderColor='var(--border)';this.style.boxShadow='none'"><div style="width:32px;height:32px;border-radius:6px;background:${s.bg};color:${s.color};display:flex;align-items:center;justify-content:center;font-size:${s.abbr.length>2?'8':'11'}px;font-weight:800;flex-shrink:0;letter-spacing:-.3px">${s.abbr}</div><span style="font-size:13px;font-weight:500;color:var(--text-heading)">${s.name}</span></div>`).join('');
 })();
 </script>
+<!-- MESCOLIS AI CHATBOT WIDGET -->
+<style>
+.chatbot-fab{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#F09030,#D87A1A);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(240,144,48,.4);display:flex;align-items:center;justify-content:center;font-size:24px;z-index:300;transition:all .3s ease}
+.chatbot-fab:hover{transform:scale(1.08);box-shadow:0 6px 24px rgba(240,144,48,.5)}
+.chatbot-fab::after{content:"";position:absolute;width:100%;height:100%;border-radius:50%;background:rgba(240,144,48,.3);animation:chatPulse 2s ease infinite}
+@keyframes chatPulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.5);opacity:0}}
+.chatbot-fab .notif-dot{position:absolute;top:2px;right:2px;width:12px;height:12px;background:#3B8BD2;border-radius:50%;border:2px solid #fff}
+.chatbot-panel{position:fixed;bottom:92px;right:24px;width:380px;height:540px;background:var(--bg-white,#fff);border-radius:16px;box-shadow:0 12px 48px rgba(27,37,64,.18);z-index:300;display:none;flex-direction:column;overflow:hidden;border:1px solid var(--border,#e1e5eb);animation:chatSlideUp .3s ease}
+.chatbot-panel.open{display:flex}
+@keyframes chatSlideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.chat-header{padding:16px 18px;background:linear-gradient(135deg,#3B8BD2,#1E4F85);color:#fff;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.chat-header-left{display:flex;align-items:center;gap:10px}
+.chat-avatar{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.chat-header-info h4{font-size:14px;font-weight:700;margin:0}
+.chat-header-info span{font-size:11px;opacity:.8;display:flex;align-items:center;gap:4px}
+.chat-header-info span::before{content:'';width:6px;height:6px;border-radius:50%;background:#4ade80;display:inline-block}
+.chat-close{background:none;border:none;color:#fff;font-size:18px;cursor:pointer;opacity:.7;transition:opacity .2s}
+.chat-close:hover{opacity:1}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--bg-muted,#f8f9fb)}
+.chat-msg{display:flex;gap:8px;max-width:85%;animation:fadeIn .3s ease}
+.chat-msg.bot{align-self:flex-start}
+.chat-msg.user{align-self:flex-end;flex-direction:row-reverse}
+.chat-msg-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.chat-msg.bot .chat-msg-avatar{background:linear-gradient(135deg,#3B8BD2,#2A6BAF);color:#fff;border:2px solid #5DA3E0;box-shadow:0 2px 8px rgba(59,139,210,.3)}
+.chat-msg.user .chat-msg-avatar{background:var(--border,#e1e5eb);color:var(--text-secondary,#6b7a99)}
+.chat-bubble{padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.5;color:var(--text-body,#3d4f6f)}
+.chat-msg.bot .chat-bubble{background:var(--bg-white,#fff);border:1px solid var(--border,#e1e5eb);border-radius:2px 12px 12px 12px}
+.chat-msg.user .chat-bubble{background:linear-gradient(135deg,#F09030,#D87A1A);color:#fff;border-radius:12px 2px 12px 12px}
+.chat-typing{display:flex;gap:4px;padding:10px 14px}
+.chat-typing span{width:6px;height:6px;border-radius:50%;background:var(--text-muted,#8e9baf);animation:typing 1.4s infinite}
+.chat-typing span:nth-child(2){animation-delay:.2s}
+.chat-typing span:nth-child(3){animation-delay:.4s}
+@keyframes typing{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+.chat-input-area{padding:12px 16px;border-top:1px solid var(--border,#e1e5eb);display:flex;align-items:center;gap:8px;background:var(--bg-white,#fff);flex-shrink:0}
+.chat-input{flex:1;border:1px solid var(--border,#e1e5eb);border-radius:20px;padding:8px 16px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;color:var(--text-body,#3d4f6f);background:var(--bg-muted,#f8f9fb);transition:border-color .2s}
+.chat-input:focus{border-color:#3B8BD2}
+.chat-input::placeholder{color:var(--text-muted,#8e9baf)}
+.chat-send{width:34px;height:34px;border-radius:50%;background:#F09030;color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:background .2s;flex-shrink:0}
+.chat-send:hover{background:#D87A1A}
+.chat-quick-actions{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 12px}
+.chat-quick-btn{padding:6px 12px;border:1px solid var(--border,#e1e5eb);border-radius:16px;font-size:11px;font-weight:600;font-family:'DM Sans',sans-serif;color:var(--text-secondary,#6b7a99);background:var(--bg-white,#fff);cursor:pointer;transition:all .2s}
+.chat-quick-btn:hover{border-color:#3B8BD2;color:#3B8BD2;background:rgba(59,139,210,.05)}
+.chat-powered{text-align:center;padding:6px;font-size:10px;color:var(--text-muted,#8e9baf);background:var(--bg-white,#fff);flex-shrink:0}
+</style>
+
+<button class="chatbot-fab" id="chatFab" onclick="toggleChat()">
+  <i class="bi bi-chat-dots-fill" id="chatFabIcon"></i>
+  <div class="notif-dot" id="chatNotifDot"></div>
+</button>
+
+<div class="chatbot-panel" id="chatPanel">
+  <div class="chat-header">
+    <div class="chat-header-left">
+      <div class="chat-avatar" style="background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.3)"><i class="bi bi-robot" style="font-size:18px"></i></div>
+      <div class="chat-header-info">
+        <h4>MesColis AI Assistant</h4>
+        <span>Online — Powered by Claude</span>
+      </div>
+    </div>
+    <button class="chat-close" onclick="toggleChat()"><i class="bi bi-x-lg"></i></button>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-msg bot">
+      <div class="chat-msg-avatar"><i class="bi bi-robot"></i></div>
+      <div class="chat-bubble">Hi! 👋 I'm your MesColis AI assistant, powered by Claude. I can help you with shipping quotes, tracking packages, account questions, and more. How can I help you today?</div>
+    </div>
+  </div>
+  <div class="chat-quick-actions" id="chatQuickActions">
+    <button class="chat-quick-btn" onclick="sendQuickMsg('Track my package')">📦 Track Package</button>
+    <button class="chat-quick-btn" onclick="sendQuickMsg('Get a shipping quote')">💰 Get Quote</button>
+    <button class="chat-quick-btn" onclick="sendQuickMsg('What carriers do you support?')">🚚 Carriers</button>
+    <button class="chat-quick-btn" onclick="sendQuickMsg('Help with my account')">👤 Account Help</button>
+  </div>
+  <div class="chat-input-area">
+    <input class="chat-input" id="chatInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendChatMsg()">
+    <button class="chat-send" onclick="sendChatMsg()"><i class="bi bi-send-fill"></i></button>
+  </div>
+  <div class="chat-powered">🔒 Secure · Powered by Anthropic Claude</div>
+</div>
+
+<script>
+var chatOpen = false;
+function toggleChat() {
+  chatOpen = !chatOpen;
+  document.getElementById('chatPanel').classList.toggle('open', chatOpen);
+  document.getElementById('chatFabIcon').className = chatOpen ? 'bi bi-x-lg' : 'bi bi-chat-dots-fill';
+  document.getElementById('chatNotifDot').style.display = 'none';
+  if (chatOpen) document.getElementById('chatInput').focus();
+}
+
+var mockResponses = {
+  'track': "Sure! Please provide your tracking number or shipment ID (e.g. SHP-0891) and I'll look it up for you right away.",
+  'quote': "I'd be happy to help you get a shipping quote! You can use our **Get Quote** tool in the sidebar, or tell me:\n\n• Where are you shipping from?\n• Where are you shipping to?\n• Package weight and dimensions?",
+  'carrier': "MesColis supports **5 major carriers**:\n\n🇨🇦 **Canada Post** — Best for domestic\n📦 **Purolator** — Fast ground shipping\n🟤 **UPS** — Reliable international\n🟣 **FedEx** — Premium express\n🟡 **DHL** — Global express\n\nWe compare all rates automatically to find you the best deal!",
+  'account': "I can help with your account! What do you need?\n\n• Reset password\n• Update billing info\n• Change plan\n• View invoice history\n\nOr describe your issue and I'll guide you.",
+  'price': "Our pricing is based on carrier rates with transparent markups. The final price includes:\n\n• Base carrier rate\n• Insurance (optional)\n• GST (5%) + QST (9.975%)\n\nUse **Get Quote** for instant rate comparisons across all carriers!",
+  'default': "Thanks for your question! I'm currently in demo mode. When fully integrated, I'll be powered by **Claude AI** and can:\n\n• Track packages in real-time\n• Compare carrier rates\n• Answer billing questions\n• Help with shipment issues\n• Provide shipping recommendations\n\nIs there anything specific I can help you with?"
+};
+
+function getResponse(msg) {
+  var m = msg.toLowerCase();
+  if (m.includes('track')) return mockResponses.track;
+  if (m.includes('quote') || m.includes('rate') || m.includes('price') || m.includes('cost')) return mockResponses.quote;
+  if (m.includes('carrier') || m.includes('ups') || m.includes('fedex') || m.includes('canada post')) return mockResponses.carrier;
+  if (m.includes('account') || m.includes('password') || m.includes('billing') || m.includes('invoice')) return mockResponses.account;
+  if (m.includes('how much') || m.includes('pricing')) return mockResponses.price;
+  return mockResponses.default;
+}
+
+function addMessage(text, isUser) {
+  var messages = document.getElementById('chatMessages');
+  var div = document.createElement('div');
+  div.className = 'chat-msg ' + (isUser ? 'user' : 'bot');
+  div.innerHTML = '<div class="chat-msg-avatar">' + (isUser ? 'DK' : '<i class="bi bi-robot"></i>') + '</div><div class="chat-bubble">' + text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>') + '</div>';
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function showTyping() {
+  var messages = document.getElementById('chatMessages');
+  var div = document.createElement('div');
+  div.className = 'chat-msg bot';
+  div.id = 'chatTyping';
+  div.innerHTML = '<div class="chat-msg-avatar"><i class="bi bi-robot"></i></div><div class="chat-bubble"><div class="chat-typing"><span></span><span></span><span></span></div></div>';
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function removeTyping() {
+  var el = document.getElementById('chatTyping');
+  if (el) el.remove();
+}
+
+function sendChatMsg() {
+  var input = document.getElementById('chatInput');
+  var msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  document.getElementById('chatQuickActions').style.display = 'none';
+  addMessage(msg, true);
+  showTyping();
+  setTimeout(function() {
+    removeTyping();
+    addMessage(getResponse(msg), false);
+  }, 1000 + Math.random() * 1000);
+}
+
+function sendQuickMsg(msg) {
+  document.getElementById('chatInput').value = msg;
+  sendChatMsg();
+}
+</script>
+
 </body>
 </html>
