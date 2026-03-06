@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>MesColis — Enterprise Dashboard</title>
+<title data-notranslate>MesColis — Enterprise Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -159,6 +159,10 @@ body.dark-mode .detail-item .dlabel{color:var(--text-muted)}
 body.dark-mode .tracking-step{color:var(--text-body)}
 body.dark-mode .topbar-btn{color:var(--text-secondary)}
 body.dark-mode .topbar-btn:hover{background:var(--bg-hover);color:var(--text-heading)}
+body.dark-mode .lang-toggle{border-color:var(--border)}
+body.dark-mode .lang-btn{background:var(--bg-white);color:var(--text-muted)}
+body.dark-mode .lang-btn.active{background:var(--accent);color:#fff}
+body.dark-mode .lang-btn:not(.active):hover{background:var(--bg-hover);color:var(--text-heading)}
 body.dark-mode .topbar-breadcrumb{color:var(--text-secondary)}
 body.dark-mode .topbar-breadcrumb .current{color:var(--text-heading)}
 body.dark-mode select.form-input{background:var(--bg-muted);color:var(--text-heading)}
@@ -222,6 +226,11 @@ body.dark-mode .form-input::placeholder{color:var(--text-muted)}
 .topbar-search:hover{border-color:var(--border-strong)}
 .topbar-search i{font-size:14px}
 .topbar-search kbd{margin-left:auto;font-family:inherit;font-size:11px;background:var(--bg-white);border:1px solid var(--border);padding:1px 5px;border-radius:3px;color:var(--text-muted)}
+
+.lang-toggle{display:flex;border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;margin-left:4px}
+.lang-btn{padding:5px 10px;font-size:11px;font-weight:700;font-family:inherit;border:none;cursor:pointer;transition:all .15s ease;background:var(--bg-white);color:var(--text-muted);letter-spacing:.5px}
+.lang-btn.active{background:var(--accent);color:#fff}
+.lang-btn:not(.active):hover{background:var(--bg-hover);color:var(--text-heading)}
 
 .page-content{padding:24px}
 .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
@@ -620,7 +629,7 @@ select.form-input{cursor:pointer}
   <button class="sidebar-close" onclick="closeSidebar()"><i class="bi bi-x-lg"></i></button>
   <div class="sidebar-header">
     <img src="data:image/png;base64,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" alt="MesColis.ca" style="height:36px;flex-shrink:0">
-    <span class="sidebar-text" style="font-size:18px;font-weight:800;color:#fff;letter-spacing:-.3px;line-height:1">Mes<span style="color:#5b9bd5">Colis</span><span style="color:#5b9bd5">.ca</span></span>
+    <span class="sidebar-text" data-notranslate style="font-size:18px;font-weight:800;color:#fff;letter-spacing:-.3px;line-height:1">Mes<span style="color:#5b9bd5">Colis</span><span style="color:#5b9bd5">.ca</span></span>
   </div>
   <nav class="sidebar-nav" id="sidebarNav">
     <div class="nav-section-title">Main</div>
@@ -653,7 +662,7 @@ select.form-input{cursor:pointer}
     <div class="sidebar-user-avatar">DK</div>
     <div class="sidebar-user-info">
       <h4>David Kosal</h4>
-      <span>david@mescolis.ca</span>
+      <span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="87e3e6f1eee3c7eae2f4e4e8ebeef4a9e4e6">[email&#160;protected]</a></span>
     </div>
   </div>
   <div id="sidebarLogout" style="padding:6px 12px 10px"><button class="btn btn-sm" style="width:100%;justify-content:center;background:transparent;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.5);border-radius:10px;cursor:pointer" onmouseenter="this.style.background='rgba(255,255,255,.08)';this.style.color='#fff'" onmouseleave="this.style.background='transparent';this.style.color='rgba(255,255,255,.5)'"><i class="bi bi-box-arrow-left"></i> <span class="sidebar-text">Logout</span></button></div>
@@ -666,7 +675,7 @@ select.form-input{cursor:pointer}
     <div class="topbar-left">
       <button class="hamburger" onclick="openSidebar()" aria-label="Open menu"><i class="bi bi-list"></i></button>
       <div class="topbar-breadcrumb">
-        <span style="cursor:pointer" onclick="navigateTo('dashboard')">MesColis</span>
+        <span data-notranslate style="cursor:pointer" onclick="navigateTo('dashboard')">MesColis</span>
         <span class="sep">/</span>
         <span class="current" id="breadcrumbCurrent">Dashboard</span>
       </div>
@@ -681,6 +690,10 @@ select.form-input{cursor:pointer}
       </button>
       <button class="topbar-btn" title="Settings" onclick="navigateTo('settings')"><i class="bi bi-gear"></i></button>
       <button class="topbar-btn" title="Help"><i class="bi bi-question-circle"></i></button>
+      <div class="lang-toggle" onclick="toggleLang()">
+        <button class="lang-btn active" id="langEN">EN</button>
+        <button class="lang-btn" id="langFR">FR</button>
+      </div>
     </div>
   </header>
 
@@ -1139,7 +1152,7 @@ select.form-input{cursor:pointer}
           <div style="border-top:2px solid var(--text-heading);padding-top:14px">
             <div style="font-size:14px;font-weight:700;color:var(--text-heading);font-style:italic;margin-bottom:6px">You're Shipping From :</div>
             <p style="font-size:12px;color:var(--text-muted);margin-bottom:8px">This address and contact information will be shown on the receiver's package and used for the courier pickup.</p>
-            <p style="font-size:13px;color:var(--text-heading);font-weight:600;line-height:1.6"><b>MesColis Inc.,</b> David Kosal, +15145550123<br>1234 Rue Sainte-Catherine O, Montreal, QC, H3G 1P7, CA, david@mescolis.ca</p>
+            <p style="font-size:13px;color:var(--text-heading);font-weight:600;line-height:1.6"><b>MesColis Inc.,</b> David Kosal, +15145550123<br>1234 Rue Sainte-Catherine O, Montreal, QC, H3G 1P7, CA, <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="375356415e53775a524454585b5e44195456">[email&#160;protected]</a></p>
           </div>
         </div>
         <!-- Non-delivery instructions -->
@@ -1405,7 +1418,7 @@ select.form-input{cursor:pointer}
   <div class="card">
     <div style="padding:24px;text-align:center">
       <h3 style="font-size:18px;font-weight:700;color:var(--text-heading);margin-bottom:6px">API Integration</h3>
-      <p style="font-size:13px;color:var(--text-muted)">The MesColis API allows you to integrate all the key features of MesColis into your system. <a style="color:var(--accent);font-weight:600;cursor:pointer;text-decoration:none">Click here</a> for documentation.</p>
+      <p data-notranslate style="font-size:13px;color:var(--text-muted)">The MesColis API allows you to integrate all the key features of MesColis into your system. <a style="color:var(--accent);font-weight:600;cursor:pointer;text-decoration:none">Click here</a> for documentation.</p>
     </div>
   </div>
 </div>
@@ -1433,7 +1446,7 @@ select.form-input{cursor:pointer}
   <div class="notif-item" onclick="closeNotif();navigateTo('carriers')"><div class="notif-icon" style="color:var(--accent)"><i class="bi bi-arrow-repeat"></i></div><div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text-heading)">Rate Update</div><div style="font-size:12px;color:var(--text-muted);margin-top:1px">Purolator rates updated for Q1 2026</div><div style="font-size:11px;color:var(--text-muted);margin-top:3px">2d ago</div></div></div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 /* ═══════════════════════════════════════════
    DATA
    ═══════════════════════════════════════════ */
@@ -1572,6 +1585,355 @@ function toggleDarkMode() {
     icon.className = 'bi bi-moon-fill';
     icon.style.color = 'rgba(255,255,255,.5)';
   }
+}
+
+var currentLang = 'en';
+var translations = {
+  // Sidebar nav
+  'Dashboard':'Tableau de bord','Get Quote':'Obtenir un devis','Create Shipment':'Créer un envoi',
+  'Shipments':'Envois','Track Package':'Suivre un colis','My Pickups':'Mes ramassages',
+  'Carriers':'Transporteurs','Address Book':'Carnet d\'adresses','Invoices':'Factures',
+  'Reports':'Rapports','Settings':'Paramètres','Integrations':'Intégrations','Logout':'Déconnexion',
+  'Dark Mode':'Mode sombre',
+  // Nav section titles
+  'Main':'Principal','Shipping':'Expédition','Manage':'Gestion',
+  // Page headers
+  'Create Shipment':'Créer un envoi','Ship a new package in a few easy steps':'Expédiez un nouveau colis en quelques étapes simples',
+  'Manage and track all your shipments':'Gérer et suivre tous vos envois',
+  'Compare carrier rates instantly across all providers':'Comparez les tarifs des transporteurs instantanément',
+  'Manage your saved addresses for quick shipping':'Gérez vos adresses enregistrées pour une expédition rapide',
+  'Connect your favorite tools and services':'Connectez vos outils et services préférés',
+  'View and manage your billing history':'Voir et gérer votre historique de facturation',
+  'Analytics and insights for your shipping operations':'Analyses et perspectives pour vos opérations d\'expédition',
+  'Enter a tracking number or shipment ID to get real-time updates':'Entrez un numéro de suivi ou un ID d\'envoi pour des mises à jour en temps réel',
+  // Step labels
+  'Address Details':'Détails d\'adresse','Shipment Details':'Détails d\'envoi','Choose Carrier':'Choisir un transporteur',
+  'Pickup or Drop-off':'Ramassage ou dépôt','Review & Pay':'Vérifier et payer','Print Labels':'Imprimer les étiquettes',
+  // Form labels
+  'FROM (Sender)':'DE (Expéditeur)','TO (Recipient)':'À (Destinataire)',
+  'Full Name':'Nom complet','Company':'Entreprise','Address':'Adresse','City':'Ville',
+  'Province':'Province','Postal':'Code postal','Country':'Pays','Phone':'Téléphone','Email':'Courriel',
+  'Residential':'Résidentiel','Confirm Delivery':'Confirmer la livraison','Notify Recipient':'Notifier le destinataire',
+  'Save to Address Book':'Enregistrer au carnet','Address Book':'Carnet d\'adresses',
+  // Buttons
+  'Back':'Retour','Next: Shipment Details':'Suivant: Détails d\'envoi','Next: Choose Carrier':'Suivant: Choisir un transporteur',
+  'Next: Review & Pay':'Suivant: Vérifier et payer','Finalize & Pay':'Finaliser et payer',
+  'Confirm & Pay':'Confirmer et payer','Select':'Sélectionner','Get Rates':'Obtenir les tarifs',
+  'Ship Now':'Expédier maintenant','Apply':'Appliquer','Cancel':'Annuler','Save Address':'Enregistrer l\'adresse',
+  'Print Shipping Label':'Imprimer l\'étiquette','Download PDF':'Télécharger PDF','View Shipments':'Voir les envois',
+  'New Shipment':'Nouvel envoi','Export CSV':'Exporter CSV','Add Address':'Ajouter une adresse',
+  'Edit':'Modifier','Ship To':'Expédier à','Clear':'Effacer',
+  // Package types
+  'What are you shipping?':'Qu\'expédiez-vous?','Select your packaging type and enter the dimensions':'Sélectionnez votre type d\'emballage et entrez les dimensions',
+  'My Own Packaging':'Mon propre emballage','Courier Envelope':'Enveloppe courrier','Courier Pak':'Paquet courrier',
+  'My Own Envelope':'Ma propre enveloppe','LTL Freight (Pallet)':'Fret LTL (Palette)',
+  'Quantity':'Quantité','Measurement':'Mesure',
+  // Carrier table
+  'Carrier':'Transporteur','Service':'Service','Est. Delivery':'Livraison est.','Service Option':'Option de service',
+  'Price ($) ↑':'Prix ($) ↑','Action':'Action','1 Package':'1 colis',
+  'Free Pickup':'Ramassage gratuit','Drop-off':'Dépôt','Paid Pickup':'Ramassage payant','GUARANTEED':'GARANTI',
+  'Choose the best carrier for you based on price, delivery time, and reliability':'Choisissez le meilleur transporteur selon le prix, le délai et la fiabilité',
+  // Pickup/Dropoff
+  'Schedule a Pickup':'Planifier un ramassage','Drop-off at Location':'Déposer à un point',
+  'Pickup Details':'Détails du ramassage','Pickup Date':'Date de ramassage','Preferred Time Window':'Fenêtre horaire préférée',
+  'Pickup Address':'Adresse de ramassage','Special Instructions':'Instructions spéciales',
+  'Nearest Drop-off Locations':'Points de dépôt les plus proches','Open Now':'Ouvert maintenant',
+  // Review
+  'Payment Summary':'Sommaire de paiement','Shipping Rate':'Tarif d\'expédition','Insurance':'Assurance','Total':'Total',
+  'Payment Method':'Mode de paiement','Credit Cards':'Cartes de crédit',
+  'Have a Promocode? Apply here!':'Avez-vous un code promo? Appliquez-le ici!',
+  'Proceed to Pay':'Procéder au paiement',
+  // Non-delivery
+  'What if the package cannot be delivered?':'Que faire si le colis ne peut être livré?',
+  'Return to Sender (Shipped back at my expense)':'Retourner à l\'expéditeur (retour à mes frais)',
+  'Abandon (Package is disposed of by carrier)':'Abandonner (colis éliminé par le transporteur)',
+  'Total Cost (CAD):':'Coût total (CAD):',
+  // Print Labels
+  'Shipment Created Successfully!':'Envoi créé avec succès!','Tracking Number':'Numéro de suivi','Total Paid':'Total payé',
+  // Stats
+  'Active Shipments':'Envois actifs','In Transit':'En transit','Delivered Today':'Livrés aujourd\'hui','Monthly Spend':'Dépenses mensuelles',
+  'Total Billed':'Total facturé','Outstanding':'Impayé','Last Payment':'Dernier paiement','Avg. Monthly':'Moy. mensuelle',
+  'Total Shipments':'Total des envois','Total Spend':'Dépenses totales','Avg. Cost/Shipment':'Coût moy./envoi','Avg. On-Time Rate':'Taux ponctualité moy.',
+  // Table tabs
+  'All':'Tout','All (10)':'Tout (10)','In Transit (2)':'En transit (2)','Delivered (4)':'Livrés (4)','Pending (1)':'En attente (1)','Exception (1)':'Exception (1)',
+  'Delivered':'Livré','Pending':'En attente','Exception':'Exception',
+  // Misc
+  'Search shipments...':'Rechercher des envois...','Saturday Delivery':'Livraison samedi','Special Handling':'Manutention spéciale',
+  'Signature Required':'Signature requise','Be Accurate!':'Soyez précis!','Avoid Carrier Adjustments':'Évitez les ajustements',
+  'Sender & Recipient':'Expéditeur et destinataire','Enter the origin and destination addresses for your shipment':'Entrez les adresses d\'origine et de destination',
+  'Shipping From':'Expédier de','Shipping To':'Expédier à','Residential Address':'Adresse résidentielle',
+  'Add a store now to begin shipping':'Ajoutez une boutique pour commencer à expédier',
+  'Adding a store enables you to sync your orders and manage your preferences':'L\'ajout d\'une boutique vous permet de synchroniser vos commandes',
+  'REQUEST INTEGRATION':'DEMANDER UNE INTÉGRATION','API Integration':'Intégration API',
+  'Notifications':'Notifications','Mark all read':'Tout marquer lu',
+  'Recent Shipments':'Envois récents','View all shipments →':'Voir tous les envois →','Activity':'Activité','See all →':'Voir tout →',
+  'Carrier Performance':'Performance des transporteurs','Manage carriers →':'Gérer les transporteurs →',
+  'Showing':'Affichant','of':'de','shipments':'envois',
+  'Schedule Pickup':'Planifier un ramassage','Book a carrier to pick up your packages':'Réservez un transporteur pour ramasser vos colis',
+  'Track Package':'Suivre un colis','Shipment Detail':'Détail de l\'envoi',
+  // More missing items
+  'Search shipments, tracking numbers, recipients...':'Rechercher envois, numéros de suivi, destinataires...',
+  'Quick Links':'Liens rapides','MesColis':'MesColis',
+  'From':'De','To':'À','Package':'Colis','Weight':'Poids','Description':'Description',
+  'Length':'Longueur','Width':'Largeur','Height':'Hauteur',
+  'Ins. Value':'Val. d\'assurance','Ins. Value $':'Val. d\'assurance $',
+  'Add Item':'Ajouter un article','Delete':'Supprimer','Duplicate':'Dupliquer',
+  'Metric':'Métrique','Imperial':'Impérial',
+  'My Pickups':'Mes ramassages','My Courier Paks':'Mes paquets courrier','Save Courier Pak':'Enregistrer paquet courrier',
+  'Envelope Contents':'Contenu de l\'enveloppe',
+  'I confirm this envelope only contains documents':'Je confirme que cette enveloppe ne contient que des documents',
+  'Shipping Information':'Information d\'expédition',
+  'You\'re Shipping From :':'Vous expédiez de :',
+  'Single Shipment':'Envoi unique','Limited Access':'Accès limité','Homeland Security':'Sécurité nationale',
+  'Military Base Delivery':'Livraison base militaire','Inside Delivery':'Livraison intérieure','Inside Pickup':'Ramassage intérieur',
+  'Lift Gate':'Hayon élévateur','Delivery Apt.':'Apt. livraison','Yes':'Oui','No':'Non',
+  'Pay with Link by Stripe':'Payer avec Link par Stripe','Continue with Link':'Continuer avec Link',
+  'Pay with PayPal':'Payer avec PayPal','PayPal Checkout':'Paiement PayPal',
+  'Pay with Cryptocurrency':'Payer en cryptomonnaie','Pay with Crypto':'Payer en crypto',
+  'Add Card':'Ajouter une carte','Configure':'Configurer','Connect':'Connecter',
+  'Shipping From':'Expédier de','Shipping To':'Expédier à',
+  'Postal Code*':'Code postal*','City*':'Ville*','Province*':'Province*','Country*':'Pays*',
+  'Postal/ZIP Code*':'Code postal/ZIP*','Province/State*':'Province/État*',
+  'Full Name*':'Nom complet*','Address*':'Adresse*','Postal*':'Code postal*','Phone*':'Téléphone*',
+  'Set as default address':'Définir comme adresse par défaut',
+  'Add New Address':'Ajouter une nouvelle adresse','Edit Address':'Modifier l\'adresse',
+  'Select Address':'Sélectionner une adresse','Search addresses...':'Rechercher des adresses...',
+  'No addresses found':'Aucune adresse trouvée','Default':'Par défaut',
+  'Delivery Exception':'Exception de livraison','Pickup Scheduled':'Ramassage planifié',
+  'Invoice Due':'Facture due','Rate Update':'Mise à jour des tarifs',
+  'Export Report':'Exporter le rapport','Download All':'Tout télécharger',
+  'Tracking Progress':'Progression du suivi','Shipment Details':'Détails de l\'envoi',
+  'Back to Shipments':'Retour aux envois','Print Label':'Imprimer l\'étiquette',
+  'Reprint Label':'Réimprimer l\'étiquette','Email Tracking':'Courriel de suivi','Contact Carrier':'Contacter le transporteur',
+  'previous':'précédent','Next':'Suivant','Previous':'Précédent',
+  'Quick Actions':'Actions rapides','Get Quote':'Obtenir un devis','Ship a new package':'Expédier un nouveau colis',
+  'Compare carrier rates instantly':'Comparer les tarifs instantanément',
+  'Schedule Pickup':'Planifier un ramassage','Book a carrier pickup':'Réserver un ramassage',
+  'Real-time tracking':'Suivi en temps réel',
+  'new today':'nouveau aujourd\'hui','vs last month':'vs mois dernier',
+  'GST (5%)':'TPS (5%)','QST (9.975%)':'TVQ (9,975%)',
+  'Showing 10 of 10 shipments':'Affichant 10 de 10 envois',
+  // Stat cards
+  'Total Shipments':'Total des envois','On-Time Rate':'Taux de ponctualité','Monthly Savings':'Économies mensuelles',
+  'improvement':'amélioration','vs retail rates':'vs tarifs détail','paid on time':'payé à temps',
+  'Monthly Volume':'Volume mensuel','Active Shipments':'Envois actifs','In Transit':'En transit',
+  'Delivered Today':'Livrés aujourd\'hui','Monthly Spend':'Dépenses mensuelles',
+  'Total Billed':'Total facturé','Outstanding':'Impayé','Last Payment':'Dernier paiement','Avg. Monthly':'Moy. mensuelle',
+  'Total Spend':'Dépenses totales','Avg. Cost/Shipment':'Coût moy./envoi','Avg. On-Time Rate':'Taux ponctualité moy.',
+  'unpaid invoice':'facture impayée',
+  // Months
+  'Sep':'Sep','Oct':'Oct','Nov':'Nov','Dec':'Déc','Jan':'Jan','Feb':'Fév',
+  // Card headers
+  'Recent Shipments':'Envois récents','View all shipments →':'Voir tous les envois →',
+  'Activity':'Activité','See all →':'Voir tout →',
+  'Carrier Performance':'Performance des transporteurs','Manage carriers →':'Gérer les transporteurs →',
+  'Monthly Volume':'Volume mensuel','Available Rates':'Tarifs disponibles',
+  'Actions':'Actions','Tracking Progress':'Progression du suivi',
+  // Report page
+  'Monthly Breakdown':'Ventilation mensuelle','Carrier Distribution':'Distribution des transporteurs',
+  'Month':'Mois','Cost':'Coût','Avg. Cost':'Coût moy.','On-Time':'Ponctualité',
+  'Export Report':'Exporter le rapport',
+  // Invoices
+  'Invoice #':'Facture #','Date':'Date','Amount':'Montant','Due Date':'Date d\'échéance','Status':'Statut',
+  'Download All':'Tout télécharger',
+  // Shipments table
+  'ID':'ID','Route':'Itinéraire','Recipient':'Destinataire','Cost':'Coût',
+  // Pickups
+  'Carrier':'Transporteur','Packages':'Colis','Time':'Heure',
+  // Settings
+  'Email notifications':'Notifications par courriel','SMS notifications':'Notifications SMS',
+  'Auto-generate labels':'Génération auto des étiquettes','Paperless invoices':'Factures sans papier',
+  'Auto-schedule pickups':'Planification auto des ramassages',
+  // Quick actions
+  'Compare carrier rates instantly':'Comparer les tarifs instantanément',
+  'Ship a new package':'Expédier un nouveau colis',
+  'Book a carrier pickup':'Réserver un ramassage',
+  'Real-time tracking':'Suivi en temps réel',
+  // Decreasing/increasing
+  'decreasing':'en baisse','improving':'en amélioration',
+  // Carrier page
+  'Market Share':'Part de marché','Avg. Cost':'Coût moy.','Statistics':'Statistiques',
+  // Breadcrumb
+  'MesColis':'MesColis',
+  // More form items
+  'Select':'Sélectionner','Select time window':'Sélectionner une fenêtre horaire',
+  'Select carrier':'Sélectionner un transporteur','Select type':'Sélectionner un type',
+  'Optional':'Optionnel','Street address':'Adresse civique','City Name':'Nom de la ville',
+  'Postal code':'Code postal','Phone number':'Numéro de téléphone','Email address':'Adresse courriel',
+  'Enter recipient name':'Entrer le nom du destinataire','Enter full name':'Entrer le nom complet',
+  'Full name':'Nom complet','Postal/ZIP Code':'Code postal/ZIP',
+  'Enter Coupon code here.':'Entrez le code coupon ici.',
+  'Search shipments...':'Rechercher des envois...',
+  'Describe the item(s) being shipped':'Décrivez les articles expédiés',
+  'Search addresses...':'Rechercher des adresses...',
+  // Package type names (multi-line)
+  'My Own':'Mon propre','Packaging':'Emballage','Courier':'Courrier','Envelope':'Enveloppe',
+  'Pak':'Paquet','My Own':'Ma propre','LTL Freight':'Fret LTL','(Pallet)':'(Palette)',
+  // Info box texts
+  'If you are shipping something other than documents, please select the':'Si vous expédiez autre chose que des documents, veuillez sélectionner le',
+  'or':'ou','option.':'option.',
+  'Please note that this service only allows for the shipment of':'Veuillez noter que ce service ne permet que l\'expédition d\'',
+  'one envelope':'une seule enveloppe','one courier pak':'un seul paquet courrier',
+  'at a time.':'à la fois.',
+  'at a time, and that some countries':'à la fois, et que certains pays',
+  'do not accept specific types of documents':'n\'acceptent pas certains types de documents',
+  '(such as passport, identity card, credit card, currency) as a document shipment.':'(tels que passeport, carte d\'identité, carte de crédit, devise) comme envoi de documents.',
+  'Please note:':'Veuillez noter:',
+  'Perishable Items, Personal Goods and Art are not acceptable for LTL shipments.':'Les articles périssables, biens personnels et œuvres d\'art ne sont pas acceptés pour les envois LTL.',
+  'I confirm this envelope only contains documents':'Je confirme que cette enveloppe ne contient que des documents',
+  'Envelope Contents':'Contenu de l\'enveloppe',
+  // Settings page
+  'Preferences':'Préférences','Security':'Sécurité','Profile':'Profil',
+  'Language':'Langue','Currency':'Devise','Default Carrier':'Transporteur par défaut',
+  'Use metric (kg / cm)':'Utiliser le métrique (kg / cm)',
+  'English':'Anglais','French':'Français',
+  'CAD ($)':'CAD ($)','Canada Post':'Postes Canada',
+  'Two-factor authentication':'Authentification à deux facteurs',
+  'Current Password':'Mot de passe actuel','New Password':'Nouveau mot de passe',
+  'Confirm New Password':'Confirmer le nouveau mot de passe',
+  'Update Password':'Mettre à jour le mot de passe',
+  'Enter new password':'Entrer le nouveau mot de passe','Confirm password':'Confirmer le mot de passe',
+  'Save Profile':'Enregistrer le profil',
+  'LANGUAGE':'LANGUE','CURRENCY':'DEVISE','DEFAULT CARRIER':'TRANSPORTEUR PAR DÉFAUT',
+  'CURRENT PASSWORD':'MOT DE PASSE ACTUEL','NEW PASSWORD':'NOUVEAU MOT DE PASSE','CONFIRM NEW PASSWORD':'CONFIRMER LE NOUVEAU MOT DE PASSE',
+  // Courier Pak form
+  'Weight':'Poids','Description':'Description',
+  'My Courier Paks':'Mes paquets courrier','Save Courier Pak':'Enregistrer paquet courrier',
+  // More button texts
+  'Courier Pak':'Paquet courrier','Package':'Colis',
+  'Ship a new package in a few easy steps':'Expédiez un nouveau colis en quelques étapes simples',
+  'NMFC':'NMFC','Box Library':'Bibliothèque de boîtes',
+  // Notification texts
+  'Mark all read':'Tout marquer lu','Notifications':'Notifications',
+  'Delivery Exception':'Exception de livraison',
+  'SHP-0885 has an address issue in Winnipeg':'SHP-0885 a un problème d\'adresse à Winnipeg',
+  'Pickup Scheduled':'Ramassage planifié',
+  'UPS pickup confirmed for Mar 1 at 9:00 AM':'Ramassage UPS confirmé pour le 1er mars à 9h00',
+  'Invoice Due':'Facture due',
+  'Rate Update':'Mise à jour des tarifs',
+  'Purolator rates updated for Q1 2026':'Tarifs Purolator mis à jour pour T1 2026',
+  // Time related
+  '5h ago':'il y a 5h','1d ago':'il y a 1j','2d ago':'il y a 2j',
+  '23 minutes ago':'il y a 23 minutes','2 hours ago':'il y a 2 heures',
+  '5 hours ago':'il y a 5 heures','8 hours ago':'il y a 8 heures',
+  '12 hours ago':'il y a 12 heures','1 day ago':'il y a 1 jour',
+  // Quick links
+  'Quick Links':'Liens rapides',
+  // Search
+  'Search shipments, tracking numbers, recipients...':'Rechercher envois, numéros de suivi, destinataires...',
+  // Misc remaining
+  'Click here':'Cliquez ici','for documentation.':'pour la documentation.',
+  'PDF':'PDF','Pay':'Payer',
+  'Add a store now to begin shipping':'Ajoutez une boutique pour commencer à expédier',
+  'Adding a store enables you to sync your orders and manage your preferences':'L\'ajout d\'une boutique vous permet de synchroniser vos commandes et préférences',
+  'REQUEST INTEGRATION':'DEMANDER UNE INTÉGRATION',
+  'API Integration':'Intégration API',
+  'terms and conditions':'termes et conditions',
+  'By selecting this service, you agree to the carrier\'s':'En sélectionnant ce service, vous acceptez les',
+  'of the carrier':'du transporteur',
+  'This address and contact information will be shown on the receiver\'s package and used for the courier pickup.':'Cette adresse et ces coordonnées seront affichées sur le colis du destinataire et utilisées pour le ramassage.',
+  'You\'re Shipping From :':'Vous expédiez de :',
+  'If the mail carrier is unable to deliver the package, the non-delivery instructions will be followed.':'Si le transporteur ne peut pas livrer le colis, les instructions de non-livraison seront suivies.',
+  'What if the package cannot be delivered?':'Que faire si le colis ne peut être livré?',
+  'Return to Sender (Shipped back at my expense)':'Retourner à l\'expéditeur (retour à mes frais)',
+  'Abandon (Package is disposed of by carrier)':'Abandonner (colis éliminé par le transporteur)',
+  'Total Cost (CAD):':'Coût total (CAD):',
+  'A carrier driver will come to your location to collect the package':'Un chauffeur viendra à votre emplacement pour récupérer le colis',
+  'Bring your package to the nearest carrier drop-off point':'Apportez votre colis au point de dépôt le plus proche',
+  'Shipment Created Successfully!':'Envoi créé avec succès!',
+  'Your shipment':'Votre envoi','has been created and payment processed':'a été créé et le paiement traité',
+  'Tracking Number':'Numéro de suivi','Total Paid':'Total payé',
+  'Fast, secure one-click checkout. Your payment info is saved securely.':'Paiement rapide et sécurisé en un clic. Vos informations sont sauvegardées en toute sécurité.',
+  'Continue with Link':'Continuer avec Link',
+  'You will be redirected to PayPal to complete your payment securely.':'Vous serez redirigé vers PayPal pour compléter votre paiement en toute sécurité.',
+  'Pay with BTC, ETH, USDT, and 200+ cryptocurrencies via NowPayments.':'Payez en BTC, ETH, USDT et 200+ cryptomonnaies via NowPayments.',
+  'Pay with Crypto':'Payer en crypto','PayPal Checkout':'Paiement PayPal',
+  'Pay with Link by Stripe':'Payer avec Link par Stripe',
+  'Pay with PayPal':'Payer avec PayPal','Pay with Cryptocurrency':'Payer en cryptomonnaie',
+  'Have a Promocode? Apply here!':'Avez-vous un code promo? Appliquez-le ici!',
+  'Enter Coupon code here.':'Entrez le code coupon ici.',
+  'Proceed to Pay':'Procéder au paiement',
+  'Add Card':'Ajouter une carte',
+  'Schedule a Pickup':'Planifier un ramassage',
+  'Drop-off at Location':'Déposer à un point',
+  'Pickup Details':'Détails du ramassage',
+  'Nearest Drop-off Locations':'Points de dépôt les plus proches',
+  'Open Now':'Ouvert maintenant',
+  'Special Instructions':'Instructions spéciales',
+  'Closes 6 PM':'Ferme à 18h',
+  'Select time window':'Sélectionner une fenêtre horaire',
+  'Single Shipment':'Envoi unique','Limited Access':'Accès limité',
+  'Homeland Security':'Sécurité nationale','Military Base Delivery':'Livraison base militaire',
+  'Inside Delivery':'Livraison intérieure','Inside Pickup':'Ramassage intérieur',
+  'Lift Gate':'Hayon élévateur','Delivery Apt.':'Apt. livraison',
+  'None':'Aucun','Yes':'Oui','No':'Non',
+  // Remaining form placeholders
+  'e.g., Ring doorbell, packages at back door...':'ex., Sonnez la cloche, colis à la porte arrière...',
+  'Brief description of contents...':'Brève description du contenu...',
+  'lbs':'lbs','Wt':'Poids','L':'L','W':'L','H':'H'
+};
+
+function toggleLang() {
+  var en = document.getElementById('langEN');
+  var fr = document.getElementById('langFR');
+  en.classList.toggle('active');
+  fr.classList.toggle('active');
+  currentLang = fr.classList.contains('active') ? 'fr' : 'en';
+  applyTranslations();
+}
+
+function applyTranslations() {
+  var isFr = currentLang === 'fr';
+  var reverseMap = {};
+  if (!isFr) {
+    for (var en in translations) reverseMap[translations[en]] = en;
+  }
+  var lookup = isFr ? translations : reverseMap;
+
+  // Walk all text nodes in the document
+  var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+  var node;
+  while (node = walker.nextNode()) {
+    // Skip brand name elements
+    if (node.parentElement && node.parentElement.closest('[data-notranslate]')) continue;
+    var text = node.textContent.trim();
+    if (text && lookup[text]) {
+      node.textContent = node.textContent.replace(text, lookup[text]);
+    }
+  }
+
+  // Translate placeholders
+  document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(function(el) {
+    var ph = el.getAttribute('placeholder');
+    if (ph && lookup[ph]) el.setAttribute('placeholder', lookup[ph]);
+  });
+
+  // Translate title attributes
+  document.querySelectorAll('[title]').forEach(function(el) {
+    var t = el.getAttribute('title');
+    if (t && lookup[t]) el.setAttribute('title', lookup[t]);
+  });
+
+  // Re-render charts with translated months
+  var monthLookup = isFr ? {'Sep':'Sep','Oct':'Oct','Nov':'Nov','Dec':'Déc','Jan':'Jan','Feb':'Fév'}
+                         : {'Sep':'Sep','Oct':'Oct','Nov':'Nov','Déc':'Dec','Jan':'Jan','Fév':'Feb'};
+  var chartLabels = document.querySelectorAll('.chart-bar-label');
+  chartLabels.forEach(function(el) {
+    var t = el.textContent.trim();
+    if (monthLookup[t]) el.textContent = monthLookup[t];
+  });
+
+  // Re-render monthly breakdown months
+  var monthCells = document.querySelectorAll('#monthlyBreakdownBody td:first-child');
+  monthCells.forEach(function(el) {
+    var t = el.textContent.trim();
+    for (var k in monthLookup) {
+      if (t.indexOf(k) !== -1) {
+        el.textContent = t.replace(k, monthLookup[k]);
+        break;
+      }
+    }
+  });
 }
 let currentPage = 'dashboard';
 function navigateTo(page, data) {
