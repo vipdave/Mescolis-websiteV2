@@ -753,6 +753,7 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
   .admin-badge{display:none}
   .user-detail-box{width:96vw;max-height:90vh}
   .user-detail-box div[style*="grid-template-columns:1fr 1fr 1fr 1fr"]{grid-template-columns:1fr 1fr!important}
+  .user-detail-box div[style*="repeat(6,1fr)"]{grid-template-columns:repeat(3,1fr)!important}
   .user-detail-box div[style*="grid-template-columns:1fr 1fr;gap:16px"]{grid-template-columns:1fr!important}
   .email-box{width:96vw}
   #page-users .card>div:first-child{flex-direction:column;gap:8px}
@@ -1077,6 +1078,11 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
   <div class="shp-detail-box" id="invDetailBox" style="width:700px"></div>
 </div>
 
+<!-- QUICK ACTION MODAL -->
+<div class="email-modal" id="quickActionModal" onclick="if(event.target===this)closeQuickAction()">
+  <div class="email-box" id="quickActionBox"></div>
+</div>
+
 <!-- EMAIL MODAL -->
 <div class="email-modal" id="emailModal" onclick="if(event.target===this)closeEmailModal()">
   <div class="email-box">
@@ -1277,8 +1283,8 @@ function viewUser(id) {
         </div>
       </div>
       <div style="display:flex;gap:6px;align-items:center">
-        <button class="btn btn-sm btn-outline" onclick="openEmail('${u.email}','${u.name}');closeUserDetail()"><i class="bi bi-envelope"></i></button>
-        ${u.status==='blocked'?'<button class="btn btn-sm btn-success" onclick="toggleBlock('+u.id+');closeUserDetail()"><i class="bi bi-unlock"></i></button>':'<button class="btn btn-sm btn-danger" onclick="toggleBlock('+u.id+');closeUserDetail()"><i class="bi bi-lock"></i></button>'}
+        <button class="btn btn-sm btn-outline" onclick="closeUserDetail();openEmail('${u.email}','${u.name}',${u.id})"><i class="bi bi-envelope"></i></button>
+        ${u.status==='blocked'?'<button class="btn btn-sm btn-success" onclick="toggleBlock('+u.id+');viewUser('+u.id+')"><i class="bi bi-unlock"></i></button>':'<button class="btn btn-sm btn-danger" onclick="toggleBlock('+u.id+');viewUser('+u.id+')"><i class="bi bi-lock"></i></button>'}
         <button onclick="closeUserDetail()" style="background:none;border:none;font-size:20px;color:var(--text-muted);cursor:pointer;margin-left:8px"><i class="bi bi-x-lg"></i></button>
       </div>
     </div>
@@ -1293,9 +1299,10 @@ function viewUser(id) {
     </div>
     <!-- OVERVIEW TAB -->
     <div class="ud-panel active" id="udOverview">
-      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px">
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:20px">
         <div class="ud-stat"><div class="lbl">Shipments</div><div class="val">${u.shipments}</div></div>
         <div class="ud-stat"><div class="lbl">Total Spent</div><div class="val" style="color:var(--accent)">$${u.spent.toLocaleString()}</div></div>
+        <div class="ud-stat"><div class="lbl">Your Profit</div><div class="val" style="color:var(--success)">$${Math.round(u.spent*(u.plan==='Enterprise'?.10:u.plan==='Business'?.15:.15)/(1+(u.plan==='Enterprise'?.10:.15))).toLocaleString()}</div><div style="font-size:10px;color:var(--success);margin-top:4px;font-weight:600">${u.plan==='Enterprise'?'10':'15'}% margin</div></div>
         <div class="ud-stat"><div class="lbl">Outstanding</div><div class="val" style="color:${u.unpaid>0?'var(--danger)':'var(--success)'}">$${u.unpaid.toLocaleString()}</div></div>
         <div class="ud-stat"><div class="lbl">Avg/Shipment</div><div class="val">$${u.shipments>0?(u.spent/u.shipments).toFixed(0):'0'}</div></div>
         <div class="ud-stat"><div class="lbl">Credit Limit</div><div class="val">$${u.plan==='Enterprise'?'10,000':u.plan==='Business'?'5,000':'1,000'}</div></div>
@@ -1320,12 +1327,12 @@ function viewUser(id) {
         <div>
           <div class="ud-section"><i class="bi bi-lightning" style="color:var(--accent)"></i> Quick Actions</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-            <button class="btn btn-outline btn-sm" style="justify-content:center" onclick="openEmail('${u.email}','${u.name}');closeUserDetail()"><i class="bi bi-envelope"></i> Email</button>
-            <button class="btn btn-outline btn-sm" style="justify-content:center"><i class="bi bi-receipt"></i> Invoice</button>
-            <button class="btn btn-outline btn-sm" style="justify-content:center"><i class="bi bi-cash"></i> Credit/Debit</button>
-            <button class="btn btn-outline btn-sm" style="justify-content:center"><i class="bi bi-percent"></i> Custom Rate</button>
-            ${u.status==='blocked'?'<button class="btn btn-success btn-sm" style="justify-content:center" onclick="toggleBlock('+u.id+');closeUserDetail()"><i class="bi bi-unlock"></i> Unblock</button>':'<button class="btn btn-danger btn-sm" style="justify-content:center" onclick="toggleBlock('+u.id+');closeUserDetail()"><i class="bi bi-lock"></i> Block</button>'}
-            ${u.status==='inactive'?'<button class="btn btn-success btn-sm" style="justify-content:center" onclick="toggleActive('+u.id+');closeUserDetail()"><i class="bi bi-power"></i> Activate</button>':'<button class="btn btn-outline btn-sm" style="justify-content:center" onclick="toggleActive('+u.id+');closeUserDetail()"><i class="bi bi-power"></i> Deactivate</button>'}
+            <button class="btn btn-outline btn-sm" style="justify-content:center" onclick="closeUserDetail();openEmail('${u.email}','${u.name}',${u.id})"><i class="bi bi-envelope"></i> Email</button>
+            <button class="btn btn-outline btn-sm" style="justify-content:center" onclick="quickInvoice(${u.id})"><i class="bi bi-receipt"></i> Invoice</button>
+            <button class="btn btn-outline btn-sm" style="justify-content:center" onclick="quickCreditDebit(${u.id})"><i class="bi bi-cash"></i> Credit/Debit</button>
+            <button class="btn btn-outline btn-sm" style="justify-content:center" onclick="quickCustomRate(${u.id})"><i class="bi bi-percent"></i> Custom Rate</button>
+            ${u.status==='blocked'?'<button class="btn btn-success btn-sm" style="justify-content:center" onclick="toggleBlock('+u.id+');viewUser('+u.id+')"><i class="bi bi-unlock"></i> Unblock</button>':'<button class="btn btn-danger btn-sm" style="justify-content:center" onclick="toggleBlock('+u.id+');viewUser('+u.id+')"><i class="bi bi-lock"></i> Block</button>'}
+            ${u.status==='inactive'?'<button class="btn btn-success btn-sm" style="justify-content:center" onclick="toggleActive('+u.id+');viewUser('+u.id+')"><i class="bi bi-power"></i> Activate</button>':'<button class="btn btn-outline btn-sm" style="justify-content:center" onclick="toggleActive('+u.id+');viewUser('+u.id+')"><i class="bi bi-power"></i> Deactivate</button>'}
           </div>
           <div class="ud-section" style="margin-top:16px"><i class="bi bi-tag" style="color:var(--accent)"></i> Account Settings</div>
           <div style="font-size:12px;display:flex;flex-direction:column;gap:6px">
@@ -1749,18 +1756,69 @@ function updateCounts() {
 }
 
 /* ═══════ EMAIL ═══════ */
-function openEmail(email, name) {
+/* QUICK ACTION MODALS */
+var _qaSourceUserId = null;
+function closeQuickAction(){document.getElementById('quickActionModal').classList.remove('show');if(_qaSourceUserId){viewUser(_qaSourceUserId);_qaSourceUserId=null;}}
+function showQuickActionModal(userId, html){_qaSourceUserId=userId;closeUserDetail();document.getElementById('quickActionBox').innerHTML=html;document.getElementById('quickActionModal').classList.add('show');}
+
+function quickInvoice(id){
+  var u=USERS.find(function(x){return x.id===id;});if(!u)return;
+  var html='<div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><h3 style="font-size:16px;font-weight:700;color:var(--text-heading)"><i class="bi bi-receipt" style="color:var(--accent)"></i> Create Invoice</h3><button onclick="closeQuickAction()" style="background:none;border:none;font-size:18px;color:var(--text-muted);cursor:pointer"><i class="bi bi-x-lg"></i></button></div>';
+  html+='<div style="padding:20px"><div style="padding:12px;background:var(--bg-muted);border-radius:var(--radius-md);margin-bottom:16px;font-size:13px"><strong>'+u.name+'</strong> &middot; '+u.email+(u.company?' &middot; '+u.company:'')+'</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px"><div class="form-field"><label>Invoice Amount ($)</label><input class="form-input" id="qaInvAmount" type="number" placeholder="0.00" step="0.01"></div><div class="form-field"><label>Due Date</label><input class="form-input" id="qaInvDue" type="date"></div></div>';
+  html+='<div class="form-field"><label>Description</label><input class="form-input" id="qaInvDesc" placeholder="e.g. Monthly shipping charges - March 2026"></div>';
+  html+='<div class="form-field"><label>Notes (Optional)</label><textarea class="form-input" id="qaInvNotes" placeholder="Internal notes..." style="min-height:60px"></textarea></div>';
+  html+='<div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-primary" onclick="submitInvoice('+id+')"><i class="bi bi-send"></i> Create & Send Invoice</button><button class="btn btn-outline" onclick="closeQuickAction()">Cancel</button></div></div>';
+  showQuickActionModal(id, html);
+}
+function submitInvoice(id){var u=USERS.find(function(x){return x.id===id;});var amt=document.getElementById('qaInvAmount').value;if(!amt||parseFloat(amt)<=0){alert('Please enter a valid amount.');return;}addAuditEntry('Created invoice $'+parseFloat(amt).toFixed(2),u?u.name:'');alert('Invoice for $'+parseFloat(amt).toFixed(2)+' created and sent to '+(u?u.name:'user'));closeQuickAction();}
+
+function quickCreditDebit(id){
+  var u=USERS.find(function(x){return x.id===id;});if(!u)return;
+  var html='<div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><h3 style="font-size:16px;font-weight:700;color:var(--text-heading)"><i class="bi bi-cash" style="color:var(--accent)"></i> Credit / Debit Account</h3><button onclick="closeQuickAction()" style="background:none;border:none;font-size:18px;color:var(--text-muted);cursor:pointer"><i class="bi bi-x-lg"></i></button></div>';
+  html+='<div style="padding:20px"><div style="padding:12px;background:var(--bg-muted);border-radius:var(--radius-md);margin-bottom:16px;font-size:13px"><strong>'+u.name+'</strong> &middot; Current balance: <span style="font-weight:700;color:var(--accent)">$'+u.spent.toLocaleString()+'</span> spent &middot; <span style="font-weight:700;color:'+(u.unpaid>0?'var(--danger)':'var(--success)')+'">$'+u.unpaid.toLocaleString()+'</span> outstanding</div>';
+  html+='<div class="form-field"><label>Type</label><select class="form-input" id="qaCdType"><option value="credit">Credit (add funds / reduce balance)</option><option value="debit">Debit (charge / increase balance)</option></select></div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px"><div class="form-field"><label>Amount ($)</label><input class="form-input" id="qaCdAmount" type="number" placeholder="0.00" step="0.01"></div><div class="form-field"><label>Reference</label><input class="form-input" id="qaCdRef" placeholder="e.g. Refund #1234, Adjustment"></div></div>';
+  html+='<div class="form-field"><label>Reason</label><textarea class="form-input" id="qaCdReason" placeholder="Explain the credit or debit reason..." style="min-height:60px"></textarea></div>';
+  html+='<div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-primary" onclick="submitCreditDebit('+id+')"><i class="bi bi-check-lg"></i> Apply</button><button class="btn btn-outline" onclick="closeQuickAction()">Cancel</button></div></div>';
+  showQuickActionModal(id, html);
+}
+function submitCreditDebit(id){var u=USERS.find(function(x){return x.id===id;});var type=document.getElementById('qaCdType').value;var amt=document.getElementById('qaCdAmount').value;if(!amt||parseFloat(amt)<=0){alert('Please enter a valid amount.');return;}addAuditEntry((type==='credit'?'Applied credit':'Applied debit')+' $'+parseFloat(amt).toFixed(2),u?u.name:'');alert((type==='credit'?'Credit':'Debit')+' of $'+parseFloat(amt).toFixed(2)+' applied to '+(u?u.name:'user'));closeQuickAction();}
+
+function quickCustomRate(id){
+  var u=USERS.find(function(x){return x.id===id;});if(!u)return;
+  var currentMarkup=u.plan==='Enterprise'?10:15;
+  var html='<div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><h3 style="font-size:16px;font-weight:700;color:var(--text-heading)"><i class="bi bi-percent" style="color:var(--accent)"></i> Custom Rate / Markup</h3><button onclick="closeQuickAction()" style="background:none;border:none;font-size:18px;color:var(--text-muted);cursor:pointer"><i class="bi bi-x-lg"></i></button></div>';
+  html+='<div style="padding:20px"><div style="padding:12px;background:var(--bg-muted);border-radius:var(--radius-md);margin-bottom:16px;font-size:13px"><strong>'+u.name+'</strong> &middot; '+u.plan+' Plan &middot; Current markup: <span style="font-weight:700;color:var(--accent)">'+currentMarkup+'%</span></div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px"><div class="form-field"><label>New Markup %</label><input class="form-input" id="qaRateMarkup" type="number" value="'+currentMarkup+'" min="0" max="50" step="0.5"></div><div class="form-field"><label>Effective Date</label><input class="form-input" id="qaRateDate" type="date"></div></div>';
+  html+='<div class="form-field"><label>Apply To</label><select class="form-input" id="qaRateScope"><option value="all">All Carriers</option><option value="cp">Canada Post Only</option><option value="ups">UPS Only</option><option value="fedex">FedEx Only</option><option value="puro">Purolator Only</option><option value="dhl">DHL Only</option></select></div>';
+  html+='<div class="form-field"><label>Reason</label><input class="form-input" id="qaRateReason" placeholder="e.g. VIP pricing, volume discount, enterprise deal"></div>';
+  html+='<div style="padding:12px;background:var(--warning-bg);border:1px solid rgba(202,138,4,.2);border-radius:var(--radius-md);margin-top:12px;margin-bottom:16px;font-size:12px;color:var(--warning);display:flex;gap:8px;align-items:flex-start"><i class="bi bi-exclamation-triangle-fill" style="flex-shrink:0;margin-top:1px"></i><span>Changing the markup will affect all future shipments for this user. Existing shipments will not be recalculated.</span></div>';
+  html+='<div style="display:flex;gap:8px"><button class="btn btn-primary" onclick="submitCustomRate('+id+')"><i class="bi bi-check-lg"></i> Save Custom Rate</button><button class="btn btn-outline" onclick="closeQuickAction()">Cancel</button></div></div>';
+  showQuickActionModal(id, html);
+}
+function submitCustomRate(id){var u=USERS.find(function(x){return x.id===id;});var markup=document.getElementById('qaRateMarkup').value;if(!markup||parseFloat(markup)<0){alert('Please enter a valid markup percentage.');return;}addAuditEntry('Set custom markup '+markup+'%',u?u.name:'');alert('Custom markup of '+markup+'% saved for '+(u?u.name:'user'));closeQuickAction();}
+
+var _emailSourceUserId = null;
+function openEmail(email, name, sourceUserId) {
+  _emailSourceUserId = sourceUserId || null;
   document.getElementById('emailTo').value = name + ' <' + email + '>';
   document.getElementById('emailSubject').value = '';
   document.getElementById('emailBody').value = '';
   document.getElementById('emailModal').classList.add('show');
 }
-function closeEmailModal(){document.getElementById('emailModal').classList.remove('show');}
+function closeEmailModal(){
+  document.getElementById('emailModal').classList.remove('show');
+  if (_emailSourceUserId) { viewUser(_emailSourceUserId); _emailSourceUserId = null; }
+}
 function sendEmail(){
   const to = document.getElementById('emailTo').value;
+  var srcId = _emailSourceUserId;
+  _emailSourceUserId = null;
   alert('Email sent to ' + to);
   addAuditEntry('Sent email', to.split('<')[0].trim());
-  closeEmailModal();
+  document.getElementById('emailModal').classList.remove('show');
+  if (srcId) { viewUser(srcId); }
 }
 function bulkEmail(){
   const activeEmails = USERS.filter(u=>u.status==='active').map(u=>u.name).join(', ');
