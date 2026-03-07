@@ -997,13 +997,21 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
   <div class="card" style="margin-bottom:16px"><div style="padding:20px">
     <h3 style="font-size:16px;font-weight:700;color:var(--text-heading);margin-bottom:16px"><i class="bi bi-percent" style="color:var(--accent)"></i> Global Markup</h3>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px">
-      <div class="form-field"><label>Default Markup %</label><input class="form-input" value="15" type="number"></div>
-      <div class="form-field"><label>Min Markup %</label><input class="form-input" value="5" type="number"></div>
-      <div class="form-field"><label>Max Markup %</label><input class="form-input" value="30" type="number"></div>
+      <div class="form-field"><label>Default Markup %</label><input class="form-input" id="commDefault" value="15" type="number" min="0" max="100"></div>
+      <div class="form-field"><label>Min Markup %</label><input class="form-input" id="commMin" value="5" type="number" min="0" max="100"></div>
+      <div class="form-field"><label>Max Markup %</label><input class="form-input" id="commMax" value="30" type="number" min="0" max="100"></div>
     </div>
-    <div style="display:flex;gap:8px"><button class="btn btn-primary"><i class="bi bi-check-lg"></i> Save Settings</button><button class="btn btn-outline">Reset to Defaults</button></div>
+    <div style="display:flex;gap:8px"><button class="btn btn-primary" onclick="saveCommSettings()"><i class="bi bi-check-lg"></i> Save Settings</button><button class="btn btn-outline" onclick="resetCommSettings()">Reset to Defaults</button></div>
   </div></div>
-  <div class="card"><div class="card-header"><h3><i class="bi bi-people"></i> Per-User Overrides</h3><button class="btn btn-sm btn-outline"><i class="bi bi-plus-lg"></i> Add Override</button></div>
+  <div class="card"><div class="card-header"><h3><i class="bi bi-people"></i> Per-User Overrides</h3><button class="btn btn-sm btn-outline" onclick="addOverride()"><i class="bi bi-plus-lg"></i> Add Override</button></div>
+  <div id="addOverrideForm" style="display:none;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--bg-muted)">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:10px">
+      <div class="form-field" style="margin:0"><label style="font-size:10px">User</label><select class="form-input" id="overrideUser" style="font-size:12px;padding:6px 8px"></select></div>
+      <div class="form-field" style="margin:0"><label style="font-size:10px">Markup %</label><input class="form-input" id="overrideMarkup" type="number" value="10" min="0" max="100" style="font-size:12px;padding:6px 8px"></div>
+      <div class="form-field" style="margin:0"><label style="font-size:10px">Reason</label><input class="form-input" id="overrideReason" placeholder="e.g. VIP client" style="font-size:12px;padding:6px 8px"></div>
+      <div style="display:flex;gap:6px;align-items:end"><button class="btn btn-sm btn-primary" onclick="submitOverride()"><i class="bi bi-check-lg"></i> Add</button><button class="btn btn-sm btn-outline" onclick="document.getElementById('addOverrideForm').style.display='none'">Cancel</button></div>
+    </div>
+  </div>
   <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>User</th><th>Company</th><th>Custom Markup %</th><th>Reason</th><th>Actions</th></tr></thead><tbody id="markupOverrides"></tbody></table></div></div>
 </div>
 
@@ -1034,11 +1042,11 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
   <div class="page-header"><div><h1>System Announcements</h1><div class="page-header-sub">Send notifications to all users</div></div><div><button class="btn btn-primary" onclick="document.getElementById('newAnnouncementForm').style.display=document.getElementById('newAnnouncementForm').style.display==='none'?'block':'none'"><i class="bi bi-megaphone"></i> New Announcement</button></div></div>
   <div class="card" id="newAnnouncementForm" style="display:none;margin-bottom:16px"><div style="padding:20px">
     <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px">
-      <div class="form-field"><label>Title</label><input class="form-input" placeholder="Announcement title"></div>
-      <div class="form-field"><label>Type</label><select class="form-input"><option>Info</option><option>Warning</option><option>Urgent</option><option>Maintenance</option></select></div>
+      <div class="form-field"><label>Title</label><input class="form-input" id="annTitle" placeholder="Announcement title"></div>
+      <div class="form-field"><label>Type</label><select class="form-input" id="annType"><option>Info</option><option>Warning</option><option>Urgent</option><option>Maintenance</option></select></div>
     </div>
-    <div class="form-field"><label>Message</label><textarea class="form-input" placeholder="Write your announcement..."></textarea></div>
-    <div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-primary"><i class="bi bi-send"></i> Publish</button><button class="btn btn-outline" onclick="document.getElementById('newAnnouncementForm').style.display='none'">Cancel</button></div>
+    <div class="form-field"><label>Message</label><textarea class="form-input" id="annMsg" placeholder="Write your announcement..." style="min-height:80px"></textarea></div>
+    <div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-primary" onclick="publishAnnouncement()"><i class="bi bi-send"></i> Publish</button><button class="btn btn-outline" onclick="document.getElementById('newAnnouncementForm').style.display='none'">Cancel</button></div>
   </div></div>
   <div id="announcementsList"></div>
 </div>
@@ -1261,7 +1269,7 @@ const CARRIERS_DATA = [
   {id:"dhl",name:"DHL",enabled:false,markup:20,calls:450,shipments:127,revenue:12800}
 ];
 const REV_CHART = [{m:"Sep",v:18200},{m:"Oct",v:21500},{m:"Nov",v:28900},{m:"Dec",v:35400},{m:"Jan",v:24800},{m:"Feb",v:31200}];
-const ANNOUNCEMENTS = [
+var ANNOUNCEMENTS = [
   {title:"Scheduled Maintenance - March 10",type:"Maintenance",date:"Feb 28, 2026",msg:"The platform will be undergoing scheduled maintenance on March 10 from 2:00 AM to 6:00 AM EST."},
   {title:"New Carrier Added: Canpar",type:"Info",date:"Feb 15, 2026",msg:"Canpar Express is now available as a carrier option for all users."},
   {title:"Rate Increase Notice",type:"Warning",date:"Jan 30, 2026",msg:"UPS rates will increase by 5.9% effective March 1, 2026."}
@@ -2509,9 +2517,72 @@ function renderAdminShipments() {
   renderFilteredShipments();
 }
 
+/* COMMISSION FUNCTIONS */
+var commOverrides = [{user:"Émilie Fontaine",company:"Maison Fontaine",markup:10,reason:"VIP client"},{user:"Robert Gagnon",company:"Gagnon Transport",markup:8,reason:"High volume"},{user:"David Kim",company:"Kim Electronics",markup:12,reason:"Enterprise agreement"}];
+
+function saveCommSettings(){
+  var def=document.getElementById('commDefault').value;
+  var min=document.getElementById('commMin').value;
+  var max=document.getElementById('commMax').value;
+  if(parseFloat(min)>=parseFloat(def)){alert('Min markup must be less than default.');return;}
+  if(parseFloat(max)<=parseFloat(def)){alert('Max markup must be greater than default.');return;}
+  addAuditEntry('Updated global markup: '+def+'% (min:'+min+'%, max:'+max+'%)','');
+  alert('Commission settings saved!\n\nDefault: '+def+'%\nMin: '+min+'%\nMax: '+max+'%');
+}
+function resetCommSettings(){
+  if(confirm('Reset markup settings to defaults?\n\nDefault: 15%, Min: 5%, Max: 30%')){
+    document.getElementById('commDefault').value='15';
+    document.getElementById('commMin').value='5';
+    document.getElementById('commMax').value='30';
+    addAuditEntry('Reset global markup to defaults (15/5/30%)','');
+  }
+}
+function addOverride(){
+  var form=document.getElementById('addOverrideForm');
+  form.style.display=form.style.display==='none'?'block':'none';
+  var sel=document.getElementById('overrideUser');
+  if(sel.options.length<=1){
+    sel.innerHTML='<option value="">Select user...</option>';
+    USERS.forEach(function(u){sel.innerHTML+='<option value="'+u.name+'" data-company="'+(u.company||'')+'">'+u.name+(u.company?' ('+u.company+')':'')+'</option>';});
+  }
+}
+function submitOverride(){
+  var sel=document.getElementById('overrideUser');
+  var user=sel.value;
+  if(!user){alert('Please select a user.');return;}
+  var company=sel.options[sel.selectedIndex].getAttribute('data-company')||'';
+  var markup=document.getElementById('overrideMarkup').value;
+  var reason=document.getElementById('overrideReason').value||'Custom';
+  if(!markup||parseFloat(markup)<=0){alert('Please enter a valid markup.');return;}
+  if(commOverrides.some(function(o){return o.user===user;})){alert(user+' already has an override. Edit the existing one.');return;}
+  commOverrides.push({user:user,company:company,markup:parseFloat(markup),reason:reason});
+  renderMarkupOverrides();
+  document.getElementById('addOverrideForm').style.display='none';
+  document.getElementById('overrideUser').selectedIndex=0;
+  document.getElementById('overrideReason').value='';
+  addAuditEntry('Added markup override '+markup+'%',user);
+}
+function editOverride(idx){
+  var o=commOverrides[idx];
+  var newMarkup=prompt('Edit markup for '+o.user+' (current: '+o.markup+'%):',o.markup);
+  if(newMarkup&&parseFloat(newMarkup)>0){
+    var newReason=prompt('Reason:',o.reason);
+    commOverrides[idx].markup=parseFloat(newMarkup);
+    if(newReason)commOverrides[idx].reason=newReason;
+    renderMarkupOverrides();
+    addAuditEntry('Edited markup override to '+newMarkup+'%',o.user);
+  }
+}
+function deleteOverride(idx){
+  var o=commOverrides[idx];
+  if(confirm('Remove custom markup for '+o.user+'?\n\nThey will revert to the global default.')){
+    commOverrides.splice(idx,1);
+    renderMarkupOverrides();
+    addAuditEntry('Removed markup override',o.user);
+  }
+}
 function renderMarkupOverrides() {
-  const overrides = [{user:"Émilie Fontaine",company:"Maison Fontaine",markup:10,reason:"VIP client"},{user:"Robert Gagnon",company:"Gagnon Transport",markup:8,reason:"High volume"},{user:"David Kim",company:"Kim Electronics",markup:12,reason:"Enterprise agreement"}];
-  document.getElementById('markupOverrides').innerHTML = overrides.map(o => `<tr><td style="font-weight:600">${o.user}</td><td style="font-size:12px;color:var(--text-secondary)">${o.company}</td><td style="font-family:var(--mono);font-weight:700;color:var(--accent)">${o.markup}%</td><td style="font-size:12px;color:var(--text-muted)">${o.reason}</td><td><div style="display:flex;gap:4px"><button class="btn btn-sm btn-outline"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-outline" style="color:var(--danger)"><i class="bi bi-trash3"></i></button></div></td></tr>`).join('');
+  document.getElementById('markupOverrides').innerHTML = commOverrides.map(function(o,i){return '<tr><td style="font-weight:600">'+o.user+'</td><td style="font-size:12px;color:var(--text-secondary)">'+o.company+'</td><td style="font-family:var(--mono);font-weight:700;color:var(--accent)">'+o.markup+'%</td><td style="font-size:12px;color:var(--text-muted)">'+o.reason+'</td><td><div style="display:flex;gap:4px"><button class="btn btn-sm btn-outline" onclick="editOverride('+i+')"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-outline" style="color:var(--danger)" onclick="deleteOverride('+i+')"><i class="bi bi-trash3"></i></button></div></td></tr>';}).join('');
 }
 
 function renderApiUsage() {
@@ -2705,10 +2776,48 @@ function addNewAdmin(){var name=document.getElementById('newAdminName').value.tr
 function removeAdmin(idx){if(confirm('Remove '+adminRoles[idx].name+' from admin roles?')){adminRoles.splice(idx,1);renderRoles();}}
 
 
+function publishAnnouncement(){
+  var title=document.getElementById('annTitle').value.trim();
+  var type=document.getElementById('annType').value;
+  var msg=document.getElementById('annMsg').value.trim();
+  if(!title||!msg){alert('Please fill in title and message.');return;}
+  var today=new Date();var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var dateStr=months[today.getMonth()]+' '+today.getDate()+', '+today.getFullYear();
+  ANNOUNCEMENTS.unshift({title:title,type:type,date:dateStr,msg:msg});
+  renderAnnouncements();
+  document.getElementById('annTitle').value='';
+  document.getElementById('annMsg').value='';
+  document.getElementById('annType').selectedIndex=0;
+  document.getElementById('newAnnouncementForm').style.display='none';
+  addAuditEntry('Published announcement: '+title,'All users');
+  alert('Announcement published!\n\n"'+title+'" is now visible to all users.');
+}
+function editAnnouncement(idx){
+  var a=ANNOUNCEMENTS[idx];
+  var newTitle=prompt('Edit title:',a.title);
+  if(!newTitle)return;
+  var newMsg=prompt('Edit message:',a.msg);
+  if(!newMsg)return;
+  var types=['Info','Warning','Urgent','Maintenance'];
+  var newType=prompt('Type (Info, Warning, Urgent, Maintenance):',a.type);
+  if(newType&&types.indexOf(newType)>=0)a.type=newType;
+  a.title=newTitle;
+  a.msg=newMsg;
+  renderAnnouncements();
+  addAuditEntry('Edited announcement: '+newTitle,'');
+}
+function deleteAnnouncement(idx){
+  var a=ANNOUNCEMENTS[idx];
+  if(confirm('Delete announcement "'+a.title+'"?\n\nThis cannot be undone.')){
+    ANNOUNCEMENTS.splice(idx,1);
+    renderAnnouncements();
+    addAuditEntry('Deleted announcement: '+a.title,'');
+  }
+}
 function renderAnnouncements() {
-  const typeIcon = {Info:'bi-info-circle',Warning:'bi-exclamation-triangle',Urgent:'bi-exclamation-octagon',Maintenance:'bi-wrench'};
-  const typeColor = {Info:'info',Warning:'warning',Urgent:'danger',Maintenance:'accent'};
-  document.getElementById('announcementsList').innerHTML = ANNOUNCEMENTS.map(a => `<div class="card" style="margin-bottom:10px"><div style="padding:16px 20px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px"><i class="bi ${typeIcon[a.type]||'bi-info-circle'}" style="color:var(--${typeColor[a.type]||'info'});font-size:16px"></i><h4 style="font-size:14px;font-weight:700;color:var(--text-heading)">${a.title}</h4><span class="badge badge-${a.type==='Warning'?'pending':a.type==='Urgent'?'blocked':'active'}">${a.type}</span></div><span style="font-size:11px;color:var(--text-muted)">${a.date}</span></div><p style="font-size:13px;color:var(--text-body);line-height:1.5">${a.msg}</p></div></div>`).join('');
+  var typeIcon = {Info:'bi-info-circle',Warning:'bi-exclamation-triangle',Urgent:'bi-exclamation-octagon',Maintenance:'bi-wrench'};
+  var typeColor = {Info:'info',Warning:'warning',Urgent:'danger',Maintenance:'accent'};
+  document.getElementById('announcementsList').innerHTML = ANNOUNCEMENTS.map(function(a,i){return '<div class="card" style="margin-bottom:10px"><div style="padding:16px 20px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px"><i class="bi '+(typeIcon[a.type]||'bi-info-circle')+'" style="color:var(--'+(typeColor[a.type]||'info')+');font-size:16px"></i><h4 style="font-size:14px;font-weight:700;color:var(--text-heading)">'+a.title+'</h4><span class="badge badge-'+(a.type==='Warning'?'pending':a.type==='Urgent'?'blocked':'active')+'">'+a.type+'</span></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:11px;color:var(--text-muted)">'+a.date+'</span><button class="btn btn-sm btn-outline" onclick="editAnnouncement('+i+')" style="padding:2px 8px"><i class="bi bi-pencil" style="font-size:12px"></i></button><button class="btn btn-sm btn-outline" style="padding:2px 8px;color:var(--danger)" onclick="deleteAnnouncement('+i+')"><i class="bi bi-trash3" style="font-size:12px"></i></button></div></div><p style="font-size:13px;color:var(--text-body);line-height:1.5">'+a.msg+'</p></div></div>';}).join('');
 }
 
 /* ═══════ INIT ═══════ */
