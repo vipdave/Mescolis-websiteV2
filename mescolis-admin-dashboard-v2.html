@@ -2756,7 +2756,7 @@ function viewTicket(idx){
   var t=TICKETS[idx];
   var html='<div style="padding:28px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px"><div><h2 style="font-size:18px;font-weight:700;color:var(--text-heading)"><i class="bi bi-headset" style="color:var(--accent);margin-right:8px"></i>'+t.id+' — '+t.subject+'</h2><p style="font-size:13px;color:var(--text-muted);margin-top:4px">From: <span style="font-weight:600;color:var(--accent);cursor:pointer" onclick="closeUserDetail();viewUserByName(\''+t.user+'\')">'+t.user+'</span> &middot; '+t.created+' &middot; '+priorityBadge(t.priority)+' '+statusBadge(t.status==='open'?'open':'resolved')+'</p></div><button class="btn btn-outline" onclick="closeUserDetail()"><i class="bi bi-x-lg"></i></button></div>';
   html+='<div style="border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;background:var(--bg-muted)"><div style="font-size:14px;font-weight:600;color:var(--text-heading);margin-bottom:8px">Ticket Details</div><p style="font-size:13px;color:var(--text-body);line-height:1.6">'+t.subject+'<br><br>User reported this issue on '+t.created+'. Priority level: <strong>'+t.priority+'</strong>.</p></div>';
-  html+='<div style="border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px"><div style="font-size:14px;font-weight:600;color:var(--text-heading);margin-bottom:12px">Admin Response</div><textarea id="ticketReply" class="form-input" placeholder="Write your response to the user..." style="min-height:80px;margin-bottom:10px"></textarea><div style="display:flex;gap:8px"><button class="btn btn-primary" onclick="replyTicket('+idx+')"><i class="bi bi-send"></i> Send Reply</button><button class="btn btn-outline" onclick="escalateTicket('+idx+')"><i class="bi bi-arrow-up-circle"></i> Escalate</button></div></div>';
+  html+='<div style="border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px"><div style="font-size:14px;font-weight:600;color:var(--text-heading);margin-bottom:12px">Admin Response</div><textarea id="ticketReply" class="form-input" placeholder="Write your response to the user..." style="min-height:80px;margin-bottom:10px"></textarea><div style="display:flex;gap:8px"><button class="btn btn-primary" onclick="replyTicket('+idx+')"><i class="bi bi-send"></i> Send Reply</button><div style="position:relative;display:inline-block" id="escWrap_'+idx+'"><button class="btn btn-outline" onclick="toggleEscMenu('+idx+')"><i class="bi bi-arrow-up-circle"></i> Escalate <i class="bi bi-chevron-down" style="font-size:9px"></i></button><div id="escMenu_'+idx+'" style="display:none;position:absolute;bottom:100%;left:0;margin-bottom:6px;background:var(--bg-white);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:260px;z-index:999;overflow:hidden"><div style="padding:8px 12px;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border)">Escalate Options</div><div style="padding:8px 12px;cursor:pointer;font-size:13px;transition:background .15s" onmouseenter="this.style.background=\'var(--bg-muted)\'" onmouseleave="this.style.background=\'\'" onclick="escalateToAdmin('+idx+',\'Super Admin\')"><i class="bi bi-shield-check" style="color:var(--danger);margin-right:6px"></i> Escalate to Super Admin</div><div style="padding:8px 12px;cursor:pointer;font-size:13px;transition:background .15s" onmouseenter="this.style.background=\'var(--bg-muted)\'" onmouseleave="this.style.background=\'\'" onclick="changePriority('+idx+')"><i class="bi bi-exclamation-triangle" style="color:var(--warning);margin-right:6px"></i> Change Priority</div><div style="padding:8px 12px;cursor:pointer;font-size:13px;transition:background .15s" onmouseenter="this.style.background=\'var(--bg-muted)\'" onmouseleave="this.style.background=\'\'" onclick="assignTicket('+idx+')"><i class="bi bi-person-plus" style="color:var(--info);margin-right:6px"></i> Assign to Agent</div><div style="padding:8px 12px;cursor:pointer;font-size:13px;transition:background .15s" onmouseenter="this.style.background=\'var(--bg-muted)\'" onmouseleave="this.style.background=\'\'" onclick="forwardToCarrier('+idx+')"><i class="bi bi-truck" style="color:var(--accent);margin-right:6px"></i> Forward to Carrier</div><div style="padding:8px 12px;cursor:pointer;font-size:13px;transition:background .15s" onmouseenter="this.style.background=\'var(--bg-muted)\'" onmouseleave="this.style.background=\'\'" onclick="addTicketNote('+idx+')"><i class="bi bi-sticky" style="color:var(--success);margin-right:6px"></i> Add Internal Note</div><div style="padding:8px 12px;cursor:pointer;font-size:13px;transition:background .15s;border-top:1px solid var(--border)" onmouseenter="this.style.background=\'var(--bg-muted)\'" onmouseleave="this.style.background=\'\'" onclick="mergeTicket('+idx+')"><i class="bi bi-intersect" style="color:var(--text-muted);margin-right:6px"></i> Merge with Another Ticket</div></div></div></div></div>';
   html+='<div style="display:flex;gap:8px">';
   if(t.status==='open')html+='<button class="btn btn-success" onclick="resolveTicket('+idx+');closeUserDetail()"><i class="bi bi-check-lg"></i> Mark Resolved</button>';
   else html+='<button class="btn btn-outline" onclick="reopenTicket('+idx+');closeUserDetail()"><i class="bi bi-arrow-counterclockwise"></i> Reopen</button>';
@@ -2773,7 +2773,72 @@ function replyTicket(idx){
   alert('Reply sent to '+TICKETS[idx].user+' for '+TICKETS[idx].id);
   document.getElementById('ticketReply').value='';
 }
-function escalateTicket(idx){addAuditEntry('Escalated ticket '+TICKETS[idx].id+' to Super Admin',TICKETS[idx].user);alert('Ticket '+TICKETS[idx].id+' escalated to Super Admin.');}
+function toggleEscMenu(idx){var m=document.getElementById('escMenu_'+idx);m.style.display=m.style.display==='none'?'block':'none';}
+function escalateToAdmin(idx,role){
+  var t=TICKETS[idx];
+  addAuditEntry('Escalated '+t.id+' to '+role,t.user);
+  alert('Ticket '+t.id+' escalated to '+role+'.\n\n'+role+' has been notified via email and dashboard notification.');
+  toggleEscMenu(idx);
+}
+function changePriority(idx){
+  var t=TICKETS[idx];
+  var priorities=['low','medium','high','urgent'];
+  var current=priorities.indexOf(t.priority);
+  var opts=priorities.map(function(p,i){return (i===current?'* ':'')+p;}).join(', ');
+  var newP=prompt('Change priority for '+t.id+'\nCurrent: '+t.priority+'\n\nOptions: '+priorities.join(', '),t.priority);
+  if(newP&&priorities.indexOf(newP)>=0){
+    var old=t.priority;
+    TICKETS[idx].priority=newP;
+    addAuditEntry('Changed priority '+old+' → '+newP+' on '+t.id,t.user);
+    alert('Priority updated: '+old+' → '+newP);
+    viewTicket(idx);renderTickets();
+  }
+  toggleEscMenu(idx);
+}
+function assignTicket(idx){
+  var t=TICKETS[idx];
+  var agents=adminRoles.map(function(r){return r.name+' ('+r.role+')';}).join('\n');
+  var agent=prompt('Assign '+t.id+' to an agent:\n\nAvailable agents:\n'+agents+'\n\nEnter name:','');
+  if(agent){
+    addAuditEntry('Assigned '+t.id+' to '+agent,t.user);
+    alert('Ticket '+t.id+' assigned to '+agent+'.\n\nThey will receive an email notification.');
+  }
+  toggleEscMenu(idx);
+}
+function forwardToCarrier(idx){
+  var t=TICKETS[idx];
+  var carriers=['Canada Post','Purolator','UPS','FedEx','DHL'];
+  var carrier=prompt('Forward '+t.id+' to carrier support:\n\nCarriers: '+carriers.join(', ')+'\n\nEnter carrier name:','');
+  if(carrier){
+    addAuditEntry('Forwarded '+t.id+' to '+carrier+' support',t.user);
+    alert('Ticket '+t.id+' forwarded to '+carrier+' support team.\n\nReference number will be emailed to you.');
+  }
+  toggleEscMenu(idx);
+}
+function addTicketNote(idx){
+  var t=TICKETS[idx];
+  var note=prompt('Add internal note to '+t.id+'\n(Not visible to user):','');
+  if(note){
+    addAuditEntry('Added internal note on '+t.id,t.user);
+    alert('Internal note added to '+t.id+'.');
+  }
+  toggleEscMenu(idx);
+}
+function mergeTicket(idx){
+  var t=TICKETS[idx];
+  var otherIds=TICKETS.filter(function(x,i){return i!==idx;}).map(function(x){return x.id;}).join(', ');
+  var mergeWith=prompt('Merge '+t.id+' with another ticket:\n\nAvailable: '+otherIds+'\n\nEnter ticket #:','');
+  if(mergeWith){
+    var target=TICKETS.find(function(x){return x.id===mergeWith;});
+    if(target){
+      addAuditEntry('Merged '+t.id+' into '+mergeWith,t.user);
+      alert('Ticket '+t.id+' merged into '+mergeWith+'.\n\nAll messages and history have been combined.');
+    } else {
+      alert('Ticket '+mergeWith+' not found.');
+    }
+  }
+  toggleEscMenu(idx);
+}
 function deleteTicket(idx){
   if(confirm('Delete ticket '+TICKETS[idx].id+'? This cannot be undone.')){
     addAuditEntry('Deleted ticket '+TICKETS[idx].id,TICKETS[idx].user);
