@@ -1778,7 +1778,7 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
 <!-- NOTIFICATION PANEL -->
 <div id="notifOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9998" onclick="closeNotif()"></div>
 <div class="notif-panel" id="notifPanel" style="display:none">
-  <div class="notif-header"><h3 style="font-size:14px;font-weight:700;color:var(--text-heading)">Notifications</h3><span style="font-size:11px;color:var(--accent);cursor:pointer;font-weight:600">Mark all read</span></div>
+  <div class="notif-header"><h3 style="font-size:14px;font-weight:700;color:var(--text-heading)">Notifications</h3><span style="font-size:11px;color:var(--accent);cursor:pointer;font-weight:600" onclick="markAllNotifRead()">Mark all read</span></div>
   <div class="notif-item" onclick="closeNotif();navigateTo('shipment-detail')"><div class="notif-icon" style="color:var(--danger)"><i class="bi bi-exclamation-triangle"></i></div><div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text-heading)">Delivery Exception</div><div style="font-size:12px;color:var(--text-muted);margin-top:1px">SHP-0885 has an address issue in Winnipeg</div><div style="font-size:11px;color:var(--text-muted);margin-top:3px">5h ago</div></div></div>
   <div class="notif-item" onclick="closeNotif();navigateTo('pickups')"><div class="notif-icon" style="color:var(--info)"><i class="bi bi-truck"></i></div><div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text-heading)">Pickup Scheduled</div><div style="font-size:12px;color:var(--text-muted);margin-top:1px">UPS pickup confirmed for Mar 1 at 9:00 AM</div><div style="font-size:11px;color:var(--text-muted);margin-top:3px">1d ago</div></div></div>
   <div class="notif-item" onclick="closeNotif();navigateTo('invoices')"><div class="notif-icon" style="color:var(--warning)"><i class="bi bi-receipt"></i></div><div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text-heading)">Invoice Due</div><div style="font-size:12px;color:var(--text-muted);margin-top:1px">INV-2026-0034 for $347.50 is due Mar 15</div><div style="font-size:11px;color:var(--text-muted);margin-top:3px">2d ago</div></div></div>
@@ -3311,6 +3311,20 @@ document.addEventListener('keydown', e => {
    ═══════════════════════════════════════════ */
 function toggleNotif() { const p=document.getElementById('notifPanel');const o=document.getElementById('notifOverlay');const v=p.style.display==='none';p.style.display=v?'block':'none';o.style.display=v?'block':'none'; }
 function closeNotif() { document.getElementById('notifPanel').style.display='none'; document.getElementById('notifOverlay').style.display='none'; }
+function markAllNotifRead(){
+  // Fade notification items
+  document.querySelectorAll('.notif-item').forEach(function(el){
+    el.style.opacity='.5';
+    var title=el.querySelector('div[style*="font-weight:600"]');
+    if(title)title.style.color='var(--text-muted)';
+  });
+  // Hide the red dot on the bell
+  var dot=document.querySelector('.notification-dot');
+  if(dot)dot.style.display='none';
+  // Change "Mark all read" to "All read ✓"
+  var markBtn=document.querySelector('.notif-header span[onclick]');
+  if(markBtn){markBtn.textContent='All read ✓';markBtn.style.color='var(--success)';markBtn.onclick=null;markBtn.style.cursor='default';}
+}
 
 /* ═══════════════════════════════════════════
    TRACK
@@ -3609,4 +3623,13 @@ function sendQuickMsg(msg) {
     if(Math.abs(dx)>4||Math.abs(dy)>4)wasDragged=true;
     var nl=Math.max(0,Math.min(window.innerWidth-56,startLeft+dx));
     var nt=Math.max(0,Math.min(window.innerHeight-56,startTop+dy));
-    fab.style.left=nl+'px';fab.style.top=nt+'px';fab.style.right='a
+    fab.style.left=nl+'px';fab.style.top=nt+'px';fab.style.right='auto';fab.style.bottom='auto';
+    reposPanel(nl,nt);
+  },{passive:true});
+  document.addEventListener('touchend',function(){if(isDragging){isDragging=false;fab.classList.remove('dragging');}});
+})();
+
+</script>
+
+</body>
+</html>
