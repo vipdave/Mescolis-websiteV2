@@ -804,7 +804,15 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
       <div class="card-header"><h3><i class="bi bi-list-ul"></i> Recent Shipments</h3><a class="card-action" onclick="navigateTo('shipments')">View all shipments →</a></div>
       <div class="table-controls"><div class="table-tabs"><button class="table-tab active" onclick="filterDashShipments('all',this)">All</button><button class="table-tab" onclick="filterDashShipments('transit',this)">In Transit</button><button class="table-tab" onclick="filterDashShipments('delivered',this)">Delivered</button><button class="table-tab" onclick="filterDashShipments('pending',this)">Pending</button><button class="table-tab" onclick="filterDashShipments('exception',this)">Exception</button></div><div class="table-count" id="dashShipCount">Showing <strong>7</strong> of 47</div></div>
       <div style="overflow-x:auto">
-      <table class="data-table"><thead><tr><th>ID</th><th>Carrier</th><th>Route</th><th>Service</th><th>Status</th><th>Cost</th><th>Date</th></tr></thead>
+      <table class="data-table"><thead><tr>
+      <th style="cursor:pointer" onclick="sortTable('dashboardShipmentsBody',0)">ID <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('dashboardShipmentsBody',1)">Carrier <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th>Route</th>
+      <th style="cursor:pointer" onclick="sortTable('dashboardShipmentsBody',3)">Service <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('dashboardShipmentsBody',4)">Status <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('dashboardShipmentsBody',5,'cost')">Cost <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('dashboardShipmentsBody',6)">Date <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+    </tr></thead>
       <tbody id="dashboardShipmentsBody"></tbody></table>
       </div>
     </div>
@@ -816,7 +824,13 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
   <div class="bottom-grid">
     <div class="card">
       <div class="card-header"><h3><i class="bi bi-buildings"></i> Carrier Performance</h3><a class="card-action" onclick="navigateTo('carriers')">Manage carriers →</a></div>
-      <table class="data-table"><thead><tr><th>Carrier</th><th>Shipments</th><th>Share</th><th>Avg. Cost</th><th>Rating</th></tr></thead>
+      <table class="data-table"><thead><tr>
+      <th style="cursor:pointer" onclick="sortTable('carrierBreakdownBody',0)">Carrier <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('carrierBreakdownBody',1,'num')">Shipments <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('carrierBreakdownBody',2,'pct')">Share <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('carrierBreakdownBody',3,'cost')">Avg. Cost <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th>Rating</th>
+    </tr></thead>
       <tbody id="carrierPerfBody"></tbody></table>
     </div>
     <div class="card">
@@ -832,7 +846,16 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
   <div class="page-header"><div><h1>Shipments</h1><div class="page-header-sub">Manage and track all your shipments</div></div><div class="page-header-actions"><button class="btn btn-outline" onclick="exportShipmentsCSV()"><i class="bi bi-download"></i> Export CSV</button><button class="btn btn-primary" onclick="navigateTo('create-shipment')"><i class="bi bi-plus-lg"></i> New Shipment</button></div></div>
   <div class="card">
     <div class="table-controls"><div class="table-tabs"><button class="table-tab active" onclick="filterAllShipments('all',this)">All</button><button class="table-tab" onclick="filterAllShipments('transit',this)">In Transit</button><button class="table-tab" onclick="filterAllShipments('delivered',this)">Delivered</button><button class="table-tab" onclick="filterAllShipments('pending',this)">Pending</button><button class="table-tab" onclick="filterAllShipments('exception',this)">Exception</button></div><div style="display:flex;gap:8px;align-items:center"><select class="form-input" id="shipCarrierFilter" style="width:140px;padding:5px 8px;font-size:12px" onchange="renderAllShipments()"><option value="">All Carriers</option><option>Canada Post</option><option>Purolator</option><option>UPS</option><option>FedEx</option><option>DHL</option></select><input class="form-input" id="shipSearchInput" placeholder="Search ID, route, recipient..." style="width:220px;padding:5px 8px;font-size:12px" oninput="renderAllShipments()"></div></div>
-    <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>ID</th><th>Carrier</th><th>Route</th><th>Recipient</th><th>Service</th><th>Status</th><th>Cost</th><th>Date</th></tr></thead><tbody id="allShipmentsBody"></tbody></table></div>
+    <div style="overflow-x:auto"><table class="data-table"><thead><tr>
+      <th style="cursor:pointer" onclick="sortTable('allShipmentsBody',0)">ID <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('allShipmentsBody',1)">Carrier <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th>Route</th>
+      <th style="cursor:pointer" onclick="sortTable('allShipmentsBody',3)">Recipient <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('allShipmentsBody',4)">Service <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('allShipmentsBody',5)">Status <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('allShipmentsBody',6,'cost')">Cost <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('allShipmentsBody',7)">Date <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+    </tr></thead><tbody id="allShipmentsBody"></tbody></table></div>
     <div style="padding:12px 18px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--text-muted)">Showing 10 of 10 shipments</span><div style="display:flex;gap:4px"><button class="btn btn-outline btn-sm" onclick="prevShipPage()">← Previous</button><button class="btn btn-primary btn-sm" onclick="nextShipPage()">Next →</button></div></div>
   </div>
 </div>
@@ -1412,7 +1435,30 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
 <!-- PAGE: PICKUPS -->
 <div class="page-section" id="page-pickups">
   <div class="page-header"><div><h1>My Pickups</h1><div class="page-header-sub">Manage your scheduled carrier pickups</div></div><div class="page-header-actions"><button class="btn btn-primary" onclick="navigateTo('schedule-pickup')"><i class="bi bi-plus-lg"></i> Schedule Pickup</button></div></div>
-  <div class="card"><div style="overflow-x:auto"><table class="data-table"><thead><tr><th>ID</th><th>Carrier</th><th>Date</th><th>Time Window</th><th>Packages</th><th>Address</th><th>Status</th></tr></thead><tbody id="pickupsBody"></tbody></table></div></div>
+  <div class="card">
+    <div style="padding:12px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)">
+      <div style="display:flex;gap:6px">
+        <button class="table-tab active" onclick="filterTable('pickupsBody','all',this,'pickupCount')">All</button>
+        <button class="table-tab" onclick="filterTable('pickupsBody','scheduled',this,'pickupCount')">Scheduled</button>
+        <button class="table-tab" onclick="filterTable('pickupsBody','completed',this,'pickupCount')">Completed</button>
+        <button class="table-tab" onclick="filterTable('pickupsBody','cancelled',this,'pickupCount')">Cancelled</button>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <select class="form-input" style="width:140px;padding:5px 8px;font-size:12px" onchange="filterTableByAttr('pickupsBody','data-carrier',this.value)"><option value="">All Carriers</option><option>Canada Post</option><option>Purolator</option><option>UPS</option><option>FedEx</option><option>DHL</option></select>
+        <input class="form-input" placeholder="Search pickups..." style="width:180px;padding:5px 8px;font-size:12px" oninput="searchTable('pickupsBody',this.value)">
+      </div>
+    </div>
+    <div style="overflow-x:auto"><table class="data-table"><thead><tr>
+      <th style="cursor:pointer" onclick="sortTable('pickupsBody',0)">ID <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('pickupsBody',1)">Carrier <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('pickupsBody',2)">Date <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th>Time Window</th>
+      <th style="cursor:pointer" onclick="sortTable('pickupsBody',4,'num')">Packages <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th>Address</th>
+      <th style="cursor:pointer" onclick="sortTable('pickupsBody',6)">Status <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+    </tr></thead><tbody id="pickupsBody"></tbody></table></div>
+    <div style="padding:10px 18px;border-top:1px solid var(--border)"><span style="font-size:12px;color:var(--text-muted)" id="pickupCount"></span></div>
+  </div>
 </div>
 
 <!-- PAGE: CARRIERS -->
@@ -1424,6 +1470,7 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
 <!-- PAGE: ADDRESS BOOK -->
 <div class="page-section" id="page-address-book">
   <div class="page-header"><div><h1>Address Book</h1><div class="page-header-sub">Manage your saved addresses for quick shipping</div></div><div class="page-header-actions"><button class="btn btn-primary" onclick="openAddAddressForm()"><i class="bi bi-plus-lg"></i> Add Address</button></div></div>
+  <div style="margin-bottom:14px"><input class="form-input" id="addressSearch" placeholder="Search addresses by name, city, postal code..." style="width:100%;padding:8px 14px;font-size:13px" oninput="searchAddresses(this.value)"></div>
   <div id="addressGrid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px"></div>
   <!-- Add Address Form -->
   <div id="addAddressForm" class="card" style="display:none;margin-top:16px">
@@ -1449,7 +1496,28 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
     <div class="stat-card"><div class="stat-top"><span class="stat-label">Last Payment</span><div class="stat-icon green"><i class="bi bi-check-circle"></i></div></div><div class="stat-value">$512.80</div><div class="stat-footer"><span class="stat-change up"><i class="bi bi-arrow-up-short"></i>Feb 18</span><span>paid on time</span></div></div>
     <div class="stat-card"><div class="stat-top"><span class="stat-label">Avg. Monthly</span><div class="stat-icon blue"><i class="bi bi-graph-up"></i></div></div><div class="stat-value">$443.65</div><div class="stat-footer"><span class="stat-change up"><i class="bi bi-arrow-up-short"></i>$23</span><span>vs previous</span></div></div>
   </div>
-  <div class="card"><div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Invoice #</th><th>Date</th><th>Shipments</th><th>Amount</th><th>Due Date</th><th>Status</th><th></th></tr></thead><tbody id="invoicesBody"></tbody></table></div></div>
+  <div class="card">
+    <div style="padding:12px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)">
+      <div style="display:flex;gap:6px">
+        <button class="table-tab active" onclick="filterTable('invoicesBody','all',this,'invoiceCount')">All</button>
+        <button class="table-tab" onclick="filterTable('invoicesBody','paid',this,'invoiceCount')">Paid</button>
+        <button class="table-tab" onclick="filterTable('invoicesBody','unpaid',this,'invoiceCount')">Unpaid</button>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <input class="form-input" placeholder="Search invoices..." style="width:200px;padding:5px 8px;font-size:12px" oninput="searchTable('invoicesBody',this.value)">
+      </div>
+    </div>
+    <div style="overflow-x:auto"><table class="data-table"><thead><tr>
+      <th style="cursor:pointer" onclick="sortTable('invoicesBody',0)">Invoice # <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('invoicesBody',1)">Date <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('invoicesBody',2,'num')">Shipments <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('invoicesBody',3,'cost')">Amount <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('invoicesBody',4)">Due Date <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('invoicesBody',5)">Status <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th></th>
+    </tr></thead><tbody id="invoicesBody"></tbody></table></div>
+    <div style="padding:10px 18px;border-top:1px solid var(--border)"><span style="font-size:12px;color:var(--text-muted)" id="invoiceCount"></span></div>
+  </div>
 </div>
 
 <!-- PAGE: REPORTS -->
@@ -1466,7 +1534,13 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
     <div class="card"><div class="card-header"><h3><i class="bi bi-pie-chart"></i> Carrier Distribution</h3></div><div style="padding:18px" id="carrierDistribution"></div></div>
   </div>
   <div class="card" style="margin-top:16px"><div class="card-header"><h3><i class="bi bi-table"></i> Monthly Breakdown</h3></div>
-    <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Month</th><th>Shipments</th><th>Total Cost</th><th>Avg. Cost</th><th>On-Time %</th></tr></thead><tbody id="monthlyBreakdownBody"></tbody></table></div>
+    <div style="overflow-x:auto"><table class="data-table"><thead><tr>
+      <th style="cursor:pointer" onclick="sortTable('monthlyBreakdownBody',0)">Month <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('monthlyBreakdownBody',1,'num')">Shipments <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('monthlyBreakdownBody',2,'cost')">Total Cost <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('monthlyBreakdownBody',3,'cost')">Avg. Cost <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortTable('monthlyBreakdownBody',4,'pct')">On-Time % <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+    </tr></thead><tbody id="monthlyBreakdownBody"></tbody></table></div>
   </div>
 </div>
 
@@ -1532,6 +1606,64 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
 </div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js">
+
+/* ═══════ UNIVERSAL TABLE FILTER/SORT ═══════ */
+function filterTable(tbodyId,status,btn,countId){
+  btn.closest('.table-tabs,.table-controls').querySelectorAll('.table-tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  var rows=document.getElementById(tbodyId).querySelectorAll('tr');
+  var shown=0;
+  rows.forEach(function(row){
+    var st=(row.getAttribute('data-status')||'').toLowerCase();
+    var show=status==='all'||st===status;
+    row.style.display=show?'':'none';
+    if(show)shown++;
+  });
+  if(countId){var el=document.getElementById(countId);if(el)el.textContent='Showing '+shown+' of '+rows.length;}
+}
+function filterTableByAttr(tbodyId,attr,val){
+  var rows=document.getElementById(tbodyId).querySelectorAll('tr');
+  rows.forEach(function(row){
+    if(!val){row.style.display='';return;}
+    var v=row.getAttribute(attr)||'';
+    row.style.display=v===val?'':'none';
+  });
+}
+function searchTable(tbodyId,query){
+  var q=query.toLowerCase();
+  var rows=document.getElementById(tbodyId).querySelectorAll('tr');
+  rows.forEach(function(row){
+    var text=(row.textContent||'').toLowerCase();
+    row.style.display=(!q||text.includes(q))?'':'none';
+  });
+}
+var _sortDirs={};
+function sortTable(tbodyId,colIdx,type){
+  var key=tbodyId+'_'+colIdx;
+  _sortDirs[key]=!_sortDirs[key];
+  var asc=_sortDirs[key];
+  var tbody=document.getElementById(tbodyId);
+  if(!tbody)return;
+  var rows=Array.from(tbody.querySelectorAll('tr'));
+  rows.sort(function(a,b){
+    var cellA=a.cells[colIdx];var cellB=b.cells[colIdx];
+    if(!cellA||!cellB)return 0;
+    var va=cellA.textContent.trim();var vb=cellB.textContent.trim();
+    if(type==='num'){va=parseInt(va.replace(/[^0-9.-]/g,''))||0;vb=parseInt(vb.replace(/[^0-9.-]/g,''))||0;return asc?va-vb:vb-va;}
+    if(type==='cost'){va=parseFloat(va.replace(/[^0-9.-]/g,''))||0;vb=parseFloat(vb.replace(/[^0-9.-]/g,''))||0;return asc?va-vb:vb-va;}
+    if(type==='pct'){va=parseFloat(va.replace(/[^0-9.-]/g,''))||0;vb=parseFloat(vb.replace(/[^0-9.-]/g,''))||0;return asc?va-vb:vb-va;}
+    return asc?va.localeCompare(vb):vb.localeCompare(va);
+  });
+  rows.forEach(function(r){tbody.appendChild(r);});
+}
+function searchAddresses(q){
+  q=q.toLowerCase();
+  document.querySelectorAll('#addressGrid .card').forEach(function(card){
+    var text=(card.textContent||'').toLowerCase();
+    card.style.display=(!q||text.includes(q))?'':'none';
+  });
+}
+
 /* ═══════ CUSTOMER DASHBOARD BUG FIXES ═══════ */
 
 /* Dashboard Export */
