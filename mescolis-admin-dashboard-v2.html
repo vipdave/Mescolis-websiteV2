@@ -885,9 +885,34 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
         <button class="btn btn-sm btn-outline user-filter" data-filter="blocked">Blocked</button>
         <button class="btn btn-sm btn-outline user-filter" data-filter="inactive">Inactive</button>
       </div>
-      <input class="form-input" placeholder="Search name, email, phone, company..." style="width:300px" oninput="filterUsers(this.value)">
+      <div style="display:flex;gap:6px;align-items:center">
+        <input class="form-input" id="userSearchInput" placeholder="Search name, email, phone, company..." style="width:300px" oninput="filterUsers(this.value)">
+        <button class="btn btn-sm btn-outline" onclick="toggleUserAdvFilter()" id="userAdvFilterBtn"><i class="bi bi-funnel"></i> Filters</button>
+      </div>
     </div>
-    <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>User</th><th>Email</th><th>Company</th><th>Phone</th><th>Shipments</th><th>Total Spent</th><th>Status</th><th>Actions</th></tr></thead><tbody id="usersTableBody"></tbody></table></div>
+    <!-- Advanced Filter Bar -->
+    <div id="userAdvFilterBar" style="display:none;padding:12px 18px;background:var(--bg-muted);border-bottom:1px solid var(--border);animation:fadeUp .2s ease">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr auto;gap:8px;align-items:end">
+        <div class="form-field" style="margin:0"><label style="font-size:9px;margin-bottom:3px">Company</label><input class="form-input" id="ufCompany" placeholder="Any" style="padding:5px 8px;font-size:11px" oninput="applyUserAdvFilter()"></div>
+        <div class="form-field" style="margin:0"><label style="font-size:9px;margin-bottom:3px">Plan</label><select class="form-input" id="ufPlan" style="padding:5px 8px;font-size:11px" onchange="applyUserAdvFilter()"><option value="">All Plans</option><option>Enterprise</option><option>Business</option><option>Starter</option></select></div>
+        <div class="form-field" style="margin:0"><label style="font-size:9px;margin-bottom:3px">Min Shipments</label><input class="form-input" type="number" id="ufMinShip" placeholder="0" style="padding:5px 8px;font-size:11px" oninput="applyUserAdvFilter()"></div>
+        <div class="form-field" style="margin:0"><label style="font-size:9px;margin-bottom:3px">Min Spent ($)</label><input class="form-input" type="number" id="ufMinSpent" placeholder="0" style="padding:5px 8px;font-size:11px" oninput="applyUserAdvFilter()"></div>
+        <div class="form-field" style="margin:0"><label style="font-size:9px;margin-bottom:3px">Country</label><select class="form-input" id="ufCountry" style="padding:5px 8px;font-size:11px" onchange="applyUserAdvFilter()"><option value="">All</option><option>Canada</option><option>United States</option><option>France</option></select></div>
+        <div class="form-field" style="margin:0"><label style="font-size:9px;margin-bottom:3px">Province</label><input class="form-input" id="ufProvince" placeholder="Any" style="padding:5px 8px;font-size:11px" oninput="applyUserAdvFilter()"></div>
+        <button class="btn btn-sm btn-outline" onclick="clearUserAdvFilter()" style="padding:5px 8px;font-size:11px"><i class="bi bi-x-circle"></i> Clear</button>
+      </div>
+      <div style="margin-top:8px;font-size:11px;color:var(--text-muted)" id="userAdvFilterCount"></div>
+    </div>
+    <div style="overflow-x:auto"><table class="data-table"><thead><tr>
+      <th style="cursor:pointer" onclick="sortUsers('name')">User <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortUsers('email')">Email <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortUsers('company')">Company <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortUsers('phone')">Phone <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortUsers('shipments')">Shipments <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortUsers('spent')">Total Spent <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortUsers('status')">Status <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th>Actions</th>
+    </tr></thead><tbody id="usersTableBody"></tbody></table></div>
     <div style="padding:12px 18px;border-top:1px solid var(--border);display:flex;justify-content:space-between"><span style="font-size:12px;color:var(--text-muted)" id="usersShowing">Showing 24 users</span></div>
   </div>
 </div>
@@ -1260,9 +1285,21 @@ document.querySelectorAll('.nav-item[data-page]').forEach(n => n.addEventListene
 
 /* ═══════ USER MANAGEMENT ═══════ */
 function renderUsers(filter, search) {
-  let filtered = USERS;
+  let filtered = USERS.slice();
   if (filter && filter !== 'all') filtered = filtered.filter(u => u.status === filter);
   if (search) { const q = search.toLowerCase(); filtered = filtered.filter(u => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || (u.company||'').toLowerCase().includes(q) || (u.phone||'').replace(/[\s()-]/g,'').includes(q.replace(/[\s()-]/g,'')) || (u.phone||'').toLowerCase().includes(q) || (u.city||'').toLowerCase().includes(q) || (u.postal||'').toLowerCase().includes(q.replace(/\s/g,''))); }
+  // Advanced filters
+  var af = getAdvFilters();
+  if(af.company){var cq=af.company.toLowerCase();filtered=filtered.filter(u=>(u.company||'').toLowerCase().includes(cq));}
+  if(af.plan)filtered=filtered.filter(u=>u.plan===af.plan);
+  if(af.minShip>0)filtered=filtered.filter(u=>u.shipments>=af.minShip);
+  if(af.minSpent>0)filtered=filtered.filter(u=>u.spent>=af.minSpent);
+  if(af.country)filtered=filtered.filter(u=>u.country===af.country);
+  if(af.province){var pq=af.province.toLowerCase();filtered=filtered.filter(u=>(u.province||'').toLowerCase().includes(pq)||(u.city||'').toLowerCase().includes(pq));}
+  // Sort
+  if(_userSortCol){filtered.sort(function(a,b){var va,vb;switch(_userSortCol){case 'name':va=a.name.toLowerCase();vb=b.name.toLowerCase();break;case 'email':va=a.email.toLowerCase();vb=b.email.toLowerCase();break;case 'company':va=(a.company||'').toLowerCase();vb=(b.company||'').toLowerCase();break;case 'phone':va=a.phone;vb=b.phone;break;case 'shipments':return _userSortAsc?a.shipments-b.shipments:b.shipments-a.shipments;case 'spent':return _userSortAsc?a.spent-b.spent:b.spent-a.spent;case 'status':va=a.status;vb=b.status;break;default:va='';vb='';}if(typeof va==='string')return _userSortAsc?va.localeCompare(vb):vb.localeCompare(va);return 0;});}
+  // Update filter count
+  var fc=document.getElementById('userAdvFilterCount');if(fc)fc.textContent='Showing '+filtered.length+' of '+USERS.length+' users'+(af.company||af.plan||af.minShip||af.minSpent||af.country||af.province?' (filtered)':'');
   document.getElementById('usersTableBody').innerHTML = filtered.map(u => `<tr data-status="${u.status}">
     <td><div style="display:flex;align-items:center;gap:10px"><div onclick="event.stopPropagation();viewUser(${u.id})" style="width:32px;height:32px;border-radius:8px;background:${u.status==='blocked'?'var(--danger-bg)':u.status==='inactive'?'var(--bg-muted)':'var(--info-bg)'};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:${u.status==='blocked'?'var(--danger)':u.status==='inactive'?'var(--text-muted)':'var(--info)'};flex-shrink:0;cursor:pointer">${u.name.split(' ').map(n=>n[0]).join('')}</div><div><div style="font-weight:600;color:var(--accent);font-size:13px;cursor:pointer;text-decoration:none" onclick="event.stopPropagation();viewUser(${u.id})" onmouseenter="this.style.textDecoration='underline'" onmouseleave="this.style.textDecoration='none'">${u.name}</div><div style="font-size:11px;color:var(--text-muted)">${u.plan} Plan</div></div></div></td>
     <td style="font-size:12px">${u.email}</td>
@@ -1288,6 +1325,15 @@ document.querySelectorAll('.user-filter').forEach(b => b.addEventListener('click
   renderUsers(currentFilter);
 }));
 function filterUsers(q) { renderUsers(currentFilter, q); }
+
+/* USER ADVANCED FILTERS & SORTING */
+function toggleUserAdvFilter(){var bar=document.getElementById('userAdvFilterBar');var isHidden=bar.style.display==='none';bar.style.display=isHidden?'block':'none';var btn=document.getElementById('userAdvFilterBtn');btn.classList.toggle('btn-primary',isHidden);btn.classList.toggle('btn-outline',!isHidden);}
+function getAdvFilters(){return{company:(document.getElementById('ufCompany')||{}).value||'',plan:(document.getElementById('ufPlan')||{}).value||'',minShip:parseFloat((document.getElementById('ufMinShip')||{}).value)||0,minSpent:parseFloat((document.getElementById('ufMinSpent')||{}).value)||0,country:(document.getElementById('ufCountry')||{}).value||'',province:(document.getElementById('ufProvince')||{}).value||''};}
+function applyUserAdvFilter(){var q=(document.getElementById('userSearchInput')||{}).value||'';renderUsers(currentFilter,q);}
+function clearUserAdvFilter(){['ufCompany','ufProvince'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});['ufPlan','ufCountry'].forEach(function(id){var el=document.getElementById(id);if(el)el.selectedIndex=0;});['ufMinShip','ufMinSpent'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});applyUserAdvFilter();}
+
+var _userSortCol='';var _userSortAsc=true;
+function sortUsers(col){if(_userSortCol===col){_userSortAsc=!_userSortAsc;}else{_userSortCol=col;_userSortAsc=true;}var q=(document.getElementById('userSearchInput')||{}).value||'';renderUsers(currentFilter,q);}
 
 function viewUser(id) {
   const u = USERS.find(x=>x.id===id);if(!u) return;
@@ -1584,8 +1630,8 @@ function viewShipment(shpId, userId, carrier, route, service, status, cost, date
         <div style="font-size:13px;color:var(--text-muted);margin-top:4px">${from} → ${to} · ${carrier} ${service} · ${date}</div>
       </div>
       <div style="display:flex;gap:6px;align-items:center">
-        <button class="btn btn-sm btn-primary"><i class="bi bi-printer"></i> Print Label</button>
-        <button class="btn btn-sm btn-outline"><i class="bi bi-download"></i> PDF</button>
+        <button class="btn btn-sm btn-primary" onclick="printLabel('${shpId}','${carrier}','${tracking}')"><i class="bi bi-printer"></i> Print Label</button>
+        <button class="btn btn-sm btn-outline" onclick="downloadShipmentPDF('${shpId}','${u.name}','${carrier}','${tracking}','${total}')"><i class="bi bi-download"></i> PDF</button>
         <button onclick="closeShpDetail()" style="background:none;border:none;font-size:20px;color:var(--text-muted);cursor:pointer;margin-left:8px"><i class="bi bi-x-lg"></i></button>
       </div>
     </div>
@@ -1677,14 +1723,14 @@ function viewShipment(shpId, userId, carrier, route, service, status, cost, date
       <!-- Admin Actions -->
       <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-top:1px solid var(--border)">
         <div style="display:flex;gap:8px">
-          <button class="btn btn-sm btn-outline"><i class="bi bi-printer"></i> Reprint Label</button>
-          <button class="btn btn-sm btn-outline"><i class="bi bi-envelope"></i> Email Tracking to User</button>
-          <button class="btn btn-sm btn-outline"><i class="bi bi-telephone"></i> Contact Carrier</button>
+          <button class="btn btn-sm btn-outline" onclick="printLabel('${shpId}','${carrier}','${tracking}')"><i class="bi bi-printer"></i> Reprint Label</button>
+          <button class="btn btn-sm btn-outline" onclick="emailTracking('${shpId}','${tracking}','${u.name}','${u.email}')"><i class="bi bi-envelope"></i> Email Tracking to User</button>
+          <button class="btn btn-sm btn-outline" onclick="contactCarrier('${carrier}','${shpId}')"><i class="bi bi-telephone"></i> Contact Carrier</button>
           <button class="btn btn-sm btn-outline" onclick="_shpSourceUserId=null;closeShpDetail();viewUser(${userId})"><i class="bi bi-person"></i> View User Profile</button>
         </div>
         <div style="display:flex;gap:8px">
-          ${!isDelivered?'<button class="btn btn-sm btn-warning"><i class="bi bi-x-circle"></i> Void Label</button>':''}
-          <button class="btn btn-sm btn-danger"><i class="bi bi-arrow-return-left"></i> Issue Refund</button>
+          ${!isDelivered?'<button class="btn btn-sm btn-warning" onclick="voidLabel(\''+shpId+'\',\''+u.name.replace(/'/g,"\\'")+'\')"><i class="bi bi-x-circle"></i> Void Label</button>':''}
+          <button class="btn btn-sm btn-danger" onclick="issueShipRefund('${shpId}','${u.name}','${total}')"><i class="bi bi-arrow-return-left"></i> Issue Refund</button>
         </div>
       </div>
     </div>`;
@@ -1755,8 +1801,8 @@ function viewInvoice(invId, userId, date, amount, method) {
         <div style="font-size:13px;color:var(--text-muted);margin-top:4px">Invoice for ${u.name} · ${u.company||'Individual'} · ${date}</div>
       </div>
       <div style="display:flex;gap:6px;align-items:center">
-        <button class="btn btn-sm btn-primary"><i class="bi bi-download"></i> Download PDF</button>
-        <button class="btn btn-sm btn-outline"><i class="bi bi-envelope"></i> Email to User</button>
+        <button class="btn btn-sm btn-primary" onclick="downloadReceipt('${invId}','${u.name}')"><i class="bi bi-download"></i> Download PDF</button>
+        <button class="btn btn-sm btn-outline" onclick="emailInvoice('${invId}','${u.name}','${u.email}','${total}')"><i class="bi bi-envelope"></i> Email to User</button>
         <button onclick="closeInvDetail()" style="background:none;border:none;font-size:20px;color:var(--text-muted);cursor:pointer;margin-left:8px"><i class="bi bi-x-lg"></i></button>
       </div>
     </div>
@@ -1804,13 +1850,13 @@ function viewInvoice(invId, userId, date, amount, method) {
       <!-- Admin Actions -->
       <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-top:1px solid var(--border)">
         <div style="display:flex;gap:8px">
-          <button class="btn btn-sm btn-outline"><i class="bi bi-printer"></i> Print</button>
-          <button class="btn btn-sm btn-outline"><i class="bi bi-pencil"></i> Edit Invoice</button>
+          <button class="btn btn-sm btn-outline" onclick="printInvoice('${invId}')"><i class="bi bi-printer"></i> Print</button>
+          <button class="btn btn-sm btn-outline" onclick="editInvoice('${invId}')"><i class="bi bi-pencil"></i> Edit Invoice</button>
           <button class="btn btn-sm btn-outline" onclick="_invSourceUserId=null;closeInvDetail();viewUser(${userId})"><i class="bi bi-person"></i> View User</button>
         </div>
         <div style="display:flex;gap:8px">
-          <button class="btn btn-sm btn-outline"><i class="bi bi-cash"></i> Add Credit</button>
-          <button class="btn btn-sm btn-danger"><i class="bi bi-arrow-return-left"></i> Issue Refund</button>
+          <button class="btn btn-sm btn-outline" onclick="addInvCredit('${invId}','${u.name}')"><i class="bi bi-cash"></i> Add Credit</button>
+          <button class="btn btn-sm btn-danger" onclick="issueInvRefund('${invId}','${u.name}','${total}')"><i class="bi bi-arrow-return-left"></i> Issue Refund</button>
         </div>
       </div>
     </div>`;
@@ -2157,6 +2203,75 @@ function quickCustomRate(id){
   showQuickActionModal(id, html);
 }
 function submitCustomRate(id){var u=USERS.find(function(x){return x.id===id;});var markup=document.getElementById('qaRateMarkup').value;if(!markup||parseFloat(markup)<0){alert('Please enter a valid markup percentage.');return;}addAuditEntry('Set custom markup '+markup+'%',u?u.name:'');alert('Custom markup of '+markup+'% saved for '+(u?u.name:'user'));closeQuickAction();}
+
+/* INVOICE ACTION FUNCTIONS */
+function emailInvoice(invId, userName, email, total) {
+  addAuditEntry('Emailed invoice '+invId+' ($'+total+')', userName);
+  alert('Invoice '+invId+' emailed to '+userName+' ('+email+')');
+}
+function printInvoice(invId) {
+  addAuditEntry('Printed invoice '+invId, '');
+  window.print();
+}
+function editInvoice(invId) {
+  var newAmt = prompt('Edit invoice '+invId+' amount:', '');
+  if (newAmt) {
+    addAuditEntry('Edited invoice '+invId+' — new amount: $'+newAmt, '');
+    alert('Invoice '+invId+' updated to $'+newAmt);
+  }
+}
+function addInvCredit(invId, userName) {
+  var amt = prompt('Add credit to '+userName+' for '+invId+':', '');
+  if (amt && parseFloat(amt) > 0) {
+    addAuditEntry('Added credit $'+amt+' on '+invId, userName);
+    alert('Credit of $'+amt+' applied to '+userName+'\'s account.');
+  }
+}
+function issueInvRefund(invId, userName, total) {
+  if (confirm('Issue refund of $'+total+' for '+invId+' to '+userName+'?')) {
+    addAuditEntry('Issued refund $'+total+' for '+invId, userName);
+    alert('Refund of $'+total+' initiated for '+invId+'.\n\nRefund will appear within 5–10 business days.');
+  }
+}
+
+/* SHIPMENT ACTION FUNCTIONS */
+function printLabel(shpId, carrier, tracking) {
+  addAuditEntry('Printed label '+shpId, carrier+' — '+tracking);
+  var w = window.open('','_blank','width=400,height=600');
+  w.document.write('<html><head><title>Shipping Label — '+shpId+'</title><style>body{font-family:Arial,sans-serif;padding:30px;text-align:center}h1{font-size:18px}p{font-size:13px;color:#555}.barcode{font-family:monospace;font-size:24px;letter-spacing:4px;margin:20px 0;padding:15px;border:2px solid #000}.logo{font-size:24px;font-weight:bold;color:#dc2626;margin-bottom:10px}.box{border:2px solid #000;padding:20px;margin:15px 0;text-align:left}</style></head><body>');
+  w.document.write('<div class="logo">MesColis.ca</div>');
+  w.document.write('<h1>'+carrier+' — '+shpId+'</h1>');
+  w.document.write('<div class="barcode">'+tracking+'</div>');
+  w.document.write('<p>Print this label and attach to your package.</p>');
+  w.document.write('<button onclick="window.print()" style="padding:10px 30px;font-size:14px;cursor:pointer;background:#dc2626;color:#fff;border:none;border-radius:6px">Print</button>');
+  w.document.write('</body></html>');
+  w.document.close();
+}
+function downloadShipmentPDF(shpId, userName, carrier, tracking, total) {
+  addAuditEntry('Downloaded shipment PDF '+shpId, userName);
+  alert('Downloading PDF for '+shpId+'...\n\nShipment: '+shpId+'\nCarrier: '+carrier+'\nTracking: '+tracking+'\nTotal: $'+total+'\n\nIn production this generates a real PDF.');
+}
+function emailTracking(shpId, tracking, userName, userEmail) {
+  addAuditEntry('Emailed tracking info '+shpId, userName);
+  alert('Tracking email sent to '+userName+' ('+userEmail+')\n\nShipment: '+shpId+'\nTracking #: '+tracking);
+}
+function contactCarrier(carrier, shpId) {
+  var phones = {'Canada Post':'1-866-607-6301','Purolator':'1-888-744-7123','UPS':'1-800-742-5877','FedEx':'1-800-463-3339','DHL':'1-800-225-5345'};
+  alert('Contact '+carrier+' Support\n\nPhone: '+(phones[carrier]||'N/A')+'\nReference: '+shpId+'\n\nHave your shipment ID and tracking number ready.');
+}
+function voidLabel(shpId, userName) {
+  if (confirm('Void shipping label for '+shpId+'?\n\nThis will cancel the shipment and may trigger a refund to '+userName+'.')) {
+    addAuditEntry('Voided label '+shpId, userName);
+    alert('Label '+shpId+' has been voided. Refund will be processed within 3–5 business days.');
+    closeShpDetail();
+  }
+}
+function issueShipRefund(shpId, userName, total) {
+  if (confirm('Issue refund of $'+total+' for '+shpId+' to '+userName+'?')) {
+    addAuditEntry('Issued refund $'+total+' for '+shpId, userName);
+    alert('Refund of $'+total+' initiated for '+shpId+'.\n\nRefund will appear on the payment method within 5–10 business days.');
+  }
+}
 
 var _emailSourceUserId = null;
 function openEmail(email, name, sourceUserId) {
