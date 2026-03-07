@@ -717,6 +717,7 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
     <a class="nav-item" data-page="address-book" title="Address Book"><i class="bi bi-pin-map"></i><span>Address Book</span></a>
     <a class="nav-item" data-page="invoices" title="Invoices"><i class="bi bi-receipt"></i><span>Invoices</span></a>
     <a class="nav-item" data-page="reports" title="Reports"><i class="bi bi-bar-chart-line"></i><span>Reports</span></a>
+    <a class="nav-item" data-page="payment-settings" title="Payment Settings"><i class="bi bi-credit-card"></i><span>Payment Settings</span></a>
     <div class="nav-section-title">Settings</div>
     <a class="nav-item" data-page="settings" title="Settings"><i class="bi bi-gear"></i><span>Settings</span></a>
     <a class="nav-item" data-page="integrations" title="Integrations"><i class="bi bi-plug"></i><span>Integrations</span></a>
@@ -1566,6 +1567,136 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
   </div>
 </div>
 
+<!-- PAGE: PAYMENT SETTINGS -->
+<div class="page-section" id="page-payment-settings">
+  <div class="page-header"><div><h1>Payment Settings</h1><div class="page-header-sub">Manage your payment methods and billing preferences</div></div></div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <!-- Saved Cards -->
+    <div class="card">
+      <div class="card-header"><h3><i class="bi bi-credit-card"></i> Saved Payment Methods</h3></div>
+      <div style="padding:18px">
+        <div id="savedCardsContainer">
+          <div style="border:2px solid var(--accent);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px;background:var(--accent-light)">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="width:48px;height:32px;border-radius:6px;background:linear-gradient(135deg,#1a1f71,#f7b600);display:flex;align-items:center;justify-content:center"><i class="bi bi-credit-card" style="color:#fff;font-size:14px"></i></div>
+                <div><div style="font-size:14px;font-weight:700;color:var(--text-heading)">Visa ••••4242</div><div style="font-size:11px;color:var(--text-muted)">Expires 09/28</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:10px;font-weight:600;background:var(--accent);color:#fff;padding:2px 8px;border-radius:10px">Default</span>
+                <button class="btn btn-outline btn-sm" style="padding:4px 8px" onclick="alert('Card removed')"><i class="bi bi-trash3" style="font-size:11px"></i></button>
+              </div>
+            </div>
+          </div>
+          <div style="border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="width:48px;height:32px;border-radius:6px;background:linear-gradient(135deg,#eb001b,#f79e1b);display:flex;align-items:center;justify-content:center"><i class="bi bi-credit-card" style="color:#fff;font-size:14px"></i></div>
+                <div><div style="font-size:14px;font-weight:700;color:var(--text-heading)">Mastercard ••••8891</div><div style="font-size:11px;color:var(--text-muted)">Expires 03/27</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <button class="btn btn-outline btn-sm" style="padding:4px 8px;font-size:10px" onclick="alert('Set as default')">Set Default</button>
+                <button class="btn btn-outline btn-sm" style="padding:4px 8px" onclick="alert('Card removed')"><i class="bi bi-trash3" style="font-size:11px"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-outline" style="width:100%;justify-content:center;margin-top:8px" onclick="toggleAddCardForm()"><i class="bi bi-plus-lg"></i> Add New Card</button>
+        <div id="addCardFormPS" style="display:none;margin-top:16px;border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px">
+          <div style="display:grid;gap:10px">
+            <div class="form-field" style="margin:0"><label style="font-size:10px">Card Number</label><input class="form-input" placeholder="4242 4242 4242 4242"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div class="form-field" style="margin:0"><label style="font-size:10px">Expiry</label><input class="form-input" placeholder="MM/YY"></div>
+              <div class="form-field" style="margin:0"><label style="font-size:10px">CVC</label><input class="form-input" placeholder="123"></div>
+            </div>
+            <div class="form-field" style="margin:0"><label style="font-size:10px">Cardholder Name</label><input class="form-input" placeholder="David Kosal"></div>
+            <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-outline" onclick="document.getElementById('addCardFormPS').style.display='none'">Cancel</button><button class="btn btn-primary" onclick="alert('Card added successfully!');document.getElementById('addCardFormPS').style.display='none'"><i class="bi bi-check-lg"></i> Add Card</button></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:10px;font-size:11px;color:var(--text-muted)"><i class="bi bi-shield-lock" style="color:var(--success)"></i> Secured by Stripe · 256-bit SSL encryption</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alternative Payment Methods -->
+    <div class="card">
+      <div class="card-header"><h3><i class="bi bi-wallet2"></i> Alternative Payment Methods</h3></div>
+      <div style="padding:18px;display:flex;flex-direction:column;gap:12px">
+        <div style="border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#635bff,#818cf8);display:flex;align-items:center;justify-content:center"><i class="bi bi-box-arrow-up-right" style="color:#fff;font-size:16px"></i></div>
+            <div><div style="font-size:14px;font-weight:700;color:var(--text-heading)">Stripe Link</div><div style="font-size:11px;color:var(--text-muted)">One-click checkout</div></div>
+          </div>
+          <span class="badge badge-active">Connected</span>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:40px;height:40px;border-radius:10px;background:#ffc439;display:flex;align-items:center;justify-content:center"><i class="bi bi-paypal" style="color:#003087;font-size:16px"></i></div>
+            <div><div style="font-size:14px;font-weight:700;color:var(--text-heading)">PayPal</div><div style="font-size:11px;color:var(--text-muted)">david@mescolis.ca</div></div>
+          </div>
+          <span class="badge badge-active">Connected</span>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:40px;height:40px;border-radius:10px;background:#ffcc00;display:flex;align-items:center;justify-content:center"><i class="bi bi-bank" style="color:#1a1a1a;font-size:16px"></i></div>
+            <div><div style="font-size:14px;font-weight:700;color:var(--text-heading)">Interac e-Transfer</div><div style="font-size:11px;color:var(--text-muted)">Direct bank payment (Canada)</div></div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="alert('Interac e-Transfer connected!')">Connect</button>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:40px;height:40px;border-radius:10px;background:#2d2d2d;display:flex;align-items:center;justify-content:center"><i class="bi bi-currency-bitcoin" style="color:#f7931a;font-size:16px"></i></div>
+            <div><div style="font-size:14px;font-weight:700;color:var(--text-heading)">Cryptocurrency</div><div style="font-size:11px;color:var(--text-muted)">BTC, ETH, USDC via Coinbase Commerce</div></div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="alert('Crypto payments enabled!')">Enable</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Billing Preferences -->
+    <div class="card">
+      <div class="card-header"><h3><i class="bi bi-sliders"></i> Billing Preferences</h3></div>
+      <div style="padding:18px">
+        <div class="toggle-row"><span>Auto-pay invoices</span><div class="toggle-switch on" onclick="this.classList.toggle('on');this.classList.toggle('off')"><div class="toggle-knob"></div></div></div>
+        <div class="toggle-row"><span>Email invoice receipts</span><div class="toggle-switch on" onclick="this.classList.toggle('on');this.classList.toggle('off')"><div class="toggle-knob"></div></div></div>
+        <div class="toggle-row"><span>Paperless billing</span><div class="toggle-switch on" onclick="this.classList.toggle('on');this.classList.toggle('off')"><div class="toggle-knob"></div></div></div>
+        <div class="toggle-row"><span>Low balance alerts ($50)</span><div class="toggle-switch off" onclick="this.classList.toggle('on');this.classList.toggle('off')"><div class="toggle-knob"></div></div></div>
+        <div style="margin-top:16px">
+          <div class="form-field"><label>Billing Email</label><input class="form-input" value="david@mescolis.ca"></div>
+          <div class="form-field"><label>Invoice Currency</label><select class="form-input"><option selected>CAD ($)</option><option>USD ($)</option><option>EUR (€)</option></select></div>
+          <div class="form-field"><label>Tax ID (GST/QST)</label><input class="form-input" value="123456789 RT0001" placeholder="Enter your tax ID"></div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:12px" onclick="alert('Billing preferences saved!')"><i class="bi bi-check-lg"></i> Save Preferences</button>
+      </div>
+    </div>
+
+    <!-- Payment History Summary -->
+    <div class="card">
+      <div class="card-header"><h3><i class="bi bi-clock-history"></i> Recent Transactions</h3></div>
+      <div style="padding:18px">
+        <div style="display:flex;flex-direction:column;gap:10px" id="recentTxnContainer">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px;border:1px solid var(--border);border-radius:var(--radius-md)">
+            <div style="display:flex;align-items:center;gap:10px"><i class="bi bi-check-circle-fill" style="color:var(--success)"></i><div><div style="font-size:13px;font-weight:600">INV-2026-0027 — $512.80</div><div style="font-size:11px;color:var(--text-muted)">Feb 15, 2026 · Visa ••••4242</div></div></div>
+            <span class="badge badge-active">Paid</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px;border:1px solid var(--border);border-radius:var(--radius-md)">
+            <div style="display:flex;align-items:center;gap:10px"><i class="bi bi-check-circle-fill" style="color:var(--success)"></i><div><div style="font-size:13px;font-weight:600">INV-2026-0019 — $289.25</div><div style="font-size:11px;color:var(--text-muted)">Jan 31, 2026 · Visa ••••4242</div></div></div>
+            <span class="badge badge-active">Paid</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px;border:1px solid var(--border);border-radius:var(--radius-md)">
+            <div style="display:flex;align-items:center;gap:10px"><i class="bi bi-check-circle-fill" style="color:var(--success)"></i><div><div style="font-size:13px;font-weight:600">INV-2026-0012 — $623.10</div><div style="font-size:11px;color:var(--text-muted)">Jan 15, 2026 · Mastercard ••••8891</div></div></div>
+            <span class="badge badge-active">Paid</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px;border:1px solid var(--warning-bg);border-radius:var(--radius-md)">
+            <div style="display:flex;align-items:center;gap:10px"><i class="bi bi-exclamation-circle-fill" style="color:var(--warning)"></i><div><div style="font-size:13px;font-weight:600">INV-2026-0034 — $347.50</div><div style="font-size:11px;color:var(--text-muted)">Due Mar 15, 2026</div></div></div>
+            <button class="btn btn-primary btn-sm" onclick="openPaymentModal('INV-2026-0034','$347.50')"><i class="bi bi-credit-card"></i> Pay</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- PAGE: SETTINGS -->
 <div class="page-section" id="page-settings">
   <div class="page-header"><div><h1>Settings</h1><div class="page-header-sub">Manage your account preferences and configurations</div></div></div>
@@ -1687,7 +1818,7 @@ function openPaymentModal(invId,amount){
   html+='<div style="display:flex;align-items:center;gap:12px"><div style="width:40px;height:40px;border-radius:10px;background:#2d2d2d;display:flex;align-items:center;justify-content:center"><i class="bi bi-currency-bitcoin" style="color:#f7931a;font-size:18px"></i></div><div><div style="font-size:14px;font-weight:700;color:var(--text-heading)">Cryptocurrency</div><div style="font-size:11px;color:var(--text-muted)">BTC, ETH, USDC via Coinbase Commerce</div></div></div></div>';
   html+='</div>';
   // Pay button
-  html+='<button class="btn btn-primary" id="payInvoiceBtn" style="width:100%;justify-content:center;padding:14px;font-size:15px" onclick="processPayment(\''+invId+'\',\''+amount+'\')"><i class="bi bi-lock"></i> Pay '+amount+' Securely</button>';
+  html+='<button class="btn btn-primary" id="payInvoiceBtn" style="width:100%;justify-content:center;padding:14px;font-size:15px" onclick="processPayment(&quot;'+invId+'&quot;,&quot;'+amount+'&quot;)"><i class="bi bi-lock"></i> Pay '+amount+' Securely</button>';
   html+='<div style="text-align:center;margin-top:10px;font-size:11px;color:var(--text-muted)"><i class="bi bi-shield-check" style="margin-right:4px"></i> PCI-DSS compliant &middot; Your payment information is encrypted</div></div>';
   document.getElementById('paymentModalBox').innerHTML=html;
   document.getElementById('paymentModal').style.display='flex';
@@ -1705,11 +1836,13 @@ function processPayment(invId,amount){
   document.getElementById('paymentModal').style.display='none';
   // Re-render invoices
   renderInvoicesTable();
-  alert('Payment successful!\\n\\n'+amount+' paid via '+(methods[_selectedPayMethod]||'Credit Card')+'\\n\\nInvoice '+invId+' is now marked as Paid.\\nReceipt sent to david@mescolis.ca');
+  alert('Payment successful!\n\n'+amount+' paid via '+(methods[_selectedPayMethod]||'Credit Card')+'\n\nInvoice '+invId+' is now marked as Paid.\nReceipt sent to david@mescolis.ca');
 }
 function renderInvoicesTable(){
   document.getElementById('invoicesBody').innerHTML = INVOICES.map(function(inv){return '<tr data-status="'+inv.status+'"><td><span class="cell-id" style="cursor:pointer" onclick="event.stopPropagation();viewInvoiceDetail(\''+inv.id+'\')">'+inv.id+'</span></td><td class="cell-date">'+inv.date+'</td><td style="font-weight:600;color:var(--text-heading)">'+inv.shipments+'</td><td><span class="cell-cost">'+inv.amount+'</span></td><td class="cell-date">'+inv.due+'</td><td>'+badge(inv.status)+'</td><td><div style="display:flex;gap:4px"><button class="btn btn-outline btn-sm" onclick="event.stopPropagation();downloadInvoicePDF(\''+inv.id+'\',\''+inv.amount+'\')"><i class="bi bi-download"></i> PDF</button>'+(inv.status==='unpaid'?'<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openPaymentModal(\''+inv.id+'\',\''+inv.amount+'\')"><i class="bi bi-credit-card"></i> Pay</button>':'')+'</div></td></tr>';}).join('');
 }
+
+function toggleAddCardForm(){var f=document.getElementById('addCardFormPS');f.style.display=f.style.display==='none'?'block':'none';}
 
 /* CARRIER CONFIGURE & STATISTICS */
 function closeCarrierModal(){document.getElementById('carrierModal').style.display='none';}
@@ -1761,7 +1894,8 @@ function openCarrierStats(id, label, shipments, avgCost, share, rating){
 
 /* ═══════ UNIVERSAL TABLE FILTER/SORT ═══════ */
 function filterTable(tbodyId,status,btn,countId){
-  btn.closest('.table-tabs,.table-controls').querySelectorAll('.table-tab').forEach(function(t){t.classList.remove('active');});
+  var parent=btn.closest('.table-tabs,.table-controls')||btn.parentNode;
+  parent.querySelectorAll('.table-tab').forEach(function(t){t.classList.remove('active');});
   btn.classList.add('active');
   var rows=document.getElementById(tbodyId).querySelectorAll('tr');
   var shown=0;
@@ -1832,7 +1966,7 @@ function exportDashboardCSV(){
 var _dashShipFilter='all';
 function filterDashShipments(status,btn){
   _dashShipFilter=status;
-  btn.closest('.table-tabs').querySelectorAll('.table-tab').forEach(function(t){t.classList.remove('active');});
+  (btn.closest('.table-tabs')||btn.parentNode).querySelectorAll('.table-tab').forEach(function(t){t.classList.remove('active');});
   btn.classList.add('active');
   var rows=document.getElementById('dashboardShipmentsBody').querySelectorAll('tr');
   var shown=0;
@@ -1850,7 +1984,7 @@ function filterDashShipments(status,btn){
 var _allShipFilter='all';
 function filterAllShipments(status,btn){
   _allShipFilter=status;
-  btn.closest('.table-tabs').querySelectorAll('.table-tab').forEach(function(t){t.classList.remove('active');});
+  (btn.closest('.table-tabs')||btn.parentNode).querySelectorAll('.table-tab').forEach(function(t){t.classList.remove('active');});
   btn.classList.add('active');
   renderAllShipments();
 }
@@ -3135,7 +3269,7 @@ function renderShipmentRow(s, withRecipient) {
   // Address book
   renderAddressGrid();
   // Invoices
-  document.getElementById('invoicesBody').innerHTML = INVOICES.map(function(inv){return '<tr data-status="'+inv.status+'"><td><span class="cell-id" style="cursor:pointer" onclick="event.stopPropagation();viewInvoiceDetail(\x27'+inv.id+'\x27)">'+inv.id+'</span></td><td class="cell-date">'+inv.date+'</td><td style="font-weight:600;color:var(--text-heading)">'+inv.shipments+'</td><td><span class="cell-cost">'+inv.amount+'</span></td><td class="cell-date">'+inv.due+'</td><td>'+badge(inv.status)+'</td><td><div style="display:flex;gap:4px"><button class="btn btn-outline btn-sm" onclick="event.stopPropagation();downloadInvoicePDF(\x27'+inv.id+'\x27,\x27'+inv.amount+'\x27)"><i class="bi bi-download"></i> PDF</button>'+(inv.status==='unpaid'?'<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openPaymentModal(\x27'+inv.id+'\x27,\x27'+inv.amount+'\x27)"><i class="bi bi-credit-card"></i> Pay</button>':'')+'</div></td></tr>';}).join('');
+  renderInvoicesTable();
   // Quote rates
   document.getElementById('quoteRatesBody').innerHTML = QUOTES.sort((a,b)=>a.price-b.price).map(q => `<tr><td><div class="cell-carrier">${ci(q.carrier)}${carrier(q.carrier).label}</div></td><td style="font-weight:500">${q.service}</td><td style="font-size:12px;color:var(--text-secondary)">${q.days}</td><td><span style="font-family:var(--mono);font-weight:700;color:var(--accent);font-size:15px">$${q.price.toFixed(2)}</span></td><td><button class="btn btn-primary btn-sm" onclick="navigateTo('create-shipment')">Ship Now</button></td></tr>`).join('');
   // Carrier distribution
