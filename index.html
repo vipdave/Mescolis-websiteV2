@@ -1423,12 +1423,12 @@ document.addEventListener('keydown',(e)=>{if(e.key==='Escape'&&slModal.classList
 </script>
 <!-- MESCOLIS AI CHATBOT WIDGET -->
 <style>
-.chatbot-fab{position:fixed;bottom:40px;right:24px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#F09030,#D87A1A);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(240,144,48,.4);display:flex;align-items:center;justify-content:center;font-size:24px;z-index:300;transition:all .3s ease}
+.chatbot-fab{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#F09030,#D87A1A);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(240,144,48,.4);display:flex;align-items:center;justify-content:center;font-size:24px;z-index:300;transition:all .3s ease}
 .chatbot-fab:hover{transform:scale(1.08);box-shadow:0 6px 24px rgba(240,144,48,.5)}
 .chatbot-fab::after{content:"";position:absolute;width:100%;height:100%;border-radius:50%;background:rgba(240,144,48,.3);animation:chatPulse 2s ease infinite}
 @keyframes chatPulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.5);opacity:0}}
 .chatbot-fab .notif-dot{position:absolute;top:2px;right:2px;width:12px;height:12px;background:#3B8BD2;border-radius:50%;border:2px solid #fff}
-.chatbot-panel{position:fixed;bottom:108px;right:24px;width:380px;height:540px;background:var(--bg-white,#fff);border-radius:16px;box-shadow:0 12px 48px rgba(27,37,64,.18);z-index:300;display:none;flex-direction:column;overflow:hidden;border:1px solid var(--border,#e1e5eb);animation:chatSlideUp .3s ease}
+.chatbot-panel{position:fixed;bottom:92px;right:24px;width:380px;height:540px;background:var(--bg-white,#fff);border-radius:16px;box-shadow:0 12px 48px rgba(27,37,64,.18);z-index:300;display:none;flex-direction:column;overflow:hidden;border:1px solid var(--border,#e1e5eb);animation:chatSlideUp .3s ease}
 .chatbot-panel.open{display:flex}
 @keyframes chatSlideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 .chat-header{padding:16px 18px;background:linear-gradient(135deg,#3B8BD2,#2A6BAF);color:#fff;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
