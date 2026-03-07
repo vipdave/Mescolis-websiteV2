@@ -804,6 +804,11 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
 
 <!-- MAIN -->
 <div class="main-content">
+<!-- Role View Banner -->
+<div id="roleViewBanner" style="display:none;position:fixed;top:0;left:0;right:0;z-index:999;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;padding:8px 20px;text-align:center;font-size:12px;font-weight:700;align-items:center;justify-content:center;gap:10px">
+  <i class="bi bi-eye-fill"></i> <span id="roleViewBannerText">Viewing as: Admin</span> <span style="font-weight:400;opacity:.8">— Some features are hidden or disabled</span>
+  <button onclick="setRoleView('Super Admin')" style="background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;margin-left:8px;font-family:inherit">Exit Preview</button>
+</div>
 <div class="topbar">
   <div class="topbar-left">
     <button class="hamburger" onclick="openSidebar()"><i class="bi bi-list"></i></button>
@@ -811,7 +816,17 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
   </div>
   <div class="topbar-right">
     <div class="topbar-search" onclick="openAdminSearch()"><i class="bi bi-search" style="font-size:14px"></i><span>Search users, shipments...</span><kbd>⌘K</kbd></div>
-    <span class="admin-badge"><i class="bi bi-shield-lock"></i> Admin</span>
+    <div style="position:relative;display:inline-flex" id="roleViewWrap">
+      <button class="admin-badge" onclick="toggleRoleViewMenu()" style="cursor:pointer;border:none" id="roleViewBadge"><i class="bi bi-shield-lock"></i> <span id="roleViewLabel">Super Admin</span> <i class="bi bi-chevron-down" style="font-size:8px;margin-left:2px"></i></button>
+      <div id="roleViewMenu" style="display:none;position:absolute;top:100%;right:0;margin-top:6px;background:var(--bg-white);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:220px;z-index:9999;overflow:hidden;animation:fadeUp .15s ease">
+        <div style="padding:10px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px"><i class="bi bi-eye" style="margin-right:4px"></i> View as Role</div>
+        <div class="rv-option" style="padding:10px 14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .15s" onclick="setRoleView('Super Admin')" onmouseenter="this.style.background='var(--bg-muted)'" onmouseleave="this.style.background=''"><div><div style="font-size:13px;font-weight:600;color:var(--text-heading)">Super Admin</div><div style="font-size:10px;color:var(--text-muted)">Full access — 63/63 permissions</div></div><i class="bi bi-check-lg rv-check" style="color:var(--accent);font-size:16px"></i></div>
+        <div class="rv-option" style="padding:10px 14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .15s;border-top:1px solid var(--border)" onclick="setRoleView('Admin')" onmouseenter="this.style.background='var(--bg-muted)'" onmouseleave="this.style.background=''"><div><div style="font-size:13px;font-weight:600;color:var(--text-heading)">Admin</div><div style="font-size:10px;color:var(--text-muted)">Most features — no delete/security</div></div><i class="bi bi-check-lg rv-check" style="color:var(--accent);font-size:16px;display:none"></i></div>
+        <div class="rv-option" style="padding:10px 14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .15s;border-top:1px solid var(--border)" onclick="setRoleView('Support Agent')" onmouseenter="this.style.background='var(--bg-muted)'" onmouseleave="this.style.background=''"><div><div style="font-size:13px;font-weight:600;color:var(--text-heading)">Support Agent</div><div style="font-size:10px;color:var(--text-muted)">Tickets, users, basic shipments</div></div><i class="bi bi-check-lg rv-check" style="color:var(--accent);font-size:16px;display:none"></i></div>
+        <div class="rv-option" style="padding:10px 14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .15s;border-top:1px solid var(--border)" onclick="setRoleView('Viewer')" onmouseenter="this.style.background='var(--bg-muted)'" onmouseleave="this.style.background=''"><div><div style="font-size:13px;font-weight:600;color:var(--text-heading)">Viewer</div><div style="font-size:10px;color:var(--text-muted)">Read-only — view all pages</div></div><i class="bi bi-check-lg rv-check" style="color:var(--accent);font-size:16px;display:none"></i></div>
+        <div style="padding:8px 14px;border-top:1px solid var(--border);background:var(--bg-muted)"><div style="font-size:10px;color:var(--text-muted);display:flex;align-items:center;gap:4px"><i class="bi bi-info-circle"></i> Preview mode — no changes are saved</div></div>
+      </div>
+    </div>
     <button class="topbar-btn" onclick="toggleAdminNotif()" id="notifBtn"><i class="bi bi-bell"></i><span class="notification-dot"></span></button>
     <button class="topbar-btn" onclick="navigateTo('settings-admin')"><i class="bi bi-gear"></i></button>
   </div>
@@ -1823,6 +1838,123 @@ function updateCounts() {
 }
 
 /* ═══════ EMAIL ═══════ */
+/* ROLE VIEW / IMPERSONATION */
+var _currentRoleView = 'Super Admin';
+function toggleRoleViewMenu(){var m=document.getElementById('roleViewMenu');m.style.display=m.style.display==='none'?'block':'none';}
+document.addEventListener('click',function(e){var w=document.getElementById('roleViewWrap');if(w&&!w.contains(e.target)){document.getElementById('roleViewMenu').style.display='none';}});
+
+var ROLE_NAV_ACCESS = {
+  'Super Admin': null,
+  'Admin': ['dashboard','users','revenue','shipments-admin','carriers-admin','commissions','promos','tickets','announcements','audit','api-usage','settings-admin'],
+  'Support Agent': ['dashboard','users','shipments-admin','tickets','announcements','audit'],
+  'Viewer': ['dashboard','users','shipments-admin','revenue','carriers-admin','audit','api-usage']
+};
+
+var ROLE_HIDE_ACTIONS = {
+  'Super Admin': [],
+  'Admin': ['roles'],
+  'Support Agent': ['revenue','carriers-admin','commissions','promos','roles','settings-admin','api-usage'],
+  'Viewer': ['commissions','promos','roles','settings-admin','tickets','announcements']
+};
+
+function setRoleView(role) {
+  _currentRoleView = role;
+  document.getElementById('roleViewMenu').style.display = 'none';
+
+  // Update badge
+  var label = document.getElementById('roleViewLabel');
+  if (label) label.textContent = role;
+  var badge = document.getElementById('roleViewBadge');
+  if (badge) {
+    badge.style.background = role==='Super Admin'?'var(--accent)':role==='Admin'?'var(--success)':role==='Support Agent'?'var(--info)':'var(--text-muted)';
+  }
+
+  // Update check marks
+  document.querySelectorAll('.rv-check').forEach(function(c){c.style.display='none';});
+  var opts = document.querySelectorAll('.rv-option');
+  var roleIdx = {'Super Admin':0,'Admin':1,'Support Agent':2,'Viewer':3};
+  if (opts[roleIdx[role]]) opts[roleIdx[role]].querySelector('.rv-check').style.display='';
+
+  // Banner
+  var banner = document.getElementById('roleViewBanner');
+  if (role === 'Super Admin') {
+    banner.style.display = 'none';
+    document.querySelector('.topbar').style.marginTop = '';
+  } else {
+    banner.style.display = 'flex';
+    document.querySelector('.topbar').style.marginTop = '36px';
+    document.getElementById('roleViewBannerText').textContent = 'Viewing as: ' + role;
+  }
+
+  // Nav items — show/hide based on role access
+  var allowedPages = ROLE_NAV_ACCESS[role];
+  document.querySelectorAll('.nav-item[data-page]').forEach(function(item) {
+    var page = item.getAttribute('data-page');
+    if (!allowedPages) {
+      item.style.display = '';
+      item.style.opacity = '';
+    } else if (allowedPages.indexOf(page) >= 0) {
+      item.style.display = '';
+      item.style.opacity = '';
+    } else {
+      item.style.display = '';
+      item.style.opacity = '.25';
+      item.style.pointerEvents = 'none';
+    }
+  });
+  // Restore pointer events for allowed
+  if (allowedPages) {
+    document.querySelectorAll('.nav-item[data-page]').forEach(function(item) {
+      var page = item.getAttribute('data-page');
+      if (allowedPages.indexOf(page) >= 0) {
+        item.style.pointerEvents = '';
+      }
+    });
+  } else {
+    document.querySelectorAll('.nav-item[data-page]').forEach(function(item) {
+      item.style.pointerEvents = '';
+    });
+  }
+
+  // Disable action buttons based on role
+  var perms = getRolePerms(role);
+  var allBtns = document.querySelectorAll('.page-content .btn-primary, .page-content .btn-danger, .page-content .btn-success, .page-content .btn-warning');
+  if (role === 'Super Admin') {
+    allBtns.forEach(function(b){ b.style.opacity=''; b.style.pointerEvents=''; });
+  } else if (role === 'Viewer') {
+    allBtns.forEach(function(b){ b.style.opacity='.35'; b.style.pointerEvents='none'; });
+  } else {
+    allBtns.forEach(function(b){ b.style.opacity=''; b.style.pointerEvents=''; });
+    // Disable specific write actions for Support Agent
+    if (role === 'Support Agent') {
+      document.querySelectorAll('.page-content .btn-danger').forEach(function(b){ b.style.opacity='.35'; b.style.pointerEvents='none'; });
+    }
+  }
+
+  // Export/bulk buttons
+  var exportBtns = document.querySelectorAll('[onclick*="export"], [onclick*="Export"], [onclick*="bulkEmail"]');
+  if (role === 'Viewer') {
+    exportBtns.forEach(function(b){ b.style.opacity='.35'; b.style.pointerEvents='none'; });
+  } else if (role === 'Support Agent') {
+    exportBtns.forEach(function(b){
+      if (b.textContent.includes('Export')) { b.style.opacity='.35'; b.style.pointerEvents='none'; }
+    });
+  } else {
+    exportBtns.forEach(function(b){ b.style.opacity=''; b.style.pointerEvents=''; });
+  }
+
+  // If not on an allowed page, go to dashboard
+  if (allowedPages) {
+    var currentNav = document.querySelector('.nav-item.active');
+    if (currentNav) {
+      var currentPage = currentNav.getAttribute('data-page');
+      if (allowedPages.indexOf(currentPage) < 0) {
+        navigateTo('dashboard');
+      }
+    }
+  }
+}
+
 /* ADMIN NOTIFICATIONS */
 function toggleAdminNotif(){var p=document.getElementById('adminNotifPanel');var o=document.getElementById('adminNotifOverlay');var v=p.style.display==='none';p.style.display=v?'block':'none';o.style.display=v?'block':'none';}
 function closeAdminNotif(){document.getElementById('adminNotifPanel').style.display='none';document.getElementById('adminNotifOverlay').style.display='none';}
