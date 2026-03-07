@@ -1021,12 +1021,12 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
   <div class="card" id="newPromoForm" style="display:none;margin-bottom:16px"><div style="padding:20px">
     <h3 style="font-size:16px;font-weight:700;color:var(--text-heading);margin-bottom:16px">Create Promo Code</h3>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;margin-bottom:16px">
-      <div class="form-field"><label>Code</label><input class="form-input" placeholder="e.g. SHIP20"></div>
-      <div class="form-field"><label>Discount %</label><input class="form-input" placeholder="20" type="number"></div>
-      <div class="form-field"><label>Max Uses</label><input class="form-input" placeholder="100" type="number"></div>
-      <div class="form-field"><label>Expiry Date</label><input class="form-input" type="date"></div>
+      <div class="form-field"><label>Code</label><input class="form-input" id="promoCode" placeholder="e.g. SHIP20"></div>
+      <div class="form-field"><label>Discount %</label><input class="form-input" id="promoDiscount" placeholder="20" type="number" min="1" max="100"></div>
+      <div class="form-field"><label>Max Uses</label><input class="form-input" id="promoMaxUses" placeholder="100" type="number" min="1"></div>
+      <div class="form-field"><label>Expiry Date</label><input class="form-input" id="promoExpiry" type="date"></div>
     </div>
-    <div style="display:flex;gap:8px"><button class="btn btn-primary"><i class="bi bi-check-lg"></i> Create</button><button class="btn btn-outline" onclick="document.getElementById('newPromoForm').style.display='none'">Cancel</button></div>
+    <div style="display:flex;gap:8px"><button class="btn btn-primary" onclick="createPromo()"><i class="bi bi-check-lg"></i> Create</button><button class="btn btn-outline" onclick="document.getElementById('newPromoForm').style.display='none'">Cancel</button></div>
   </div></div>
   <div class="card"><div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Code</th><th>Discount</th><th>Uses</th><th>Max Uses</th><th>Expiry</th><th>Status</th><th>Actions</th></tr></thead><tbody id="promosBody"></tbody></table></div></div>
 </div>
@@ -1233,7 +1233,7 @@ const USERS = [
   {id:24,name:"Philippe Moreau",email:"philippe@moreauvineyards.ca",company:"Moreau Vineyards",phone:"(450) 555-4567",city:"Saint-Hyacinthe",province:"QC",postal:"J2S 1H9",country:"Canada",status:"active",shipments:89,spent:7800,joined:"2025-01-15",lastActive:"2026-03-03",plan:"Business",unpaid:0}
 ];
 
-const PROMOS = [
+var PROMOS = [
   {code:"SHIP20",discount:20,uses:47,maxUses:100,expiry:"2026-06-30",status:"active"},
   {code:"WELCOME10",discount:10,uses:234,maxUses:500,expiry:"2026-12-31",status:"active"},
   {code:"SPRING15",discount:15,uses:89,maxUses:200,expiry:"2026-04-30",status:"active"},
@@ -2382,8 +2382,55 @@ function renderAudit() {
   document.getElementById('auditBody').innerHTML = AUDIT_LOG.map(a => `<tr><td style="font-size:12px;color:var(--text-muted);white-space:nowrap">${a.time}</td><td style="font-weight:600;font-size:12px">${a.admin}</td><td><span class="badge badge-${a.action.includes('Block')?'blocked':a.action.includes('Deactivat')?'inactive':'active'}">${a.action}</span></td><td style="font-weight:500;font-size:12px">${a.target}</td><td style="font-size:12px;color:var(--text-muted)">${a.details}</td></tr>`).join('');
 }
 
+function createPromo(){
+  var code=document.getElementById('promoCode').value.trim().toUpperCase();
+  var discount=document.getElementById('promoDiscount').value;
+  var maxUses=document.getElementById('promoMaxUses').value;
+  var expiry=document.getElementById('promoExpiry').value;
+  if(!code){alert('Please enter a promo code.');return;}
+  if(!discount||parseFloat(discount)<=0||parseFloat(discount)>100){alert('Please enter a valid discount (1-100%).');return;}
+  if(!maxUses||parseInt(maxUses)<=0){alert('Please enter max uses.');return;}
+  if(!expiry){alert('Please select an expiry date.');return;}
+  if(PROMOS.some(function(p){return p.code===code;})){alert('Code "'+code+'" already exists.');return;}
+  PROMOS.unshift({code:code,discount:parseInt(discount),uses:0,maxUses:parseInt(maxUses),expiry:expiry,status:'active'});
+  renderPromos();
+  document.getElementById('promoCode').value='';
+  document.getElementById('promoDiscount').value='';
+  document.getElementById('promoMaxUses').value='';
+  document.getElementById('promoExpiry').value='';
+  document.getElementById('newPromoForm').style.display='none';
+  addAuditEntry('Created promo code '+code+' ('+discount+'% off)',code);
+  alert('Promo code '+code+' created!');
+}
+function editPromo(idx){
+  var p=PROMOS[idx];
+  var rows=document.getElementById('promosBody').querySelectorAll('tr');
+  var row=rows[idx];if(!row)return;
+  row.innerHTML='<td colspan="7" style="padding:12px"><div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr auto;gap:10px;align-items:end"><div class="form-field" style="margin:0"><label style="font-size:10px">Code</label><input class="form-input" value="'+p.code+'" disabled style="font-size:12px;padding:6px 8px;opacity:.7"></div><div class="form-field" style="margin:0"><label style="font-size:10px">Discount %</label><input class="form-input" id="editPromoDisc_'+idx+'" type="number" value="'+p.discount+'" min="1" max="100" style="font-size:12px;padding:6px 8px"></div><div class="form-field" style="margin:0"><label style="font-size:10px">Max Uses</label><input class="form-input" id="editPromoMax_'+idx+'" type="number" value="'+p.maxUses+'" min="1" style="font-size:12px;padding:6px 8px"></div><div class="form-field" style="margin:0"><label style="font-size:10px">Expiry</label><input class="form-input" id="editPromoExp_'+idx+'" type="date" value="'+p.expiry+'" style="font-size:12px;padding:6px 8px"></div><div class="form-field" style="margin:0"><label style="font-size:10px">Status</label><select class="form-input" id="editPromoStatus_'+idx+'" style="font-size:12px;padding:6px 8px"><option value="active"'+(p.status==='active'?' selected':'')+'>Active</option><option value="expired"'+(p.status==='expired'?' selected':'')+'>Inactive</option></select></div><div style="display:flex;gap:6px"><button class="btn btn-sm btn-primary" onclick="savePromoEdit('+idx+')"><i class="bi bi-check-lg"></i> Save</button><button class="btn btn-sm btn-outline" onclick="renderPromos()">Cancel</button></div></div></td>';
+}
+function savePromoEdit(idx){
+  var disc=document.getElementById('editPromoDisc_'+idx).value;
+  var max=document.getElementById('editPromoMax_'+idx).value;
+  var exp=document.getElementById('editPromoExp_'+idx).value;
+  var status=document.getElementById('editPromoStatus_'+idx).value;
+  if(!disc||parseFloat(disc)<=0){alert('Please enter a valid discount.');return;}
+  PROMOS[idx].discount=parseInt(disc);
+  PROMOS[idx].maxUses=parseInt(max);
+  PROMOS[idx].expiry=exp;
+  PROMOS[idx].status=status;
+  renderPromos();
+  addAuditEntry('Edited promo '+PROMOS[idx].code+' ('+disc+'% off, max:'+max+')',PROMOS[idx].code);
+}
+function deletePromo(idx){
+  var p=PROMOS[idx];
+  if(confirm('Delete promo code "'+p.code+'"?\n\nThis cannot be undone.')){
+    PROMOS.splice(idx,1);
+    renderPromos();
+    addAuditEntry('Deleted promo code '+p.code,'');
+  }
+}
 function renderPromos() {
-  document.getElementById('promosBody').innerHTML = PROMOS.map(p => `<tr><td style="font-family:var(--mono);font-weight:700;color:var(--accent)">${p.code}</td><td style="font-weight:600">${p.discount}%</td><td>${p.uses}</td><td>${p.maxUses}</td><td style="font-size:12px;color:var(--text-muted)">${p.expiry}</td><td>${statusBadge(p.status==='expired'?'inactive':'active')}</td><td><div style="display:flex;gap:4px"><button class="btn btn-sm btn-outline"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-outline" style="color:var(--danger)"><i class="bi bi-trash3"></i></button></div></td></tr>`).join('');
+  document.getElementById('promosBody').innerHTML = PROMOS.map(function(p,i){return '<tr><td style="font-family:var(--mono);font-weight:700;color:var(--accent)">'+p.code+'</td><td style="font-weight:600">'+p.discount+'%</td><td>'+p.uses+'</td><td>'+p.maxUses+'</td><td style="font-size:12px;color:var(--text-muted)">'+p.expiry+'</td><td>'+statusBadge(p.status==='expired'?'inactive':'active')+'</td><td><div style="display:flex;gap:4px"><button class="btn btn-sm btn-outline" onclick="editPromo('+i+')"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-outline" style="color:var(--danger)" onclick="deletePromo('+i+')"><i class="bi bi-trash3"></i></button></div></td></tr>';}).join('');
 }
 
 function renderTickets() {
