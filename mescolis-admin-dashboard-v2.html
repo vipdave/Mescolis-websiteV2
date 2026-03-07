@@ -2347,7 +2347,39 @@ function getRolePerms(role){if(ROLE_DEFAULTS[role]==='ALL')return getAllPermIds(
 function countPerms(role){return getRolePerms(role).length;}
 function totalPerms(){return getAllPermIds().length;}
 var adminRoles=[{name:"David Kosal",email:"david@mescolis.ca",role:"Super Admin",last:"Mar 5, 2026"},{name:"Marie-Claire H\u00e9bert",email:"mc@hebertfashion.ca",role:"Support Agent",last:"Mar 4, 2026"},{name:"Marc Dupont",email:"marc.dupont@gmail.com",role:"Viewer",last:"Mar 3, 2026"}];
-function renderRoles(){document.getElementById('adminCountLabel').textContent=adminRoles.length+' admin'+(adminRoles.length!==1?'s':'');document.getElementById('rolesBody').innerHTML=adminRoles.map(function(r,i){var pc=countPerms(r.role),tp=totalPerms(),pct=Math.round(pc/tp*100);var barColor=r.role==='Super Admin'?'var(--accent)':r.role==='Admin'?'var(--success)':r.role==='Support Agent'?'var(--info)':'var(--text-muted)';return '<tr><td style="font-weight:600">'+r.name+'</td><td style="font-size:12px">'+r.email+'</td><td><span class="badge" style="background:'+(r.role==='Super Admin'?'var(--accent-light)':'var(--bg-muted)')+';color:'+(r.role==='Super Admin'?'var(--accent)':'var(--text-secondary)')+'">'+r.role+'</span></td><td><div style="display:flex;align-items:center;gap:8px"><div style="width:80px;height:6px;background:var(--bg-muted);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+barColor+';border-radius:3px"></div></div><span style="font-size:11px;color:var(--text-muted);font-weight:600">'+pc+'/'+tp+'</span></div></td><td style="font-size:12px;color:var(--text-muted)">'+r.last+'</td><td><div style="display:flex;gap:4px"><button class="btn btn-sm btn-outline" onclick="editAdminPerms('+i+')"><i class="bi bi-shield-check"></i> Permissions</button>'+(r.name!=='David Kosal'?'<button class="btn btn-sm btn-outline" style="color:var(--danger)" onclick="removeAdmin('+i+')"><i class="bi bi-trash3"></i></button>':'')+'</div></td></tr>';}).join('');}
+function renderRoles(){
+  document.getElementById('adminCountLabel').textContent=adminRoles.length+' admin'+(adminRoles.length!==1?'s':'');
+  document.getElementById('rolesBody').innerHTML=adminRoles.map(function(r,i){
+    var pc=countPerms(r.role),tp=totalPerms(),pct=Math.round(pc/tp*100);
+    var barColor=r.role==='Super Admin'?'var(--accent)':r.role==='Admin'?'var(--success)':r.role==='Support Agent'?'var(--info)':'var(--text-muted)';
+    var roleOpts=['Viewer','Support Agent','Admin','Super Admin'];
+    var roleSelect='<select class="form-input" style="padding:4px 8px;font-size:11px;font-weight:600;width:auto;min-width:130px;border-radius:20px;background:'+(r.role==='Super Admin'?'var(--accent-light)':'var(--bg-muted)')+';color:'+(r.role==='Super Admin'?'var(--accent)':'var(--text-secondary)')+';border:1px solid '+(r.role==='Super Admin'?'var(--accent)':'var(--border)')+'" onchange="changeAdminRole('+i+',this.value)">';
+    roleOpts.forEach(function(opt){roleSelect+='<option value="'+opt+'"'+(opt===r.role?' selected':'')+'>'+opt+'</option>';});
+    roleSelect+='</select>';
+    return '<tr><td style="font-weight:600">'+r.name+'</td><td style="font-size:12px">'+r.email+'</td>'
+      +'<td>'+roleSelect+'</td>'
+      +'<td><div style="display:flex;align-items:center;gap:8px"><div style="width:80px;height:6px;background:var(--bg-muted);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+barColor+';border-radius:3px"></div></div><span style="font-size:11px;color:var(--text-muted);font-weight:600">'+pc+'/'+tp+'</span></div></td>'
+      +'<td style="font-size:12px;color:var(--text-muted)">'+r.last+'</td>'
+      +'<td><div style="display:flex;gap:4px"><button class="btn btn-sm btn-outline" onclick="editAdminPerms('+i+')"><i class="bi bi-shield-check"></i> Permissions</button>'
+      +(r.name!=='David Kosal'?'<button class="btn btn-sm btn-outline" style="color:var(--danger)" onclick="removeAdmin('+i+')"><i class="bi bi-trash3"></i></button>':'')
+      +'</div></td></tr>';
+  }).join('');
+}
+function changeAdminRole(idx, newRole) {
+  var admin = adminRoles[idx];
+  var oldRole = admin.role;
+  if (newRole === oldRole) return;
+  if (admin.name === 'David Kosal' && newRole !== 'Super Admin') {
+    alert('Cannot change the primary Super Admin role.');
+    renderRoles();
+    return;
+  }
+  admin.role = newRole;
+  delete _adminCustomPerms[idx];
+  addAuditEntry('Changed role: ' + oldRole + ' → ' + newRole, admin.name);
+  renderRoles();
+  renderPermissionsMatrix();
+}
 function renderPermissionsMatrix(){var roles=['Viewer','Support Agent','Admin','Super Admin'];var html='';PERM_CATEGORIES.forEach(function(cat){html+='<tr style="background:var(--bg-muted)"><td colspan="5" style="padding:10px 20px;font-size:12px;font-weight:700;color:var(--text-heading);border-bottom:1px solid var(--border)"><i class="bi '+cat.icon+'" style="color:var(--accent);margin-right:6px"></i>'+cat.cat+'</td></tr>';cat.perms.forEach(function(p){html+='<tr><td style="padding-left:36px;font-size:12.5px;color:var(--text-body)">'+p.label+'</td>';roles.forEach(function(role){var has=getRolePerms(role).indexOf(p.id)!==-1;html+='<td style="text-align:center"><i class="bi '+(has?'bi-check-circle-fill':'bi-x-circle')+'" style="font-size:15px;color:'+(has?'var(--success)':'var(--border-strong)')+'"></i></td>';});html+='</tr>';});});document.getElementById('permMatrixBody').innerHTML=html;}
 function renderPermDescriptions(){var html='';PERM_CATEGORIES.forEach(function(cat){html+='<div style="margin-bottom:20px"><h4 style="font-size:13px;font-weight:700;color:var(--text-heading);margin-bottom:8px;display:flex;align-items:center;gap:6px"><i class="bi '+cat.icon+'" style="color:var(--accent)"></i> '+cat.cat+' <span style="font-size:11px;font-weight:500;color:var(--text-muted)">('+cat.perms.length+' permissions)</span></h4><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">';cat.perms.forEach(function(p){html+='<div style="padding:8px 12px;background:var(--bg-muted);border-radius:var(--radius-md);font-size:12px"><span style="font-weight:600;color:var(--text-heading)">'+p.label+'</span><br><span style="color:var(--text-muted);font-size:11px">'+p.desc+'</span></div>';});html+='</div></div>';});document.getElementById('permDescriptions').innerHTML=html;}
 function previewRolePerms(role){var perms=getRolePerms(role),tp=totalPerms(),pct=Math.round(perms.length/tp*100);var html='<div style="padding:14px;background:var(--bg-muted);border-radius:var(--radius-md);border:1px solid var(--border)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><span style="font-size:12px;font-weight:700;color:var(--text-heading)">'+role+' \u2014 '+perms.length+'/'+tp+' permissions ('+pct+'%)</span><div style="width:120px;height:6px;background:var(--bg-hover);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:var(--accent);border-radius:3px"></div></div></div><div style="display:flex;flex-wrap:wrap;gap:4px">';PERM_CATEGORIES.forEach(function(cat){var catPerms=cat.perms.filter(function(p){return perms.indexOf(p.id)!==-1;});if(catPerms.length>0){html+='<span style="font-size:10px;padding:3px 8px;background:var(--bg-white);border:1px solid var(--border);border-radius:12px;color:var(--text-secondary);font-weight:500"><i class="bi '+cat.icon+'" style="font-size:9px;margin-right:3px"></i>'+cat.cat+' ('+catPerms.length+')</span>';}});html+='</div></div>';document.getElementById('newAdminPermsPreview').innerHTML=html;}
