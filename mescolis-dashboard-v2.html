@@ -862,7 +862,7 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
 
 <!-- PAGE: SHIPMENT DETAIL -->
 <div class="page-section" id="page-shipment-detail">
-  <div class="page-header"><div><h1 id="detailTitle">Shipment SHP-0891</h1><div class="page-header-sub" id="detailSubtitle">Montreal, QC → Toronto, ON</div></div><div class="page-header-actions"><button class="btn btn-outline" onclick="navigateTo('shipments')"><i class="bi bi-arrow-left"></i> Back to Shipments</button><button class="btn btn-outline"><i class="bi bi-printer"></i> Print Label</button></div></div>
+  <div class="page-header"><div><h1 id="detailTitle">Shipment SHP-0891</h1><div class="page-header-sub" id="detailSubtitle">Montreal, QC → Toronto, ON</div></div><div class="page-header-actions"><button class="btn btn-outline" onclick="goBackFromDetail()"><i class="bi bi-arrow-left"></i> Back to Shipments</button><button class="btn btn-outline" onclick="printDetailLabel()"><i class="bi bi-printer"></i> Print Label</button></div></div>
   <div style="display:grid;gap:16px" class="detail-layout">
     <div style="display:flex;flex-direction:column;gap:16px">
       <div class="card"><div class="card-header"><h3><i class="bi bi-geo-alt"></i> Tracking Progress</h3></div><div style="padding:20px" id="trackingSteps"></div></div>
@@ -1406,6 +1406,11 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
   </div>
 </div>
 
+<!-- CARRIER CONFIG/STATS MODAL -->
+<div id="carrierModal" onclick="if(event.target===this)closeCarrierModal()" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(27,37,64,.5);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(6px)">
+  <div id="carrierModalBox" style="background:var(--bg-white);border-radius:var(--radius-xl);width:620px;max-height:85vh;overflow-y:auto;box-shadow:0 24px 48px rgba(0,0,0,.15)"></div>
+</div>
+
 <!-- ADDRESS PICKER MODAL -->
 <div id="addressPickerModal" onclick="if(event.target===this)closeAddressPicker()" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(27,37,64,.5);z-index:200;align-items:center;justify-content:center">
   <div style="background:var(--bg-white);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:560px;max-width:90vw;max-height:80vh;overflow:hidden;display:flex;flex-direction:column">
@@ -1615,6 +1620,54 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
 <script>
 
+/* CARRIER CONFIGURE & STATISTICS */
+function closeCarrierModal(){document.getElementById('carrierModal').style.display='none';}
+function openCarrierConfig(id, label){
+  var c = CARRIERS.find(function(x){return x.id===id;});
+  var phones={'ups':'1-800-742-5877','cp':'1-866-607-6301','puro':'1-888-744-7123','fedex':'1-800-463-3339','dhl':'1-800-225-5345'};
+  var html='<div style="padding:24px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px"><div style="display:flex;align-items:center;gap:12px">'+ci(id,'xl')+'<div><h2 style="font-size:18px;font-weight:700;color:var(--text-heading)">'+label+' Configuration</h2><p style="font-size:13px;color:var(--text-muted)">Manage your '+label+' integration settings</p></div></div><button onclick="closeCarrierModal()" style="background:none;border:none;font-size:20px;color:var(--text-muted);cursor:pointer"><i class="bi bi-x-lg"></i></button></div>';
+  html+='<div style="display:grid;gap:16px">';
+  html+='<div style="border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px"><h4 style="font-size:14px;font-weight:700;color:var(--text-heading);margin-bottom:12px"><i class="bi bi-plug" style="color:var(--accent);margin-right:6px"></i> API Connection</h4><div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">Status</span><span class="badge badge-active">Connected</span></div><div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">API Key</span><span style="font-family:var(--mono);font-size:12px;color:var(--text-muted)">••••••••••'+id.toUpperCase()+'KEY</span></div><div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0"><span style="font-size:13px">Last Sync</span><span style="font-size:12px;color:var(--text-muted)">2 minutes ago</span></div></div>';
+  html+='<div style="border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px"><h4 style="font-size:14px;font-weight:700;color:var(--text-heading);margin-bottom:12px"><i class="bi bi-sliders" style="color:var(--accent);margin-right:6px"></i> Preferences</h4>';
+  html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">Auto-generate labels</span><div class="toggle-switch on" onclick="this.classList.toggle(\'on\');this.classList.toggle(\'off\')"><div class="toggle-knob"></div></div></div>';
+  html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">Email tracking updates</span><div class="toggle-switch on" onclick="this.classList.toggle(\'on\');this.classList.toggle(\'off\')"><div class="toggle-knob"></div></div></div>';
+  html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">Default service level</span><select class="form-input" style="width:auto;padding:4px 10px;font-size:12px"><option>Ground</option><option>Express</option><option>Priority</option></select></div>';
+  html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0"><span style="font-size:13px">Signature required by default</span><div class="toggle-switch off" onclick="this.classList.toggle(\'on\');this.classList.toggle(\'off\')"><div class="toggle-knob"></div></div></div>';
+  html+='</div>';
+  html+='<div style="border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px"><h4 style="font-size:14px;font-weight:700;color:var(--text-heading);margin-bottom:12px"><i class="bi bi-telephone" style="color:var(--accent);margin-right:6px"></i> Support</h4><div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">Support Phone</span><span style="font-weight:600;color:var(--accent)">'+(phones[id]||'N/A')+'</span></div><div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0"><span style="font-size:13px">Account Rep</span><span style="font-size:12px;color:var(--text-muted)">rep@'+id+'.com</span></div></div>';
+  html+='</div><div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-primary" onclick="alert(\'Settings saved for '+label+'\');closeCarrierModal()"><i class="bi bi-check-lg"></i> Save Settings</button><button class="btn btn-outline" onclick="closeCarrierModal()">Cancel</button></div></div>';
+  document.getElementById('carrierModalBox').innerHTML=html;
+  document.getElementById('carrierModal').style.display='flex';
+}
+function openCarrierStats(id, label, shipments, avgCost, share, rating){
+  var months=['Sep','Oct','Nov','Dec','Jan','Feb'];
+  var monthData=months.map(function(m){return Math.round(shipments/6*(0.6+Math.random()*0.8));});
+  var max=Math.max.apply(null,monthData);
+  var html='<div style="padding:24px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px"><div style="display:flex;align-items:center;gap:12px">'+ci(id,'xl')+'<div><h2 style="font-size:18px;font-weight:700;color:var(--text-heading)">'+label+' Statistics</h2><p style="font-size:13px;color:var(--text-muted)">Performance metrics and analytics</p></div></div><button onclick="closeCarrierModal()" style="background:none;border:none;font-size:20px;color:var(--text-muted);cursor:pointer"><i class="bi bi-x-lg"></i></button></div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:20px">';
+  html+='<div style="background:var(--bg-muted);padding:14px;border-radius:var(--radius-md);text-align:center"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px">Shipments</div><div style="font-size:22px;font-weight:800;color:var(--text-heading)">'+shipments+'</div></div>';
+  html+='<div style="background:var(--bg-muted);padding:14px;border-radius:var(--radius-md);text-align:center"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px">Avg. Cost</div><div style="font-size:22px;font-weight:800;color:var(--accent)">'+avgCost+'</div></div>';
+  html+='<div style="background:var(--bg-muted);padding:14px;border-radius:var(--radius-md);text-align:center"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px">On-Time</div><div style="font-size:22px;font-weight:800;color:var(--success)">'+(88+Math.round(Math.random()*10))+'%</div></div>';
+  html+='<div style="background:var(--bg-muted);padding:14px;border-radius:var(--radius-md);text-align:center"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px">Rating</div><div style="font-size:22px;font-weight:800;color:var(--warning)">'+rating+'</div></div>';
+  html+='</div>';
+  // Bar chart
+  html+='<div style="border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:16px"><h4 style="font-size:14px;font-weight:700;color:var(--text-heading);margin-bottom:16px"><i class="bi bi-bar-chart-line" style="color:var(--accent);margin-right:6px"></i> Monthly Volume</h4>';
+  html+='<div style="display:flex;align-items:flex-end;gap:8px;height:120px">';
+  months.forEach(function(m,i){
+    var pct=max>0?Math.round(monthData[i]/max*100):0;
+    html+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:100%;background:var(--accent);border-radius:4px 4px 0 0;height:'+pct+'%;min-height:4px;opacity:'+(i===months.length-1?'1':'.6')+';transition:height .3s"></div><div style="font-size:11px;font-weight:600;color:var(--text-heading)">'+monthData[i]+'</div><div style="font-size:10px;color:var(--text-muted)">'+m+'</div></div>';
+  });
+  html+='</div></div>';
+  // Performance breakdown
+  html+='<div style="border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:16px"><h4 style="font-size:14px;font-weight:700;color:var(--text-heading);margin-bottom:12px"><i class="bi bi-speedometer2" style="color:var(--accent);margin-right:6px"></i> Performance</h4>';
+  var metrics=[{l:'Delivery Success Rate',v:(96+Math.random()*3).toFixed(1)+'%',c:'var(--success)'},{l:'Average Transit Time',v:(1+Math.round(Math.random()*4))+' days',c:'var(--text-heading)'},{l:'Claims Rate',v:(Math.random()*0.5).toFixed(2)+'%',c:'var(--success)'},{l:'Pickup Reliability',v:(94+Math.random()*5).toFixed(1)+'%',c:'var(--success)'},{l:'Cost Trend (vs last month)',v:(Math.random()>.5?'+':'-')+(Math.random()*8).toFixed(1)+'%',c:Math.random()>.5?'var(--danger)':'var(--success)'}];
+  metrics.forEach(function(m){html+='<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-size:13px">'+m.l+'</span><span style="font-weight:700;color:'+m.c+';font-size:13px">'+m.v+'</span></div>';});
+  html+='</div>';
+  html+='<div style="display:flex;gap:8px"><button class="btn btn-outline" onclick="alert(\'Exporting '+label+' statistics...\')"><i class="bi bi-download"></i> Export Stats</button><button class="btn btn-outline" onclick="closeCarrierModal()">Close</button></div></div>';
+  document.getElementById('carrierModalBox').innerHTML=html;
+  document.getElementById('carrierModal').style.display='flex';
+}
+
 /* ═══════ UNIVERSAL TABLE FILTER/SORT ═══════ */
 function filterTable(tbodyId,status,btn,countId){
   btn.closest('.table-tabs,.table-controls').querySelectorAll('.table-tab').forEach(function(t){t.classList.remove('active');});
@@ -1744,11 +1797,27 @@ function prevShipPage(){/* placeholder - all data shown */}
 function nextShipPage(){/* placeholder - all data shown */}
 
 /* Shipment detail actions */
+var _currentDetailShipment = null;
+var _previousPage = 'shipments';
+function goBackFromDetail(){ navigateTo(_previousPage); }
+function printDetailLabel(){
+  if(!_currentDetailShipment){reprintLabel();return;}
+  var s=_currentDetailShipment;
+  var w=window.open('','_blank','width=400,height=600');
+  w.document.write('<html><head><title>Shipping Label — '+s.id+'</title><style>body{font-family:Arial,sans-serif;padding:30px;text-align:center}h1{font-size:18px}.barcode{font-family:monospace;font-size:20px;letter-spacing:3px;margin:20px 0;padding:15px;border:2px solid #000}.logo{font-size:24px;font-weight:bold;color:#635bff;margin-bottom:10px}.box{border:2px solid #000;padding:15px;margin:10px 0;text-align:left;font-size:13px}</style></head><body>');
+  w.document.write('<div class="logo">MesColis.ca</div>');
+  w.document.write('<h1>'+s.id+' — '+(s.carrierLabel||'')+' '+s.service+'</h1>');
+  w.document.write('<div class="barcode">'+s.tracking+'</div>');
+  w.document.write('<div class="box"><strong>From:</strong> '+s.from+'<br><strong>To:</strong> '+s.to+'<br><strong>Recipient:</strong> '+s.recipient+'<br><strong>Weight:</strong> '+s.weight+'</div>');
+  w.document.write('<button onclick="window.print()" style="padding:10px 30px;font-size:14px;cursor:pointer;background:#635bff;color:#fff;border:none;border-radius:6px;margin-top:10px">Print</button></body></html>');
+  w.document.close();
+}
 function copyTracking(){
   var el=document.getElementById('detailTrackingNum');
   if(el){navigator.clipboard.writeText(el.textContent).then(function(){alert('Tracking number copied to clipboard!');}).catch(function(){prompt('Copy this tracking number:',el.textContent);});}
 }
 function reprintLabel(){
+  if(_currentDetailShipment){printDetailLabel();return;}
   var w=window.open('','_blank','width=400,height=600');
   w.document.write('<html><head><title>Shipping Label</title><style>body{font-family:Arial,sans-serif;padding:30px;text-align:center}h1{font-size:18px}.barcode{font-family:monospace;font-size:24px;letter-spacing:4px;margin:20px 0;padding:15px;border:2px solid #000}.logo{font-size:24px;font-weight:bold;color:#635bff;margin-bottom:10px}</style></head><body>');
   w.document.write('<div class="logo">MesColis.ca</div><h1>Shipping Label</h1>');
@@ -1758,13 +1827,16 @@ function reprintLabel(){
   w.document.close();
 }
 function emailTrackingCustomer(){
-  alert('Tracking email sent to david@mescolis.ca\n\nYou will receive the tracking link in your inbox.');
+  var id=_currentDetailShipment?_currentDetailShipment.id:'your shipment';
+  var tracking=_currentDetailShipment?_currentDetailShipment.tracking:'';
+  alert('Tracking email sent to david@mescolis.ca\n\nShipment: '+id+'\nTracking: '+tracking+'\n\nYou will receive the tracking link in your inbox.');
 }
 function contactCarrierCustomer(){
   var phones={'Canada Post':'1-866-607-6301','Purolator':'1-888-744-7123','UPS':'1-800-742-5877','FedEx':'1-800-463-3339','DHL':'1-800-225-5345'};
-  var carrier=document.getElementById('detailCarrier');
-  var name=carrier?carrier.textContent:'your carrier';
-  alert('Contact '+name+' Support\n\nPhone: '+(phones[name]||'See carrier website')+'\n\nHave your tracking number ready.');
+  var name=_currentDetailShipment?_currentDetailShipment.carrierLabel:'your carrier';
+  var shpId=_currentDetailShipment?_currentDetailShipment.id:'';
+  var tracking=_currentDetailShipment?_currentDetailShipment.tracking:'';
+  alert('Contact '+name+' Support\n\nPhone: '+(phones[name]||'See carrier website')+'\nShipment: '+shpId+'\nTracking: '+tracking+'\n\nHave your tracking number ready.');
 }
 
 /* Create Shipment - label actions */
@@ -2313,6 +2385,7 @@ function applyTranslations() {
 }
 let currentPage = 'dashboard';
 function navigateTo(page, data) {
+  if (page==='shipment-detail') _previousPage = currentPage;
   document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
   const el = document.getElementById('page-'+page);
   if (el) el.classList.add('active');
@@ -2867,6 +2940,7 @@ function doTrack() {
 function loadShipmentDetail(shipId) {
   const s = SHIPMENTS.find(x => x.id === shipId) || SHIPMENTS[0];
   const c = carrier(s.carrier);
+  _currentDetailShipment = {id:s.id, carrier:s.carrier, carrierLabel:c.label, service:s.service, tracking:s.tracking, from:s.from, to:s.to, recipient:s.recipient, weight:s.weight, cost:s.cost};
   document.getElementById('detailTitle').textContent = 'Shipment ' + s.id;
   document.getElementById('detailSubtitle').textContent = s.from + ' → ' + s.to;
   document.getElementById('detailTrackingNum').textContent = s.tracking;
@@ -2927,7 +3001,7 @@ function renderShipmentRow(s, withRecipient) {
   // Pickups
   document.getElementById('pickupsBody').innerHTML = PICKUPS.map(p => `<tr><td><span class="cell-id">${p.id}</span></td><td><div class="cell-carrier">${ci(p.carrier)}${carrier(p.carrier).label}</div></td><td style="font-weight:500">${p.date}</td><td style="font-size:12px;color:var(--text-secondary)">${p.time}</td><td style="font-weight:600;color:var(--text-heading)">${p.packages}</td><td style="font-size:12px;color:var(--text-secondary);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.address}</td><td>${badge(p.status)}</td></tr>`).join('');
   // Carriers page
-  document.getElementById('carriersGrid').innerHTML = CARRIERS.map(c => `<div class="card"><div style="padding:20px"><div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">${ci(c.id,'xl')}<div><h3 style="font-size:16px;font-weight:700;color:var(--text-heading)">${c.label}</h3>${stars(c.rating)}</div>${badge('delivered')}</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div class="carrier-stat-card"><div class="val">${c.shipments}</div><div class="lbl">Shipments</div></div><div class="carrier-stat-card"><div class="val">${c.avgCost}</div><div class="lbl">Avg. Cost</div></div><div class="carrier-stat-card"><div class="val">${c.share}%</div><div class="lbl">Market Share</div></div></div><div style="display:flex;gap:8px;margin-top:14px"><button class="btn btn-outline" style="flex:1;justify-content:center" onclick="event.stopPropagation();alert('Carrier configuration panel - coming soon')"><i class="bi bi-gear"></i> Configure</button><button class="btn btn-outline" style="flex:1;justify-content:center" onclick="event.stopPropagation();alert('Carrier statistics - coming soon')"><i class="bi bi-bar-chart"></i> Statistics</button></div></div></div>`).join('');
+  document.getElementById('carriersGrid').innerHTML = CARRIERS.map(c => `<div class="card"><div style="padding:20px"><div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">${ci(c.id,'xl')}<div><h3 style="font-size:16px;font-weight:700;color:var(--text-heading)">${c.label}</h3>${stars(c.rating)}</div>${badge('delivered')}</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div class="carrier-stat-card"><div class="val">${c.shipments}</div><div class="lbl">Shipments</div></div><div class="carrier-stat-card"><div class="val">${c.avgCost}</div><div class="lbl">Avg. Cost</div></div><div class="carrier-stat-card"><div class="val">${c.share}%</div><div class="lbl">Market Share</div></div></div><div style="display:flex;gap:8px;margin-top:14px"><button class="btn btn-outline" style="flex:1;justify-content:center" onclick="event.stopPropagation();openCarrierConfig('${c.id}','${c.label}')"><i class="bi bi-gear"></i> Configure</button><button class="btn btn-outline" style="flex:1;justify-content:center" onclick="event.stopPropagation();openCarrierStats('${c.id}','${c.label}',${c.shipments},'${c.avgCost}',${c.share},${c.rating})"><i class="bi bi-bar-chart"></i> Statistics</button></div></div></div>`).join('');
   // Address book
   renderAddressGrid();
   // Invoices
