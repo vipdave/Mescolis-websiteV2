@@ -815,7 +815,7 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
     <div class="topbar-breadcrumb"><span data-notranslate style="cursor:pointer;font-weight:500" onclick="navigateTo('dashboard')">MesColis</span><span class="sep"><i class="bi bi-chevron-right" style="font-size:10px"></i></span><span class="current" id="breadcrumbCurrent">Admin Dashboard</span></div>
   </div>
   <div class="topbar-right">
-    <div class="topbar-search" onclick="openAdminSearch()"><i class="bi bi-search" style="font-size:14px"></i><span>Search users, shipments...</span><kbd>⌘K</kbd></div>
+    <div class="topbar-search" onclick="openAdminSearch()"><i class="bi bi-search" style="font-size:14px"></i><span>Search users, shipments...</span></div>
     <div style="position:relative;display:inline-flex" id="roleViewWrap">
       <button class="admin-badge" onclick="toggleRoleViewMenu()" style="cursor:pointer;border:none" id="roleViewBadge"><i class="bi bi-shield-lock"></i> <span id="roleViewLabel">Super Admin</span> <i class="bi bi-chevron-down" style="font-size:8px;margin-left:2px"></i></button>
       <div id="roleViewMenu" style="display:none;position:absolute;top:100%;right:0;margin-top:6px;background:var(--bg-white);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:220px;z-index:9999;overflow:hidden;animation:fadeUp .15s ease">
@@ -858,7 +858,7 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
     <div class="card"><div class="card-header"><h3><i class="bi bi-graph-up"></i> Monthly Revenue</h3></div><div style="padding:18px;display:flex;align-items:flex-end;gap:8px;height:200px" id="revenueChart"></div></div>
-    <div class="card"><div class="card-header"><h3><i class="bi bi-people"></i> Recent Sign-ups</h3><a style="font-size:12px;color:var(--accent);font-weight:600;cursor:pointer" onclick="navigateTo('users')">View all →</a></div><div id="recentSignups" style="padding:0"></div></div>
+    <div class="card"><div class="card-header"><h3><i class="bi bi-people"></i> Recent Sign-ups</h3><a style="font-size:12px;color:var(--accent);font-weight:600;cursor:pointer" onclick="viewRecentSignups()">View all →</a></div><div id="recentSignups" style="padding:0"></div></div>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
     <div class="card"><div class="card-header"><h3><i class="bi bi-exclamation-triangle"></i> Unpaid Invoice Alerts</h3></div><div id="unpaidAlerts" style="padding:0"></div></div>
@@ -902,6 +902,11 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
         <button class="btn btn-sm btn-outline" onclick="clearUserAdvFilter()" style="padding:5px 8px;font-size:11px"><i class="bi bi-x-circle"></i> Clear</button>
       </div>
       <div style="margin-top:8px;font-size:11px;color:var(--text-muted)" id="userAdvFilterCount"></div>
+    </div>
+    <!-- Recent Filter Banner -->
+    <div id="recentFilterBanner" style="display:none;padding:10px 18px;background:linear-gradient(135deg,#eff6ff,#f0fdf4);border-bottom:1px solid var(--border);align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:8px;font-size:13px"><i class="bi bi-clock-history" style="color:var(--accent)"></i><span style="font-weight:600;color:var(--text-heading)">Recent Sign-ups</span><span style="color:var(--text-muted)">— Users who joined in the last 6 months, newest first</span></div>
+      <button class="btn btn-sm btn-outline" onclick="clearRecentFilter()" style="font-size:11px"><i class="bi bi-x-circle"></i> Show All Users</button>
     </div>
     <div style="overflow-x:auto"><table class="data-table"><thead><tr>
       <th style="cursor:pointer" onclick="sortUsers('name')">User <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
@@ -1288,6 +1293,13 @@ function renderUsers(filter, search) {
   let filtered = USERS.slice();
   if (filter && filter !== 'all') filtered = filtered.filter(u => u.status === filter);
   if (search) { const q = search.toLowerCase(); filtered = filtered.filter(u => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || (u.company||'').toLowerCase().includes(q) || (u.phone||'').replace(/[\s()-]/g,'').includes(q.replace(/[\s()-]/g,'')) || (u.phone||'').toLowerCase().includes(q) || (u.city||'').toLowerCase().includes(q) || (u.postal||'').toLowerCase().includes(q.replace(/\s/g,''))); }
+  // Recent sign-ups filter (last 6 months)
+  if (_recentSignupsOnly) {
+    var sixMonthsAgo = new Date(); sixMonthsAgo.setMonth(sixMonthsAgo.getMonth()-6);
+    filtered = filtered.filter(function(u){return new Date(u.joined) >= sixMonthsAgo;});
+  }
+  var banner = document.getElementById('recentFilterBanner');
+  if (banner) banner.style.display = _recentSignupsOnly ? 'flex' : 'none';
   // Advanced filters
   var af = getAdvFilters();
   if(af.company){var cq=af.company.toLowerCase();filtered=filtered.filter(u=>(u.company||'').toLowerCase().includes(cq));}
@@ -1297,7 +1309,7 @@ function renderUsers(filter, search) {
   if(af.country)filtered=filtered.filter(u=>u.country===af.country);
   if(af.province){var pq=af.province.toLowerCase();filtered=filtered.filter(u=>(u.province||'').toLowerCase().includes(pq)||(u.city||'').toLowerCase().includes(pq));}
   // Sort
-  if(_userSortCol){filtered.sort(function(a,b){var va,vb;switch(_userSortCol){case 'name':va=a.name.toLowerCase();vb=b.name.toLowerCase();break;case 'email':va=a.email.toLowerCase();vb=b.email.toLowerCase();break;case 'company':va=(a.company||'').toLowerCase();vb=(b.company||'').toLowerCase();break;case 'phone':va=a.phone;vb=b.phone;break;case 'shipments':return _userSortAsc?a.shipments-b.shipments:b.shipments-a.shipments;case 'spent':return _userSortAsc?a.spent-b.spent:b.spent-a.spent;case 'status':va=a.status;vb=b.status;break;default:va='';vb='';}if(typeof va==='string')return _userSortAsc?va.localeCompare(vb):vb.localeCompare(va);return 0;});}
+  if(_userSortCol){filtered.sort(function(a,b){var va,vb;switch(_userSortCol){case 'name':va=a.name.toLowerCase();vb=b.name.toLowerCase();break;case 'email':va=a.email.toLowerCase();vb=b.email.toLowerCase();break;case 'company':va=(a.company||'').toLowerCase();vb=(b.company||'').toLowerCase();break;case 'phone':va=a.phone;vb=b.phone;break;case 'shipments':return _userSortAsc?a.shipments-b.shipments:b.shipments-a.shipments;case 'spent':return _userSortAsc?a.spent-b.spent:b.spent-a.spent;case 'status':va=a.status;vb=b.status;break;case 'joined':va=a.joined;vb=b.joined;break;default:va='';vb='';}if(typeof va==='string')return _userSortAsc?va.localeCompare(vb):vb.localeCompare(va);return 0;});}
   // Update filter count
   var fc=document.getElementById('userAdvFilterCount');if(fc)fc.textContent='Showing '+filtered.length+' of '+USERS.length+' users'+(af.company||af.plan||af.minShip||af.minSpent||af.country||af.province?' (filtered)':'');
   document.getElementById('usersTableBody').innerHTML = filtered.map(u => `<tr data-status="${u.status}">
@@ -1314,13 +1326,14 @@ function renderUsers(filter, search) {
       ${u.status==='blocked'?`<button class="btn btn-sm btn-success" onclick="event.stopPropagation();toggleBlock(${u.id})" title="Unblock"><i class="bi bi-unlock"></i></button>`:`<button class="btn btn-sm btn-danger" onclick="event.stopPropagation();toggleBlock(${u.id})" title="Block"><i class="bi bi-lock"></i></button>`}
       ${u.status==='inactive'?`<button class="btn btn-sm btn-success" onclick="event.stopPropagation();toggleActive(${u.id})" title="Activate"><i class="bi bi-power"></i></button>`:`<button class="btn btn-sm btn-outline" onclick="event.stopPropagation();toggleActive(${u.id})" title="Deactivate"><i class="bi bi-power"></i></button>`}
     </div></td></tr>`).join('');
-  document.getElementById('usersShowing').textContent = `Showing ${filtered.length} of ${USERS.length} users`;
+  document.getElementById('usersShowing').textContent = `Showing ${filtered.length} of ${USERS.length} users${_userSortCol==='joined'?' · Sorted by newest first':_userSortCol?' · Sorted by '+_userSortCol:''}`;
 }
 
 let currentFilter = 'all';
 document.querySelectorAll('.user-filter').forEach(b => b.addEventListener('click', function() {
   document.querySelectorAll('.user-filter').forEach(x => {x.classList.remove('btn-primary');x.classList.add('btn-outline')});
   this.classList.remove('btn-outline');this.classList.add('btn-primary');
+  _recentSignupsOnly = false;
   currentFilter = this.dataset.filter;
   renderUsers(currentFilter);
 }));
@@ -1334,6 +1347,23 @@ function clearUserAdvFilter(){['ufCompany','ufProvince'].forEach(function(id){va
 
 var _userSortCol='';var _userSortAsc=true;
 function sortUsers(col){if(_userSortCol===col){_userSortAsc=!_userSortAsc;}else{_userSortCol=col;_userSortAsc=true;}var q=(document.getElementById('userSearchInput')||{}).value||'';renderUsers(currentFilter,q);}
+var _recentSignupsOnly = false;
+function viewRecentSignups(){
+  _recentSignupsOnly = true;
+  _userSortCol='joined';_userSortAsc=false;
+  navigateTo('users');
+  document.querySelectorAll('.user-filter').forEach(function(x){x.classList.remove('btn-primary');x.classList.add('btn-outline');});
+  var allBtn=document.querySelector('.user-filter[data-filter="all"]');if(allBtn){allBtn.classList.remove('btn-outline');allBtn.classList.add('btn-primary');}
+  currentFilter='all';
+  var searchEl=document.getElementById('userSearchInput');if(searchEl)searchEl.value='';
+  clearUserAdvFilter();
+  renderUsers('all','');
+}
+function clearRecentFilter(){
+  _recentSignupsOnly = false;
+  _userSortCol='';_userSortAsc=true;
+  renderUsers(currentFilter,(document.getElementById('userSearchInput')||{}).value||'');
+}
 
 function viewUser(id) {
   const u = USERS.find(x=>x.id===id);if(!u) return;
