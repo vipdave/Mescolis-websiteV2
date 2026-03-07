@@ -2564,14 +2564,19 @@ function submitOverride(){
 }
 function editOverride(idx){
   var o=commOverrides[idx];
-  var newMarkup=prompt('Edit markup for '+o.user+' (current: '+o.markup+'%):',o.markup);
-  if(newMarkup&&parseFloat(newMarkup)>0){
-    var newReason=prompt('Reason:',o.reason);
-    commOverrides[idx].markup=parseFloat(newMarkup);
-    if(newReason)commOverrides[idx].reason=newReason;
-    renderMarkupOverrides();
-    addAuditEntry('Edited markup override to '+newMarkup+'%',o.user);
-  }
+  var rows=document.getElementById('markupOverrides').querySelectorAll('tr');
+  var row=rows[idx];
+  if(!row)return;
+  row.innerHTML='<td colspan="5" style="padding:12px"><div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:10px;align-items:end"><div class="form-field" style="margin:0"><label style="font-size:10px">User</label><input class="form-input" value="'+o.user+'" disabled style="font-size:12px;padding:6px 8px;opacity:.7"></div><div class="form-field" style="margin:0"><label style="font-size:10px">Markup %</label><input class="form-input" id="editMarkup_'+idx+'" type="number" value="'+o.markup+'" min="0" max="100" style="font-size:12px;padding:6px 8px"></div><div class="form-field" style="margin:0"><label style="font-size:10px">Reason</label><input class="form-input" id="editReason_'+idx+'" value="'+o.reason.replace(/"/g,'&quot;')+'" style="font-size:12px;padding:6px 8px"></div><div style="display:flex;gap:6px"><button class="btn btn-sm btn-primary" onclick="saveOverrideEdit('+idx+')"><i class="bi bi-check-lg"></i> Save</button><button class="btn btn-sm btn-outline" onclick="renderMarkupOverrides()">Cancel</button></div></div></td>';
+}
+function saveOverrideEdit(idx){
+  var markup=document.getElementById('editMarkup_'+idx).value;
+  var reason=document.getElementById('editReason_'+idx).value;
+  if(!markup||parseFloat(markup)<=0){alert('Please enter a valid markup.');return;}
+  commOverrides[idx].markup=parseFloat(markup);
+  commOverrides[idx].reason=reason||commOverrides[idx].reason;
+  renderMarkupOverrides();
+  addAuditEntry('Edited markup override to '+markup+'%',commOverrides[idx].user);
 }
 function deleteOverride(idx){
   var o=commOverrides[idx];
