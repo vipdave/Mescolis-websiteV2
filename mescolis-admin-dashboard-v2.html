@@ -1347,8 +1347,29 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
 
 <!-- ══════ PAGE: AUDIT LOG ══════ -->
 <div class="page-section" id="page-audit">
-  <div class="page-header"><div><h1>Audit Log</h1><div class="page-header-sub">Track all administrative actions</div></div><div><button class="btn btn-outline"><i class="bi bi-download"></i> Export Log</button></div></div>
-  <div class="card"><div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Timestamp</th><th>Admin</th><th>Action</th><th>Target</th><th>Details</th></tr></thead><tbody id="auditBody"></tbody></table></div></div>
+  <div class="page-header"><div><h1>Audit Log</h1><div class="page-header-sub">Track all administrative actions</div></div><div><button class="btn btn-outline" onclick="exportAuditLog()"><i class="bi bi-download"></i> Export Log</button></div></div>
+  <div class="card">
+    <div style="padding:12px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)">
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-sm btn-primary audit-filter" onclick="filterAudit('all',this)">All</button>
+        <button class="btn btn-sm btn-outline audit-filter" onclick="filterAudit('user',this)">User Actions</button>
+        <button class="btn btn-sm btn-outline audit-filter" onclick="filterAudit('billing',this)">Billing</button>
+        <button class="btn btn-sm btn-outline audit-filter" onclick="filterAudit('system',this)">System</button>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <select class="form-input" id="auditAdminFilter" style="width:140px;padding:5px 8px;font-size:12px" onchange="renderAuditLog()"><option value="">All Admins</option><option>David Kosal</option></select>
+        <input class="form-input" id="auditSearch" placeholder="Search actions, targets..." style="width:220px;padding:5px 8px;font-size:12px" oninput="renderAuditLog()">
+      </div>
+    </div>
+    <div style="overflow-x:auto"><table class="data-table"><thead><tr>
+      <th style="cursor:pointer" onclick="sortAudit('time')">Timestamp <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortAudit('admin')">Admin <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortAudit('action')">Action <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortAudit('target')">Target <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th>Details</th>
+    </tr></thead><tbody id="auditBody"></tbody></table></div>
+    <div style="padding:10px 18px;border-top:1px solid var(--border)"><span style="font-size:12px;color:var(--text-muted)" id="auditCount"></span></div>
+  </div>
 </div>
 
 <!-- ══════ PAGE: API USAGE ══════ -->
@@ -1555,7 +1576,7 @@ const AUDIT_LOG = [
   {time:"Feb 25, 2026 11:30 AM",admin:"David Kosal",action:"Resolved ticket",target:"TKT-0037",details:"Invoice adjusted for Sophie Tremblay"},
   {time:"Feb 20, 2026 3:45 PM",admin:"David Kosal",action:"Added admin",target:"Marie-Claire Hébert",details:"Role: Support Agent"}
 ];
-const CARRIERS_DATA = [
+var CARRIERS_DATA = [
   {id:"cp",name:"Canada Post",enabled:true,markup:12,calls:4521,shipments:1234,revenue:42300},
   {id:"puro",name:"Purolator",enabled:true,markup:15,calls:3210,shipments:987,revenue:38900},
   {id:"ups",name:"UPS",enabled:true,markup:18,calls:2890,shipments:756,revenue:29400},
@@ -1946,7 +1967,15 @@ function switchUdTab(btn, panelId) {
   btn.closest('.user-detail-box').querySelectorAll('.ud-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById(panelId).classList.add('active');
 }
-function closeUserDetail(){document.getElementById('userDetailModal').classList.remove('show');}
+var _modalReturnStack = [];
+function closeUserDetail(){
+  document.getElementById('userDetailModal').classList.remove('show');
+  if(_modalReturnStack.length>0){
+    var ret=_modalReturnStack.pop();
+    if(ret.type==='ticket')setTimeout(function(){viewTicket(ret.idx);},100);
+    else if(ret.type==='page')setTimeout(function(){navigateTo(ret.page);},100);
+  }
+}
 function viewUserByName(name){const u=USERS.find(x=>x.name===name);if(u)viewUser(u.id);}
 
 function viewShipment(shpId, userId, carrier, route, service, status, cost, date) {
@@ -2688,9 +2717,57 @@ function renderRecentAudit() {
   document.getElementById('recentAudit').innerHTML = AUDIT_LOG.slice(0,5).map(a => `<div style="display:flex;align-items:center;gap:10px;padding:10px 18px;border-bottom:1px solid var(--border)"><i class="bi bi-${a.action.includes('Block')?'lock':a.action.includes('Unblock')?'unlock':a.action.includes('email')?'envelope':a.action.includes('promo')?'tag':'shield-check'}" style="color:var(--accent);font-size:14px"></i><div style="flex:1"><div style="font-size:12px;color:var(--text-heading)"><b>${a.action}</b> — ${a.target}</div><div style="font-size:11px;color:var(--text-muted)">${a.time}</div></div></div>`).join('');
 }
 
-function renderAudit() {
-  document.getElementById('auditBody').innerHTML = AUDIT_LOG.map(a => `<tr><td style="font-size:12px;color:var(--text-muted);white-space:nowrap">${a.time}</td><td style="font-weight:600;font-size:12px">${a.admin}</td><td><span class="badge badge-${a.action.includes('Block')?'blocked':a.action.includes('Deactivat')?'inactive':'active'}">${a.action}</span></td><td style="font-weight:500;font-size:12px">${a.target}</td><td style="font-size:12px;color:var(--text-muted)">${a.details}</td></tr>`).join('');
+var _auditCatFilter='all';
+var _auditSortCol='';var _auditSortAsc=false;
+function filterAudit(cat,btn){
+  _auditCatFilter=cat;
+  document.querySelectorAll('.audit-filter').forEach(function(b){b.classList.remove('btn-primary');b.classList.add('btn-outline');});
+  btn.classList.remove('btn-outline');btn.classList.add('btn-primary');
+  renderAuditLog();
 }
+function sortAudit(col){if(_auditSortCol===col){_auditSortAsc=!_auditSortAsc;}else{_auditSortCol=col;_auditSortAsc=true;}renderAuditLog();}
+function exportAuditLog(){
+  var csv='Timestamp,Admin,Action,Target,Details\n';
+  AUDIT_LOG.forEach(function(a){csv+='"'+a.time+'","'+a.admin+'","'+a.action+'","'+a.target+'","'+(a.details||'')+'"\n';});
+  var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob);
+  var el=document.createElement('a');el.href=url;el.download='mescolis_audit_log.csv';el.click();
+  URL.revokeObjectURL(url);
+  addAuditEntry('Exported audit log CSV','');
+}
+var AUDIT_CAT_KEYWORDS = {
+  user:['Block','Unblock','Deactivat','Activat','user','admin','role','permission','note'],
+  billing:['invoice','payment','refund','credit','debit','markup','commission','promo','charge','receipt'],
+  system:['announcement','setting','export','carrier','API','webhook','email template']
+};
+function renderAuditLog() {
+  var filtered=AUDIT_LOG.slice();
+  if(_auditCatFilter!=='all'){
+    var keywords=AUDIT_CAT_KEYWORDS[_auditCatFilter]||[];
+    filtered=filtered.filter(function(a){
+      var combined=(a.action+' '+a.target+' '+(a.details||'')).toLowerCase();
+      return keywords.some(function(k){return combined.includes(k.toLowerCase());});
+    });
+  }
+  var af=(document.getElementById('auditAdminFilter')||{}).value||'';
+  if(af)filtered=filtered.filter(function(a){return a.admin===af;});
+  var sq=((document.getElementById('auditSearch')||{}).value||'').toLowerCase();
+  if(sq)filtered=filtered.filter(function(a){return a.action.toLowerCase().includes(sq)||a.target.toLowerCase().includes(sq)||(a.details||'').toLowerCase().includes(sq)||a.time.toLowerCase().includes(sq);});
+  if(_auditSortCol){
+    filtered.sort(function(a,b){
+      var va=(a[_auditSortCol]||'').toLowerCase();
+      var vb=(b[_auditSortCol]||'').toLowerCase();
+      return _auditSortAsc?va.localeCompare(vb):vb.localeCompare(va);
+    });
+  }
+  document.getElementById('auditBody').innerHTML = filtered.map(function(a){
+    var badgeClass=a.action.includes('Block')||a.action.includes('Delete')?'blocked':a.action.includes('Deactivat')?'inactive':a.action.includes('Resolved')||a.action.includes('Unblock')||a.action.includes('Activat')?'active':a.action.includes('export')||a.action.includes('Export')?'pending':'active';
+    return '<tr><td style="font-size:12px;color:var(--text-muted);white-space:nowrap">'+a.time+'</td><td style="font-weight:600;font-size:12px">'+a.admin+'</td><td><span class="badge badge-'+badgeClass+'">'+a.action+'</span></td><td style="font-weight:500;font-size:12px">'+a.target+'</td><td style="font-size:12px;color:var(--text-muted)">'+(a.details||'')+'</td></tr>';
+  }).join('');
+  var cEl=document.getElementById('auditCount');
+  if(cEl)cEl.textContent='Showing '+filtered.length+' of '+AUDIT_LOG.length+' entries';
+}
+function renderAudit(){renderAuditLog();}
 
 function createPromo(){
   var code=document.getElementById('promoCode').value.trim().toUpperCase();
@@ -2754,7 +2831,7 @@ function filterTickets(status,btn){
 function sortTickets(col){if(_ticketSortCol===col){_ticketSortAsc=!_ticketSortAsc;}else{_ticketSortCol=col;_ticketSortAsc=true;}renderTickets();}
 function viewTicket(idx){
   var t=TICKETS[idx];
-  var html='<div style="padding:28px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px"><div><h2 style="font-size:18px;font-weight:700;color:var(--text-heading)"><i class="bi bi-headset" style="color:var(--accent);margin-right:8px"></i>'+t.id+' — '+t.subject+'</h2><p style="font-size:13px;color:var(--text-muted);margin-top:4px">From: <span style="font-weight:600;color:var(--accent);cursor:pointer" onclick="closeUserDetail();viewUserByName(\''+t.user+'\')">'+t.user+'</span> &middot; '+t.created+' &middot; '+priorityBadge(t.priority)+' '+statusBadge(t.status==='open'?'open':'resolved')+'</p></div><button class="btn btn-outline" onclick="closeUserDetail()"><i class="bi bi-x-lg"></i></button></div>';
+  var html='<div style="padding:28px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px"><div><h2 style="font-size:18px;font-weight:700;color:var(--text-heading)"><i class="bi bi-headset" style="color:var(--accent);margin-right:8px"></i>'+t.id+' — '+t.subject+'</h2><p style="font-size:13px;color:var(--text-muted);margin-top:4px">From: <span style="font-weight:600;color:var(--accent);cursor:pointer" onclick="_modalReturnStack.push({type:\'ticket\',idx:'+idx+'});closeUserDetail();viewUserByName(\''+t.user+'\')">'+t.user+'</span> &middot; '+t.created+' &middot; '+priorityBadge(t.priority)+' '+statusBadge(t.status==='open'?'open':'resolved')+'</p></div><button class="btn btn-outline" onclick="closeUserDetail()"><i class="bi bi-x-lg"></i></button></div>';
   html+='<div style="border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;background:var(--bg-muted)"><div style="font-size:14px;font-weight:600;color:var(--text-heading);margin-bottom:8px">Ticket Details</div><p style="font-size:13px;color:var(--text-body);line-height:1.6">'+t.subject+'<br><br>User reported this issue on '+t.created+'. Priority level: <strong>'+t.priority+'</strong>.</p></div>';
   html+='<div style="border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px"><div style="font-size:14px;font-weight:600;color:var(--text-heading);margin-bottom:12px">Admin Response</div><textarea id="ticketReply" class="form-input" placeholder="Write your response to the user..." style="min-height:80px;margin-bottom:10px"></textarea><div style="display:flex;gap:8px"><button class="btn btn-primary" onclick="replyTicket('+idx+')"><i class="bi bi-send"></i> Send Reply</button><div style="position:relative;display:inline-block" id="escWrap_'+idx+'"><button class="btn btn-outline" onclick="toggleEscMenu('+idx+')"><i class="bi bi-arrow-up-circle"></i> Escalate <i class="bi bi-chevron-down" style="font-size:9px"></i></button><div id="escMenu_'+idx+'" style="display:none;position:absolute;bottom:100%;left:0;margin-bottom:6px;background:var(--bg-white);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:260px;z-index:999;overflow:hidden"><div style="padding:8px 12px;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border)">Escalate Options</div><div style="padding:8px 12px;cursor:pointer;font-size:13px;transition:background .15s" onmouseenter="this.style.background=\'var(--bg-muted)\'" onmouseleave="this.style.background=\'\'" onclick="escalateToAdmin('+idx+',\'Super Admin\')"><i class="bi bi-shield-check" style="color:var(--danger);margin-right:6px"></i> Escalate to Super Admin</div><div style="padding:8px 12px;cursor:pointer;font-size:13px;transition:background .15s" onmouseenter="this.style.background=\'var(--bg-muted)\'" onmouseleave="this.style.background=\'\'" onclick="changePriority('+idx+')"><i class="bi bi-exclamation-triangle" style="color:var(--warning);margin-right:6px"></i> Change Priority</div><div style="padding:8px 12px;cursor:pointer;font-size:13px;transition:background .15s" onmouseenter="this.style.background=\'var(--bg-muted)\'" onmouseleave="this.style.background=\'\'" onclick="assignTicket('+idx+')"><i class="bi bi-person-plus" style="color:var(--info);margin-right:6px"></i> Assign to Agent</div><div style="padding:8px 12px;cursor:pointer;font-size:13px;transition:background .15s" onmouseenter="this.style.background=\'var(--bg-muted)\'" onmouseleave="this.style.background=\'\'" onclick="forwardToCarrier('+idx+')"><i class="bi bi-truck" style="color:var(--accent);margin-right:6px"></i> Forward to Carrier</div><div style="padding:8px 12px;cursor:pointer;font-size:13px;transition:background .15s" onmouseenter="this.style.background=\'var(--bg-muted)\'" onmouseleave="this.style.background=\'\'" onclick="addTicketNote('+idx+')"><i class="bi bi-sticky" style="color:var(--success);margin-right:6px"></i> Add Internal Note</div><div style="padding:8px 12px;cursor:pointer;font-size:13px;transition:background .15s;border-top:1px solid var(--border)" onmouseenter="this.style.background=\'var(--bg-muted)\'" onmouseleave="this.style.background=\'\'" onclick="mergeTicket('+idx+')"><i class="bi bi-intersect" style="color:var(--text-muted);margin-right:6px"></i> Merge with Another Ticket</div></div></div></div></div>';
   html+='<div style="display:flex;gap:8px">';
@@ -2869,8 +2946,17 @@ function renderTickets() {
   if(cEl)cEl.textContent='Showing '+filtered.length+' of '+TICKETS.length+' tickets';
 }
 
+function editCarrierMarkup(id){
+  var c=CARRIERS_DATA.find(function(x){return x.id===id;});if(!c)return;
+  var newMarkup=prompt('Edit markup for '+c.name+' (current: '+c.markup+'%):',c.markup);
+  if(newMarkup&&parseFloat(newMarkup)>=0&&parseFloat(newMarkup)<=100){
+    var old=c.markup;c.markup=parseFloat(newMarkup);
+    renderCarrierRates();
+    addAuditEntry('Changed '+c.name+' markup: '+old+'% → '+newMarkup+'%','');
+  }
+}
 function renderCarrierRates() {
-  document.getElementById('carrierRateCards').innerHTML = CARRIERS_DATA.map(c => `<div class="card"><div style="padding:20px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div style="display:flex;align-items:center;gap:10px"><div style="width:40px;height:40px;border-radius:10px;background:${c.enabled?'var(--success-bg)':'var(--bg-muted)'};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:${c.enabled?'var(--success)':'var(--text-muted)'}">${c.name.substring(0,2).toUpperCase()}</div><div><h4 style="font-size:14px;font-weight:700;color:var(--text-heading)">${c.name}</h4><span style="font-size:11px;color:var(--text-muted)">${c.shipments} shipments · $${(c.revenue/1000).toFixed(1)}k revenue</span></div></div><div style="width:38px;height:20px;border-radius:10px;background:${c.enabled?'var(--success)':'var(--border)'};position:relative;cursor:pointer" onclick="toggleCarrier('${c.id}')"><div style="width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:2px;${c.enabled?'right':'left'}:2px;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:all .2s"></div></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px"><div style="background:var(--bg-muted);padding:10px;border-radius:var(--radius-md);text-align:center"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase">Markup</div><div style="font-size:18px;font-weight:800;color:var(--text-heading)">${c.markup}%</div></div><div style="background:var(--bg-muted);padding:10px;border-radius:var(--radius-md);text-align:center"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase">API Calls</div><div style="font-size:18px;font-weight:800;color:var(--text-heading)">${(c.calls/1000).toFixed(1)}k</div></div><div style="background:var(--bg-muted);padding:10px;border-radius:var(--radius-md);text-align:center"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase">Revenue</div><div style="font-size:18px;font-weight:800;color:var(--accent)">$${(c.revenue/1000).toFixed(1)}k</div></div></div></div></div>`).join('');
+  document.getElementById('carrierRateCards').innerHTML = CARRIERS_DATA.map(function(c){return '<div class="card"><div style="padding:20px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div style="display:flex;align-items:center;gap:10px"><div style="width:40px;height:40px;border-radius:10px;background:'+(c.enabled?'var(--success-bg)':'var(--bg-muted)')+';display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:'+(c.enabled?'var(--success)':'var(--text-muted)')+'">'+c.name.substring(0,2).toUpperCase()+'</div><div><h4 style="font-size:14px;font-weight:700;color:var(--text-heading)">'+c.name+'</h4><span style="font-size:11px;color:var(--text-muted)">'+c.shipments+' shipments · $'+(c.revenue/1000).toFixed(1)+'k revenue</span></div></div><div style="width:38px;height:20px;border-radius:10px;background:'+(c.enabled?'var(--success)':'var(--border)')+';position:relative;cursor:pointer" onclick="toggleCarrier(\''+c.id+'\')"><div style="width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:2px;'+(c.enabled?'right':'left')+':2px;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:all .2s"></div></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px"><div style="background:var(--bg-muted);padding:10px;border-radius:var(--radius-md);text-align:center;cursor:pointer;transition:box-shadow .2s" onclick="editCarrierMarkup(\''+c.id+'\')" onmouseenter="this.style.boxShadow=\'0 0 0 2px var(--accent)\'" onmouseleave="this.style.boxShadow=\'\'"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase">Markup <i class="bi bi-pencil" style="font-size:8px"></i></div><div style="font-size:18px;font-weight:800;color:var(--accent)">'+c.markup+'%</div></div><div style="background:var(--bg-muted);padding:10px;border-radius:var(--radius-md);text-align:center"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase">API Calls</div><div style="font-size:18px;font-weight:800;color:var(--text-heading)">'+(c.calls/1000).toFixed(1)+'k</div></div><div style="background:var(--bg-muted);padding:10px;border-radius:var(--radius-md);text-align:center"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase">Revenue</div><div style="font-size:18px;font-weight:800;color:var(--accent)">$'+(c.revenue/1000).toFixed(1)+'k</div></div></div></div></div>';}).join('');
 }
 function toggleCarrier(id){const c=CARRIERS_DATA.find(x=>x.id===id);if(c){c.enabled=!c.enabled;renderCarrierRates();}}
 
