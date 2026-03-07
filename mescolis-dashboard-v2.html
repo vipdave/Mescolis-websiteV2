@@ -546,9 +546,9 @@ select.form-input{cursor:pointer}
 .quick-link{padding:8px 12px;cursor:pointer;border-radius:var(--radius-md);transition:background var(--transition);font-size:13px;color:var(--text-body)}
 .quick-link:hover{background:var(--bg-muted)}
 
-.notif-panel{position:absolute;top:var(--topbar-height);right:32px;width:400px;background:var(--bg-white);border-radius:var(--radius-lg);box-shadow:0 20px 60px rgba(0,0,0,.12);border:1px solid var(--border);animation:fadeUp .15s ease;z-index:9999}
+.notif-panel{position:fixed;top:var(--topbar-height);right:32px;width:400px;background:var(--bg-white);border-radius:var(--radius-lg);box-shadow:0 20px 60px rgba(0,0,0,.12);border:1px solid var(--border);animation:fadeUp .15s ease;z-index:9999}
 .notif-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.notif-item{padding:14px 20px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;gap:12px;transition:background var(--transition)}
+.notif-item{padding:14px 20px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;gap:12px;transition:background var(--transition);pointer-events:all;position:relative;z-index:10000}
 .notif-item:hover{background:var(--bg-muted)}
 .notif-icon{width:36px;height:36px;border-radius:50%;background:var(--bg-muted);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
 
@@ -1779,10 +1779,10 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
 <div id="notifOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9998" onclick="closeNotif()"></div>
 <div class="notif-panel" id="notifPanel" style="display:none">
   <div class="notif-header"><h3 style="font-size:14px;font-weight:700;color:var(--text-heading)">Notifications</h3><span style="font-size:11px;color:var(--accent);cursor:pointer;font-weight:600" onclick="markAllNotifRead()">Mark all read</span></div>
-  <div class="notif-item" onclick="closeNotif();navigateTo('shipment-detail')"><div class="notif-icon" style="color:var(--danger)"><i class="bi bi-exclamation-triangle"></i></div><div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text-heading)">Delivery Exception</div><div style="font-size:12px;color:var(--text-muted);margin-top:1px">SHP-0885 has an address issue in Winnipeg</div><div style="font-size:11px;color:var(--text-muted);margin-top:3px">5h ago</div></div></div>
-  <div class="notif-item" onclick="closeNotif();navigateTo('pickups')"><div class="notif-icon" style="color:var(--info)"><i class="bi bi-truck"></i></div><div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text-heading)">Pickup Scheduled</div><div style="font-size:12px;color:var(--text-muted);margin-top:1px">UPS pickup confirmed for Mar 1 at 9:00 AM</div><div style="font-size:11px;color:var(--text-muted);margin-top:3px">1d ago</div></div></div>
-  <div class="notif-item" onclick="closeNotif();navigateTo('invoices')"><div class="notif-icon" style="color:var(--warning)"><i class="bi bi-receipt"></i></div><div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text-heading)">Invoice Due</div><div style="font-size:12px;color:var(--text-muted);margin-top:1px">INV-2026-0034 for $347.50 is due Mar 15</div><div style="font-size:11px;color:var(--text-muted);margin-top:3px">2d ago</div></div></div>
-  <div class="notif-item" onclick="closeNotif();navigateTo('carriers')"><div class="notif-icon" style="color:var(--accent)"><i class="bi bi-arrow-repeat"></i></div><div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text-heading)">Rate Update</div><div style="font-size:12px;color:var(--text-muted);margin-top:1px">Purolator rates updated for Q1 2026</div><div style="font-size:11px;color:var(--text-muted);margin-top:3px">2d ago</div></div></div>
+  <div class="notif-item" onclick="notifClick(this,'shipment-detail','SHP-0885')"><div class="notif-icon" style="color:var(--danger)"><i class="bi bi-exclamation-triangle"></i></div><div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text-heading)">Delivery Exception</div><div style="font-size:12px;color:var(--text-muted);margin-top:1px">SHP-0885 has an address issue in Winnipeg</div><div style="font-size:11px;color:var(--text-muted);margin-top:3px">5h ago</div></div></div>
+  <div class="notif-item" onclick="notifClick(this,'pickups')"><div class="notif-icon" style="color:var(--info)"><i class="bi bi-truck"></i></div><div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text-heading)">Pickup Scheduled</div><div style="font-size:12px;color:var(--text-muted);margin-top:1px">UPS pickup confirmed for Mar 1 at 9:00 AM</div><div style="font-size:11px;color:var(--text-muted);margin-top:3px">1d ago</div></div></div>
+  <div class="notif-item" onclick="notifClick(this,'invoices')"><div class="notif-icon" style="color:var(--warning)"><i class="bi bi-receipt"></i></div><div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text-heading)">Invoice Due</div><div style="font-size:12px;color:var(--text-muted);margin-top:1px">INV-2026-0034 for $347.50 is due Mar 15</div><div style="font-size:11px;color:var(--text-muted);margin-top:3px">2d ago</div></div></div>
+  <div class="notif-item" onclick="notifClick(this,'carriers')"><div class="notif-icon" style="color:var(--accent)"><i class="bi bi-arrow-repeat"></i></div><div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text-heading)">Rate Update</div><div style="font-size:12px;color:var(--text-muted);margin-top:1px">Purolator rates updated for Q1 2026</div><div style="font-size:11px;color:var(--text-muted);margin-top:3px">2d ago</div></div></div>
 </div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
@@ -2263,7 +2263,7 @@ const QUOTES = [
 ];
 
 const STATUS_MAP = {transit:{l:"In Transit",c:"badge-transit"},delivery:{l:"Out for Delivery",c:"badge-delivery"},delivered:{l:"Delivered",c:"badge-delivered"},pending:{l:"Pending",c:"badge-pending"},exception:{l:"Exception",c:"badge-exception"},scheduled:{l:"Scheduled",c:"badge-transit"},completed:{l:"Completed",c:"badge-delivered"},paid:{l:"Paid",c:"badge-delivered"},unpaid:{l:"Unpaid",c:"badge-pending"}};
-const PAGE_NAMES = {dashboard:"Dashboard","get-quote":"Get Quote",shipments:"Shipments","shipment-detail":"Shipment Detail","track-package":"Track Package",pickups:"My Pickups",carriers:"Carriers","address-book":"Address Book",invoices:"Invoices",reports:"Reports",settings:"Settings",integrations:"Integrations","create-shipment":"Create Shipment","schedule-pickup":"Schedule Pickup"};
+const PAGE_NAMES = {dashboard:"Dashboard","get-quote":"Get Quote",shipments:"Shipments","shipment-detail":"Shipment Detail","track-package":"Track Package",pickups:"My Pickups",carriers:"Carriers","address-book":"Address Book",invoices:"Invoices",reports:"Reports","payment-settings":"Payment Settings",settings:"Settings",integrations:"Integrations","create-shipment":"Create Shipment","schedule-pickup":"Schedule Pickup"};
 const carrier = id => CARRIERS.find(c=>c.id===id)||CARRIERS[0];
 const badge = s => {const st=STATUS_MAP[s]||{l:s,c:"badge-pending"};return `<span class="badge ${st.c}"><span class="badge-dot"></span>${st.l}</span>`;};
 const ci = (id,sz="md") => {const c=carrier(id);return `<span class="carrier-icon sz-${sz} ${c.cls}">${c.icon}</span>`;};
@@ -3312,18 +3312,22 @@ document.addEventListener('keydown', e => {
 function toggleNotif() { const p=document.getElementById('notifPanel');const o=document.getElementById('notifOverlay');const v=p.style.display==='none';p.style.display=v?'block':'none';o.style.display=v?'block':'none'; }
 function closeNotif() { document.getElementById('notifPanel').style.display='none'; document.getElementById('notifOverlay').style.display='none'; }
 function markAllNotifRead(){
-  // Fade notification items
   document.querySelectorAll('.notif-item').forEach(function(el){
     el.style.opacity='.5';
     var title=el.querySelector('div[style*="font-weight:600"]');
     if(title)title.style.color='var(--text-muted)';
   });
-  // Hide the red dot on the bell
   var dot=document.querySelector('.notification-dot');
   if(dot)dot.style.display='none';
-  // Change "Mark all read" to "All read ✓"
   var markBtn=document.querySelector('.notif-header span[onclick]');
   if(markBtn){markBtn.textContent='All read ✓';markBtn.style.color='var(--success)';markBtn.onclick=null;markBtn.style.cursor='default';}
+}
+function notifClick(el,page,data){
+  el.style.opacity='.5';
+  var title=el.querySelector('div[style*="font-weight:600"]');
+  if(title)title.style.color='var(--text-muted)';
+  closeNotif();
+  setTimeout(function(){navigateTo(page,data);},50);
 }
 
 /* ═══════════════════════════════════════════
