@@ -1423,12 +1423,16 @@ document.addEventListener('keydown',(e)=>{if(e.key==='Escape'&&slModal.classList
 </script>
 <!-- MESCOLIS AI CHATBOT WIDGET -->
 <style>
-.chatbot-fab{position:fixed;bottom:24px;right:24px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#F09030,#D87A1A);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(240,144,48,.4);display:flex;align-items:center;justify-content:center;font-size:24px;z-index:300;transition:all .3s ease}
+
+.chatbot-fab{touch-action:none;user-select:none}
+.chatbot-fab.dragging{opacity:.8;cursor:grabbing;transition:none}
+.chatbot-fab.dragging::after{display:none}
+.chatbot-fab{position:fixed;bottom:40px;right:24px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#F09030,#D87A1A);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(240,144,48,.4);display:flex;align-items:center;justify-content:center;font-size:24px;z-index:300;transition:all .3s ease}
 .chatbot-fab:hover{transform:scale(1.08);box-shadow:0 6px 24px rgba(240,144,48,.5)}
 .chatbot-fab::after{content:"";position:absolute;width:100%;height:100%;border-radius:50%;background:rgba(240,144,48,.3);animation:chatPulse 2s ease infinite}
 @keyframes chatPulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.5);opacity:0}}
 .chatbot-fab .notif-dot{position:absolute;top:2px;right:2px;width:12px;height:12px;background:#3B8BD2;border-radius:50%;border:2px solid #fff}
-.chatbot-panel{position:fixed;bottom:92px;right:24px;width:380px;height:540px;background:var(--bg-white,#fff);border-radius:16px;box-shadow:0 12px 48px rgba(27,37,64,.18);z-index:300;display:none;flex-direction:column;overflow:hidden;border:1px solid var(--border,#e1e5eb);animation:chatSlideUp .3s ease}
+.chatbot-panel{position:fixed;bottom:108px;right:24px;width:380px;height:540px;background:var(--bg-white,#fff);border-radius:16px;box-shadow:0 12px 48px rgba(27,37,64,.18);z-index:300;display:none;flex-direction:column;overflow:hidden;border:1px solid var(--border,#e1e5eb);animation:chatSlideUp .3s ease}
 .chatbot-panel.open{display:flex}
 @keyframes chatSlideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 .chat-header{padding:16px 18px;background:linear-gradient(135deg,#3B8BD2,#2A6BAF);color:#fff;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
@@ -1576,6 +1580,56 @@ function sendQuickMsg(msg) {
   document.getElementById('chatInput').value = msg;
   sendChatMsg();
 }
+
+(function(){
+  var fab = document.getElementById('chatFab');
+  var panel = document.getElementById('chatPanel');
+  var isDragging = false, wasDragged = false;
+  var startX, startY, startLeft, startTop;
+  function getPos(){var r=fab.getBoundingClientRect();return{left:r.left,top:r.top};}
+  function reposPanel(fl,ft){
+    var pl=fl-324,pt=ft-548;
+    if(pl<8)pl=fl;if(pt<8)pt=ft+64;
+    if(pl+380>window.innerWidth)pl=window.innerWidth-388;
+    panel.style.left=pl+'px';panel.style.top=pt+'px';panel.style.right='auto';panel.style.bottom='auto';
+  }
+  fab.addEventListener('mousedown',function(e){
+    isDragging=true;wasDragged=false;startX=e.clientX;startY=e.clientY;
+    var p=getPos();startLeft=p.left;startTop=p.top;
+    fab.classList.add('dragging');e.preventDefault();
+  });
+  document.addEventListener('mousemove',function(e){
+    if(!isDragging)return;
+    var dx=e.clientX-startX,dy=e.clientY-startY;
+    if(Math.abs(dx)>4||Math.abs(dy)>4)wasDragged=true;
+    var nl=Math.max(0,Math.min(window.innerWidth-56,startLeft+dx));
+    var nt=Math.max(0,Math.min(window.innerHeight-56,startTop+dy));
+    fab.style.left=nl+'px';fab.style.top=nt+'px';fab.style.right='auto';fab.style.bottom='auto';
+    reposPanel(nl,nt);
+  });
+  document.addEventListener('mouseup',function(){if(isDragging){isDragging=false;fab.classList.remove('dragging');}});
+  var origToggle=window.toggleChat;
+  window.toggleChat=function(){
+    if(wasDragged){wasDragged=false;return;}
+    origToggle();
+    if(chatOpen){var r=fab.getBoundingClientRect();reposPanel(r.left,r.top);}
+  };
+  fab.addEventListener('touchstart',function(e){
+    var t=e.touches[0];isDragging=true;wasDragged=false;startX=t.clientX;startY=t.clientY;
+    var p=getPos();startLeft=p.left;startTop=p.top;fab.classList.add('dragging');
+  },{passive:true});
+  document.addEventListener('touchmove',function(e){
+    if(!isDragging)return;var t=e.touches[0];
+    var dx=t.clientX-startX,dy=t.clientY-startY;
+    if(Math.abs(dx)>4||Math.abs(dy)>4)wasDragged=true;
+    var nl=Math.max(0,Math.min(window.innerWidth-56,startLeft+dx));
+    var nt=Math.max(0,Math.min(window.innerHeight-56,startTop+dy));
+    fab.style.left=nl+'px';fab.style.top=nt+'px';fab.style.right='auto';fab.style.bottom='auto';
+    reposPanel(nl,nt);
+  },{passive:true});
+  document.addEventListener('touchend',function(){if(isDragging){isDragging=false;fab.classList.remove('dragging');}});
+})();
+
 </script>
 
 </body>
