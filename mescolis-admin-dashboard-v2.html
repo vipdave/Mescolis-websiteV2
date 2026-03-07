@@ -21,7 +21,7 @@
    ════════════════════════════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg-page:#f8f9fc;--bg-white:#ffffff;--bg-sidebar:#09091b;--bg-sidebar-hover:#161630;--bg-sidebar-active:#1c1c40;
+  --bg-page:#f8f9fc;--bg-white:#ffffff;--bg-sidebar:#1e293b;--bg-sidebar-hover:#334155;--bg-sidebar-active:#475569;
   --bg-topbar:#ffffff;--bg-muted:#f1f3f9;--bg-hover:#e8ebf4;
   --accent:#dc2626;--accent-light:#fef2f2;--accent-hover:#b91c1c;--accent-glow:rgba(220,38,38,.12);
   --teal:#0d7377;--teal-light:#e8f5f5;
@@ -101,6 +101,7 @@ body.sidebar-collapsed .sidebar-toggle{right:-14px}
 body.sidebar-collapsed .sidebar-text{display:none}
 body.sidebar-collapsed #sidebarLogout{padding:4px 6px 8px}
 body.sidebar-collapsed #sidebarLogout button{padding:8px;min-width:0}
+body.sidebar-collapsed #sidebarThemePicker{display:none!important}
 body.sidebar-collapsed .dark-mode-toggle{justify-content:center;padding:8px}
 body.sidebar-collapsed .toggle-switch{display:none}
 
@@ -1069,7 +1070,19 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
     <div class="sidebar-user-avatar">DK</div>
     <div class="sidebar-user-info"><h4>David Kosal</h4><span>Super Admin</span></div>
   </div>
-  <div style="padding:6px 12px 10px"><button class="btn btn-sm" style="width:100%;justify-content:center;background:transparent;border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.4);border-radius:10px;cursor:pointer" onmouseenter="this.style.background='rgba(255,255,255,.06)';this.style.color='#fff'" onmouseleave="this.style.background='transparent';this.style.color='rgba(255,255,255,.4)'"><i class="bi bi-box-arrow-left"></i> Logout</button></div>
+  <!-- Sidebar Theme Picker -->
+  <div id="sidebarThemePicker" style="padding:6px 20px 4px;display:flex;align-items:center;gap:8px">
+    <span style="font-size:10px;color:rgba(255,255,255,.3);font-weight:600;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap">Theme</span>
+    <div style="display:flex;gap:5px;flex:1;justify-content:flex-start">
+      <div class="sb-theme-dot" onclick="setSidebarTheme('slate')" title="Slate" style="width:18px;height:18px;border-radius:50%;background:#1e293b;cursor:pointer;border:2px solid var(--accent);box-shadow:0 0 0 1px rgba(255,255,255,.15)"></div>
+      <div class="sb-theme-dot" onclick="setSidebarTheme('dark')" title="Dark" style="width:18px;height:18px;border-radius:50%;background:#09091b;cursor:pointer;border:2px solid transparent;box-shadow:0 0 0 1px rgba(255,255,255,.15)"></div>
+      <div class="sb-theme-dot" onclick="setSidebarTheme('navy')" title="Navy" style="width:18px;height:18px;border-radius:50%;background:#1e3a5f;cursor:pointer;border:2px solid transparent;box-shadow:0 0 0 1px rgba(255,255,255,.15)"></div>
+      <div class="sb-theme-dot" onclick="setSidebarTheme('charcoal')" title="Charcoal" style="width:18px;height:18px;border-radius:50%;background:#374151;cursor:pointer;border:2px solid transparent;box-shadow:0 0 0 1px rgba(255,255,255,.15)"></div>
+      <div class="sb-theme-dot" onclick="setSidebarTheme('midnight')" title="Midnight Blue" style="width:18px;height:18px;border-radius:50%;background:#1a1a2e;cursor:pointer;border:2px solid transparent;box-shadow:0 0 0 1px rgba(255,255,255,.15)"></div>
+      <div class="sb-theme-dot" onclick="setSidebarTheme('light')" title="Light" style="width:18px;height:18px;border-radius:50%;background:#f1f5f9;cursor:pointer;border:2px solid transparent;box-shadow:0 0 0 1px rgba(0,0,0,.12)"></div>
+    </div>
+  </div>
+  <div style="padding:6px 12px 10px" id="sidebarLogout"><button class="btn btn-sm" style="width:100%;justify-content:center;background:transparent;border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.4);border-radius:10px;cursor:pointer" onmouseenter="this.style.background='rgba(255,255,255,.06)';this.style.color='#fff'" onmouseleave="this.style.background='transparent';this.style.color='rgba(255,255,255,.4)'"><i class="bi bi-box-arrow-left"></i> Logout</button></div>
 </div>
 </aside>
 
@@ -1381,7 +1394,29 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
     <div class="stat-card"><div class="stat-top"><span class="stat-label">Error Rate</span><div class="stat-icon red"><i class="bi bi-bug"></i></div></div><div class="stat-value">0.3%</div></div>
     <div class="stat-card"><div class="stat-top"><span class="stat-label">Avg. Response</span><div class="stat-icon amber"><i class="bi bi-speedometer"></i></div></div><div class="stat-value">245ms</div></div>
   </div>
-  <div class="card"><div class="card-header"><h3><i class="bi bi-braces"></i> API Calls by User</h3></div><div style="overflow-x:auto"><table class="data-table"><thead><tr><th>User</th><th>Today</th><th>This Week</th><th>This Month</th><th>Error Rate</th><th>Status</th></tr></thead><tbody id="apiUsageBody"></tbody></table></div></div>
+  <div class="card"><div class="card-header"><h3><i class="bi bi-braces"></i> API Calls by User</h3></div>
+    <div style="padding:12px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)">
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-sm btn-primary api-filter" onclick="filterApiUsage('all',this)">All</button>
+        <button class="btn btn-sm btn-outline api-filter" onclick="filterApiUsage('ok',this)">OK</button>
+        <button class="btn btn-sm btn-outline api-filter" onclick="filterApiUsage('warning',this)">Warning</button>
+        <button class="btn btn-sm btn-outline api-filter" onclick="filterApiUsage('critical',this)">Critical</button>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <input class="form-input" id="apiSearch" placeholder="Search users..." style="width:200px;padding:5px 8px;font-size:12px" oninput="renderApiUsage()">
+        <button class="btn btn-sm btn-outline" onclick="exportApiUsage()"><i class="bi bi-download"></i> Export</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto"><table class="data-table"><thead><tr>
+      <th style="cursor:pointer" onclick="sortApiUsage('name')">User <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortApiUsage('today')">Today <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortApiUsage('week')">This Week <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortApiUsage('month')">This Month <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortApiUsage('error')">Error Rate <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+      <th style="cursor:pointer" onclick="sortApiUsage('status')">Status <i class="bi bi-arrow-down-up" style="font-size:9px;opacity:.4"></i></th>
+    </tr></thead><tbody id="apiUsageBody"></tbody></table></div>
+    <div style="padding:10px 18px;border-top:1px solid var(--border)"><span style="font-size:12px;color:var(--text-muted)" id="apiUsageCount"></span></div>
+  </div>
 </div>
 
 <!-- ══════ PAGE: ROLE MANAGEMENT ══════ -->
@@ -2261,6 +2296,60 @@ function updateCounts() {
 }
 
 /* ═══════ EMAIL ═══════ */
+/* SIDEBAR THEME */
+var SIDEBAR_THEMES = {
+  slate:{bg:'#1e293b',hover:'#334155',active:'#475569',border:'rgba(255,255,255,.06)',text:'#fff',muted:'rgba(255,255,255,.35)',light:false},
+  dark:{bg:'#09091b',hover:'#161630',active:'#1c1c40',border:'rgba(255,255,255,.04)',text:'#fff',muted:'rgba(255,255,255,.3)',light:false},
+  navy:{bg:'#1e3a5f',hover:'#2a4f7a',active:'#366596',border:'rgba(255,255,255,.08)',text:'#fff',muted:'rgba(255,255,255,.4)',light:false},
+  charcoal:{bg:'#374151',hover:'#4b5563',active:'#6b7280',border:'rgba(255,255,255,.08)',text:'#fff',muted:'rgba(255,255,255,.4)',light:false},
+  midnight:{bg:'#1a1a2e',hover:'#2a2a48',active:'#3a3a60',border:'rgba(255,255,255,.06)',text:'#fff',muted:'rgba(255,255,255,.3)',light:false},
+  light:{bg:'#f1f5f9',hover:'#e2e8f0',active:'#cbd5e1',border:'rgba(0,0,0,.08)',text:'#1e293b',muted:'rgba(0,0,0,.4)',light:true}
+};
+var _currentSbTheme='slate';
+function setSidebarTheme(theme){
+  var t=SIDEBAR_THEMES[theme];if(!t)return;
+  _currentSbTheme=theme;
+  var root=document.documentElement;
+  root.style.setProperty('--bg-sidebar',t.bg);
+  root.style.setProperty('--bg-sidebar-hover',t.hover);
+  root.style.setProperty('--bg-sidebar-active',t.active);
+  // Update sidebar elements for light vs dark
+  var sidebar=document.querySelector('.sidebar');
+  if(!sidebar)return;
+  sidebar.style.borderRight='1px solid '+t.border;
+  // Nav items text color
+  sidebar.querySelectorAll('.nav-item span, .nav-item i').forEach(function(el){el.style.color='';});
+  sidebar.querySelectorAll('.nav-section-title').forEach(function(el){el.style.color=t.muted;});
+  // Brand text
+  var brandSpan=sidebar.querySelector('.sidebar-header span[data-notranslate]');
+  if(brandSpan){brandSpan.style.color=t.light?'#1e293b':'#fff';brandSpan.querySelectorAll('span').forEach(function(s){s.style.color=t.light?'#3b82f6':'#5b9bd5';});}
+  // User info
+  sidebar.querySelectorAll('.sidebar-user-info h4').forEach(function(el){el.style.color=t.text;});
+  sidebar.querySelectorAll('.sidebar-user-info span').forEach(function(el){el.style.color=t.muted;});
+  // Theme label
+  var lbl=document.querySelector('#sidebarThemePicker span');
+  if(lbl)lbl.style.color=t.muted;
+  // Nav items
+  sidebar.querySelectorAll('.nav-item').forEach(function(el){
+    el.style.color=t.light?'#475569':'rgba(255,255,255,.65)';
+  });
+  sidebar.querySelectorAll('.nav-item.active').forEach(function(el){
+    el.style.color=t.light?'#1e293b':'#fff';
+    el.style.background=t.active;
+  });
+  // Logout button
+  var logoutBtn=sidebar.querySelector('#sidebarLogout button');
+  if(logoutBtn){
+    logoutBtn.style.borderColor=t.border;
+    logoutBtn.style.color=t.muted;
+  }
+  // Update dots
+  document.querySelectorAll('.sb-theme-dot').forEach(function(d){d.style.borderColor='transparent';});
+  var dots=document.querySelectorAll('.sb-theme-dot');
+  var themeIdx={slate:0,dark:1,navy:2,charcoal:3,midnight:4,light:5};
+  if(dots[themeIdx[theme]])dots[themeIdx[theme]].style.borderColor='var(--accent)';
+}
+
 /* ROLE VIEW / IMPERSONATION */
 var _currentRoleView = 'Super Admin';
 function toggleRoleViewMenu(){var m=document.getElementById('roleViewMenu');m.style.display=m.style.display==='none'?'block':'none';}
@@ -3155,9 +3244,55 @@ function renderMarkupOverrides() {
   document.getElementById('markupOverrides').innerHTML = commOverrides.map(function(o,i){return '<tr><td style="font-weight:600">'+o.user+'</td><td style="font-size:12px;color:var(--text-secondary)">'+o.company+'</td><td style="font-family:var(--mono);font-weight:700;color:var(--accent)">'+o.markup+'%</td><td style="font-size:12px;color:var(--text-muted)">'+o.reason+'</td><td><div style="display:flex;gap:4px"><button class="btn btn-sm btn-outline" onclick="editOverride('+i+')"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-outline" style="color:var(--danger)" onclick="deleteOverride('+i+')"><i class="bi bi-trash3"></i></button></div></td></tr>';}).join('');
 }
 
+var _apiUsageData=null;
+var _apiStatusFilter='all';
+var _apiSortCol='today';var _apiSortAsc=false;
+function generateApiData(){
+  if(_apiUsageData)return;
+  _apiUsageData=[...USERS].filter(function(u){return u.status==='active';}).map(function(u){
+    var d=Math.floor(u.shipments*2.3);
+    var err=parseFloat((Math.random()*.5).toFixed(1));
+    if(Math.random()>.9)err=parseFloat((Math.random()*3+1).toFixed(1));
+    var status=err>2?'critical':err>0.8?'warning':'ok';
+    return{id:u.id,name:u.name,today:d,week:d*7,month:d*30,error:err,status:status};
+  });
+}
+function filterApiUsage(status,btn){
+  _apiStatusFilter=status;
+  document.querySelectorAll('.api-filter').forEach(function(b){b.classList.remove('btn-primary');b.classList.add('btn-outline');});
+  btn.classList.remove('btn-outline');btn.classList.add('btn-primary');
+  renderApiUsage();
+}
+function sortApiUsage(col){if(_apiSortCol===col){_apiSortAsc=!_apiSortAsc;}else{_apiSortCol=col;_apiSortAsc=true;}renderApiUsage();}
+function exportApiUsage(){
+  generateApiData();
+  var csv='User,Today,This Week,This Month,Error Rate,Status\n';
+  _apiUsageData.forEach(function(a){csv+='"'+a.name+'",'+a.today+','+a.week+','+a.month+','+a.error+'%,'+a.status+'\n';});
+  var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob);
+  var el=document.createElement('a');el.href=url;el.download='mescolis_api_usage.csv';el.click();
+  URL.revokeObjectURL(url);
+  addAuditEntry('Exported API usage CSV','');
+}
 function renderApiUsage() {
-  const sorted = [...USERS].filter(u=>u.status==='active').sort((a,b)=>b.shipments-a.shipments).slice(0,15);
-  document.getElementById('apiUsageBody').innerHTML = sorted.map(u => {const d=Math.floor(u.shipments*2.3);return `<tr><td><span style="font-weight:600;font-size:12px;color:var(--accent);cursor:pointer" onclick="viewUser(${u.id})" onmouseenter="this.style.textDecoration='underline'" onmouseleave="this.style.textDecoration='none'">${u.name}</span></td><td style="font-family:var(--mono)">${d}</td><td style="font-family:var(--mono)">${d*7}</td><td style="font-family:var(--mono)">${d*30}</td><td style="color:${Math.random()>.9?'var(--danger)':'var(--success)'};font-weight:600">${(Math.random()*.5).toFixed(1)}%</td><td><span class="badge badge-active">OK</span></td></tr>`;}).join('');
+  generateApiData();
+  var filtered=_apiUsageData.slice();
+  if(_apiStatusFilter!=='all')filtered=filtered.filter(function(a){return a.status===_apiStatusFilter;});
+  var sq=((document.getElementById('apiSearch')||{}).value||'').toLowerCase();
+  if(sq)filtered=filtered.filter(function(a){return a.name.toLowerCase().includes(sq);});
+  if(_apiSortCol){
+    filtered.sort(function(a,b){
+      if(_apiSortCol==='name')return _apiSortAsc?a.name.localeCompare(b.name):b.name.localeCompare(a.name);
+      if(_apiSortCol==='status')return _apiSortAsc?a.status.localeCompare(b.status):b.status.localeCompare(a.status);
+      var va=a[_apiSortCol]||0,vb=b[_apiSortCol]||0;
+      return _apiSortAsc?va-vb:vb-va;
+    });
+  }
+  document.getElementById('apiUsageBody').innerHTML=filtered.map(function(a){
+    return '<tr><td><span style="font-weight:600;font-size:12px;color:var(--accent);cursor:pointer" onclick="viewUser('+a.id+')" onmouseenter="this.style.textDecoration=\'underline\'" onmouseleave="this.style.textDecoration=\'none\'">'+a.name+'</span></td><td style="font-family:var(--mono)">'+a.today.toLocaleString()+'</td><td style="font-family:var(--mono)">'+a.week.toLocaleString()+'</td><td style="font-family:var(--mono)">'+a.month.toLocaleString()+'</td><td style="color:'+(a.error>2?'var(--danger)':a.error>0.8?'var(--warning)':'var(--success)')+';font-weight:600">'+a.error+'%</td><td><span class="badge badge-'+(a.status==='critical'?'blocked':a.status==='warning'?'pending':'active')+'">'+(a.status==='critical'?'Critical':a.status==='warning'?'Warning':'OK')+'</span></td></tr>';
+  }).join('');
+  var cEl=document.getElementById('apiUsageCount');
+  if(cEl)cEl.textContent='Showing '+filtered.length+' of '+_apiUsageData.length+' users';
 }
 
 /* PERMISSIONS SYSTEM */
