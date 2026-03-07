@@ -699,7 +699,7 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
   <div class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar"><i class="bi bi-chevron-left" id="sidebarToggleIcon"></i></div>
   <div class="sidebar-inner">
   <button class="sidebar-close" onclick="closeSidebar()"><i class="bi bi-x-lg"></i></button>
-  <div class="sidebar-header">
+  <div class="sidebar-header" onclick="navigateTo('dashboard')" style="cursor:pointer">
     <img src="data:image/png;base64,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" alt="MesColis.ca" style="height:36px;flex-shrink:0">
     <span class="sidebar-text" data-notranslate style="font-size:19px;font-weight:800;color:#fff;letter-spacing:-.4px;line-height:1">Mes<span style="color:#5b9bd5">Colis</span><span style="color:#5b9bd5;font-size:13px;font-weight:500">.ca</span></span>
   </div>
@@ -755,13 +755,13 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
     <div class="topbar-right">
       <button class="topbar-btn" title="Search" onclick="openSearch()" style="display:none" id="mobileSearchBtn"><i class="bi bi-search"></i></button>
       <div class="topbar-search" onclick="openSearch()">
-        <i class="bi bi-search"></i>Search shipments…<kbd>⌘K</kbd>
+        <i class="bi bi-search"></i>Search shipments…
       </div>
       <button class="topbar-btn" title="Notifications" onclick="toggleNotif()">
         <i class="bi bi-bell"></i><span class="notification-dot"></span>
       </button>
       <button class="topbar-btn" title="Settings" onclick="navigateTo('settings')"><i class="bi bi-gear"></i></button>
-      <button class="topbar-btn" title="Help"><i class="bi bi-question-circle"></i></button>
+      <button class="topbar-btn" title="Help" onclick="alert('MesColis Help Center\n\nFor support: support@mescolis.ca\nPhone: 1-888-MES-COLI\nDocs: docs.mescolis.ca')"><i class="bi bi-question-circle"></i></button>
       <div class="lang-toggle" onclick="toggleLang()">
         <button class="lang-btn active" id="langEN">EN</button>
         <button class="lang-btn" id="langFR">FR</button>
@@ -781,7 +781,7 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
     <p>Here's your shipping overview. You have <strong style="color:var(--accent)">47 active shipments</strong> and saved <strong style="color:var(--teal)">$2,340</strong> this month.</p>
     <div class="welcome-hero-actions">
       <button class="btn btn-primary" onclick="navigateTo('create-shipment')"><i class="bi bi-plus-lg"></i> New Shipment</button>
-      <button class="btn btn-outline" style="background:rgba(255,255,255,.7);backdrop-filter:blur(8px)"><i class="bi bi-download"></i> Export</button>
+      <button class="btn btn-outline" style="background:rgba(255,255,255,.7);backdrop-filter:blur(8px)" onclick="exportDashboardCSV()"><i class="bi bi-download"></i> Export</button>
     </div>
   </div>
 
@@ -802,7 +802,7 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
   <div class="content-grid">
     <div class="card">
       <div class="card-header"><h3><i class="bi bi-list-ul"></i> Recent Shipments</h3><a class="card-action" onclick="navigateTo('shipments')">View all shipments →</a></div>
-      <div class="table-controls"><div class="table-tabs"><button class="table-tab active">All</button><button class="table-tab">In Transit</button><button class="table-tab">Delivered</button><button class="table-tab">Pending</button><button class="table-tab">Exception</button></div><div class="table-count">Showing <strong>7</strong> of 47</div></div>
+      <div class="table-controls"><div class="table-tabs"><button class="table-tab active" onclick="filterDashShipments('all',this)">All</button><button class="table-tab" onclick="filterDashShipments('transit',this)">In Transit</button><button class="table-tab" onclick="filterDashShipments('delivered',this)">Delivered</button><button class="table-tab" onclick="filterDashShipments('pending',this)">Pending</button><button class="table-tab" onclick="filterDashShipments('exception',this)">Exception</button></div><div class="table-count" id="dashShipCount">Showing <strong>7</strong> of 47</div></div>
       <div style="overflow-x:auto">
       <table class="data-table"><thead><tr><th>ID</th><th>Carrier</th><th>Route</th><th>Service</th><th>Status</th><th>Cost</th><th>Date</th></tr></thead>
       <tbody id="dashboardShipmentsBody"></tbody></table>
@@ -829,11 +829,11 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
 
 <!-- PAGE: SHIPMENTS -->
 <div class="page-section" id="page-shipments">
-  <div class="page-header"><div><h1>Shipments</h1><div class="page-header-sub">Manage and track all your shipments</div></div><div class="page-header-actions"><button class="btn btn-outline"><i class="bi bi-download"></i> Export CSV</button><button class="btn btn-primary" onclick="navigateTo('create-shipment')"><i class="bi bi-plus-lg"></i> New Shipment</button></div></div>
+  <div class="page-header"><div><h1>Shipments</h1><div class="page-header-sub">Manage and track all your shipments</div></div><div class="page-header-actions"><button class="btn btn-outline" onclick="exportShipmentsCSV()"><i class="bi bi-download"></i> Export CSV</button><button class="btn btn-primary" onclick="navigateTo('create-shipment')"><i class="bi bi-plus-lg"></i> New Shipment</button></div></div>
   <div class="card">
-    <div class="table-controls"><div class="table-tabs"><button class="table-tab active">All (10)</button><button class="table-tab">In Transit (2)</button><button class="table-tab">Delivered (4)</button><button class="table-tab">Pending (1)</button><button class="table-tab">Exception (1)</button></div><div style="display:flex;gap:8px"><input class="form-input" placeholder="Search shipments..." style="width:220px"></div></div>
+    <div class="table-controls"><div class="table-tabs"><button class="table-tab active" onclick="filterAllShipments('all',this)">All</button><button class="table-tab" onclick="filterAllShipments('transit',this)">In Transit</button><button class="table-tab" onclick="filterAllShipments('delivered',this)">Delivered</button><button class="table-tab" onclick="filterAllShipments('pending',this)">Pending</button><button class="table-tab" onclick="filterAllShipments('exception',this)">Exception</button></div><div style="display:flex;gap:8px;align-items:center"><select class="form-input" id="shipCarrierFilter" style="width:140px;padding:5px 8px;font-size:12px" onchange="renderAllShipments()"><option value="">All Carriers</option><option>Canada Post</option><option>Purolator</option><option>UPS</option><option>FedEx</option><option>DHL</option></select><input class="form-input" id="shipSearchInput" placeholder="Search ID, route, recipient..." style="width:220px;padding:5px 8px;font-size:12px" oninput="renderAllShipments()"></div></div>
     <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>ID</th><th>Carrier</th><th>Route</th><th>Recipient</th><th>Service</th><th>Status</th><th>Cost</th><th>Date</th></tr></thead><tbody id="allShipmentsBody"></tbody></table></div>
-    <div style="padding:12px 18px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--text-muted)">Showing 10 of 10 shipments</span><div style="display:flex;gap:4px"><button class="btn btn-outline btn-sm">← Previous</button><button class="btn btn-primary btn-sm">Next →</button></div></div>
+    <div style="padding:12px 18px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--text-muted)">Showing 10 of 10 shipments</span><div style="display:flex;gap:4px"><button class="btn btn-outline btn-sm" onclick="prevShipPage()">← Previous</button><button class="btn btn-primary btn-sm" onclick="nextShipPage()">Next →</button></div></div>
   </div>
 </div>
 
@@ -847,8 +847,8 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
     </div>
     <div style="display:flex;flex-direction:column;gap:16px">
       <div class="card"><div class="card-header"><h3><i class="bi bi-info-circle"></i> Status</h3></div><div style="padding:18px;text-align:center" id="detailStatusBox"></div></div>
-      <div class="card"><div class="card-header"><h3><i class="bi bi-upc-scan"></i> Tracking Number</h3></div><div style="padding:18px"><div id="detailTrackingNum" style="background:var(--bg-muted);border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 14px;font-family:var(--mono);font-size:12px;font-weight:500;color:var(--text-heading);word-break:break-all"></div><button class="btn btn-outline btn-full" style="margin-top:10px"><i class="bi bi-clipboard"></i> Copy</button></div></div>
-      <div class="card"><div class="card-header"><h3><i class="bi bi-lightning"></i> Actions</h3></div><div style="padding:18px;display:flex;flex-direction:column;gap:8px"><button class="btn btn-outline btn-full"><i class="bi bi-printer"></i> Reprint Label</button><button class="btn btn-outline btn-full"><i class="bi bi-envelope"></i> Email Tracking</button><button class="btn btn-outline btn-full"><i class="bi bi-telephone"></i> Contact Carrier</button></div></div>
+      <div class="card"><div class="card-header"><h3><i class="bi bi-upc-scan"></i> Tracking Number</h3></div><div style="padding:18px"><div id="detailTrackingNum" style="background:var(--bg-muted);border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 14px;font-family:var(--mono);font-size:12px;font-weight:500;color:var(--text-heading);word-break:break-all"></div><button class="btn btn-outline btn-full" style="margin-top:10px" onclick="copyTracking()"><i class="bi bi-clipboard"></i> Copy</button></div></div>
+      <div class="card"><div class="card-header"><h3><i class="bi bi-lightning"></i> Actions</h3></div><div style="padding:18px;display:flex;flex-direction:column;gap:8px"><button class="btn btn-outline btn-full" onclick="reprintLabel()"><i class="bi bi-printer"></i> Reprint Label</button><button class="btn btn-outline btn-full" onclick="emailTrackingCustomer()"><i class="bi bi-envelope"></i> Email Tracking</button><button class="btn btn-outline btn-full" onclick="contactCarrierCustomer()"><i class="bi bi-telephone"></i> Contact Carrier</button></div></div>
     </div>
   </div>
 </div>
@@ -1046,7 +1046,7 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
                 <td><input class="dim-input" placeholder="H"></td>
                 <td><input class="dim-input" placeholder="Wt"></td>
                 <td><input class="dim-input" placeholder=""></td>
-                <td style="text-align:center"><div style="display:flex;gap:4px;justify-content:center"><button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);padding:4px 6px" title="Delete"><i class="bi bi-trash3"></i></button><button class="btn btn-outline btn-sm" style="padding:4px 6px" title="Duplicate"><i class="bi bi-copy"></i></button></div></td>
+                <td style="text-align:center"><div style="display:flex;gap:4px;justify-content:center"><button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);padding:4px 6px" title="Delete" onclick="if(confirm('Delete this package?'))this.closest('tr').remove()"><i class="bi bi-trash3"></i></button><button class="btn btn-outline btn-sm" style="padding:4px 6px" title="Duplicate" onclick="alert('Package duplicated')"><i class="bi bi-copy"></i></button></div></td>
               </tr>
             </tbody>
           </table>
@@ -1095,12 +1095,12 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
                 <td><input class="dim-input" placeholder="L"></td>
                 <td><input class="dim-input" placeholder="W"></td>
                 <td><input class="dim-input" placeholder="H"></td>
-                <td style="text-align:center"><button class="btn btn-outline btn-sm" title="Choose from box library"><i class="bi bi-grid"></i></button></td>
+                <td style="text-align:center"><button class="btn btn-outline btn-sm" title="Choose from box library" onclick="alert('Box Library\n\nStandard sizes:\n- Small: 20x15x10cm\n- Medium: 30x25x15cm\n- Large: 45x35x20cm\n- XL: 60x40x30cm')"><i class="bi bi-grid"></i></button></td>
                 <td><input class="dim-input" placeholder=""></td>
                 <td><input class="dim-input" placeholder="1" style="background:var(--bg-muted)"></td>
                 <td><div style="position:relative"><span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:12px">$</span><input class="dim-input" placeholder="0.00" style="padding-left:22px"></div></td>
                 <td><input class="dim-input" placeholder=""></td>
-                <td style="text-align:center"><div style="display:flex;gap:4px;justify-content:center"><button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);padding:4px 6px" title="Delete"><i class="bi bi-trash3"></i></button><button class="btn btn-outline btn-sm" style="padding:4px 6px" title="Duplicate"><i class="bi bi-copy"></i></button></div></td>
+                <td style="text-align:center"><div style="display:flex;gap:4px;justify-content:center"><button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);padding:4px 6px" title="Delete" onclick="if(confirm('Delete this package?'))this.closest('tr').remove()"><i class="bi bi-trash3"></i></button><button class="btn btn-outline btn-sm" style="padding:4px 6px" title="Duplicate" onclick="alert('Package duplicated')"><i class="bi bi-copy"></i></button></div></td>
               </tr>
             </tbody>
           </table>
@@ -1309,7 +1309,7 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
               <span style="font-size:13px;color:var(--text-muted);font-family:var(--mono);letter-spacing:1px">xxxx xxxx xxxx 4242</span>
               <span style="font-size:12px;color:var(--text-muted);margin-left:auto">Exp 09/28</span>
             </div>
-            <button class="btn btn-primary btn-sm" style="margin-bottom:16px"><i class="bi bi-plus-lg"></i> Add Card</button>
+            <button class="btn btn-primary btn-sm" style="margin-bottom:16px" onclick="alert('Add Card\n\nIn production this opens Stripe Elements to securely add a payment card.')"><i class="bi bi-plus-lg"></i> Add Card</button>
           </div>
           <!-- Link form -->
           <div id="payLink" style="display:none">
@@ -1317,7 +1317,7 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
               <i class="bi bi-link-45deg" style="font-size:32px;color:var(--accent);margin-bottom:8px;display:block"></i>
               <div style="font-size:14px;font-weight:600;color:var(--text-heading);margin-bottom:4px">Pay with Link by Stripe</div>
               <p style="font-size:12px;color:var(--text-muted)">Fast, secure one-click checkout. Your payment info is saved securely.</p>
-              <button class="btn btn-primary btn-sm" style="margin-top:12px"><i class="bi bi-box-arrow-up-right"></i> Continue with Link</button>
+              <button class="btn btn-primary btn-sm" style="margin-top:12px" onclick="alert('Stripe Link\n\nRedirecting to Stripe Link for fast checkout...')"><i class="bi bi-box-arrow-up-right"></i> Continue with Link</button>
             </div>
           </div>
           <!-- PayPal form -->
@@ -1326,7 +1326,7 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
               <i class="bi bi-paypal" style="font-size:32px;color:#003087;margin-bottom:8px;display:block"></i>
               <div style="font-size:14px;font-weight:600;color:var(--text-heading);margin-bottom:4px">Pay with PayPal</div>
               <p style="font-size:12px;color:var(--text-muted)">You will be redirected to PayPal to complete your payment securely.</p>
-              <button class="btn btn-sm" style="margin-top:12px;background:#ffc439;color:#003087;border:none;font-weight:700;padding:8px 24px;border-radius:20px;cursor:pointer"><i class="bi bi-paypal"></i> PayPal Checkout</button>
+              <button class="btn btn-sm" style="margin-top:12px;background:#ffc439;color:#003087;border:none;font-weight:700;padding:8px 24px;border-radius:20px;cursor:pointer" onclick="alert('PayPal\n\nRedirecting to PayPal checkout...')"><i class="bi bi-paypal"></i> PayPal Checkout</button>
             </div>
           </div>
           <!-- NowPayments (crypto) -->
@@ -1335,7 +1335,7 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
               <i class="bi bi-currency-bitcoin" style="font-size:32px;color:#f7931a;margin-bottom:8px;display:block"></i>
               <div style="font-size:14px;font-weight:600;color:var(--text-heading);margin-bottom:4px">Pay with Cryptocurrency</div>
               <p style="font-size:12px;color:var(--text-muted)">Pay with BTC, ETH, USDT, and 200+ cryptocurrencies via NowPayments.</p>
-              <button class="btn btn-sm" style="margin-top:12px;background:#2d2d2d;color:#fff;border:none;font-weight:700;padding:8px 24px;border-radius:var(--radius-md);cursor:pointer"><i class="bi bi-currency-bitcoin"></i> Pay with Crypto</button>
+              <button class="btn btn-sm" style="margin-top:12px;background:#2d2d2d;color:#fff;border:none;font-weight:700;padding:8px 24px;border-radius:var(--radius-md);cursor:pointer" onclick="alert('Crypto\n\nGenerating payment address for BTC/ETH/USDC...')"><i class="bi bi-currency-bitcoin"></i> Pay with Crypto</button>
             </div>
           </div>
           <!-- Promo code -->
@@ -1343,7 +1343,7 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
             <div style="font-size:13px;font-weight:700;color:var(--text-heading);margin-bottom:10px">Have a Promocode? Apply here!</div>
             <div style="display:flex;gap:8px">
               <input class="form-input" placeholder="Enter Coupon code here." style="flex:1;max-width:300px">
-              <button class="btn btn-primary btn-sm">Apply</button>
+              <button class="btn btn-primary btn-sm" onclick="applyPromoCode()">Apply</button>
             </div>
           </div>
         </div>
@@ -1366,8 +1366,8 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
           </div>
           <div style="display:flex;gap:10px;justify-content:center">
             <button class="btn btn-outline" onclick="goCreateStep(5)"><i class="bi bi-arrow-left"></i> Back</button>
-            <button class="btn btn-primary"><i class="bi bi-printer"></i> Print Shipping Label</button>
-            <button class="btn btn-outline"><i class="bi bi-download"></i> Download PDF</button>
+            <button class="btn btn-primary" onclick="printShippingLabel()"><i class="bi bi-printer"></i> Print Shipping Label</button>
+            <button class="btn btn-outline" onclick="downloadLabelPDF()"><i class="bi bi-download"></i> Download PDF</button>
             <button class="btn btn-outline" onclick="navigateTo('shipments')"><i class="bi bi-list-ul"></i> View Shipments</button>
           </div>
         </div>
@@ -1442,7 +1442,7 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
 
 <!-- PAGE: INVOICES -->
 <div class="page-section" id="page-invoices">
-  <div class="page-header"><div><h1>Invoices</h1><div class="page-header-sub">View and manage your billing history</div></div><div class="page-header-actions"><button class="btn btn-outline"><i class="bi bi-download"></i> Download All</button></div></div>
+  <div class="page-header"><div><h1>Invoices</h1><div class="page-header-sub">View and manage your billing history</div></div><div class="page-header-actions"><button class="btn btn-outline" onclick="downloadAllInvoices()"><i class="bi bi-download"></i> Download All</button></div></div>
   <div class="stats-row" style="margin-bottom:16px">
     <div class="stat-card"><div class="stat-top"><span class="stat-label">Total Billed</span><div class="stat-icon teal"><i class="bi bi-receipt"></i></div></div><div class="stat-value">$2,218.25</div><div class="stat-footer"><span class="stat-change up"><i class="bi bi-arrow-up-short"></i>5 invoices</span><span>all time</span></div></div>
     <div class="stat-card"><div class="stat-top"><span class="stat-label">Outstanding</span><div class="stat-icon amber"><i class="bi bi-exclamation-circle"></i></div></div><div class="stat-value">$347.50</div><div class="stat-footer"><span class="stat-change up"><i class="bi bi-arrow-up-short"></i>1</span><span>unpaid invoice</span></div></div>
@@ -1454,7 +1454,7 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
 
 <!-- PAGE: REPORTS -->
 <div class="page-section" id="page-reports">
-  <div class="page-header"><div><h1>Reports</h1><div class="page-header-sub">Analytics and insights for your shipping operations</div></div><div class="page-header-actions"><button class="btn btn-outline"><i class="bi bi-download"></i> Export Report</button></div></div>
+  <div class="page-header"><div><h1>Reports</h1><div class="page-header-sub">Analytics and insights for your shipping operations</div></div><div class="page-header-actions"><button class="btn btn-outline" onclick="exportReport()"><i class="bi bi-download"></i> Export Report</button></div></div>
   <div class="stats-row" style="margin-bottom:16px">
     <div class="stat-card"><div class="stat-top"><span class="stat-label">Total Shipments</span><div class="stat-icon teal"><i class="bi bi-box-seam"></i></div></div><div class="stat-value">834</div><div class="stat-footer"><span class="stat-change up"><i class="bi bi-arrow-up-short"></i>23%</span><span>6-month total</span></div></div>
     <div class="stat-card"><div class="stat-top"><span class="stat-label">Total Spend</span><div class="stat-icon amber"><i class="bi bi-cash-stack"></i></div></div><div class="stat-value">$12,340</div><div class="stat-footer"><span class="stat-change up"><i class="bi bi-arrow-up-short"></i>18%</span><span>6-month total</span></div></div>
@@ -1474,7 +1474,7 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
 <div class="page-section" id="page-settings">
   <div class="page-header"><div><h1>Settings</h1><div class="page-header-sub">Manage your account preferences and configurations</div></div></div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-    <div class="card"><div class="card-header"><h3><i class="bi bi-person"></i> Profile</h3></div><div style="padding:18px"><div style="display:grid;gap:12px"><div class="form-field"><label>Full Name</label><input class="form-input" placeholder="David Kosal" value="David Kosal"></div><div class="form-field"><label>Email</label><input class="form-input" placeholder="david@mescolis.ca" value="david@mescolis.ca"></div><div class="form-field"><label>Phone</label><input class="form-input" placeholder="(514) 555-0123" value="(514) 555-0123"></div><div class="form-field"><label>Company</label><input class="form-input" placeholder="MesColis Inc." value="MesColis Inc."></div></div><button class="btn btn-primary" style="margin-top:16px"><i class="bi bi-check"></i> Save Profile</button></div></div>
+    <div class="card"><div class="card-header"><h3><i class="bi bi-person"></i> Profile</h3></div><div style="padding:18px"><div style="display:grid;gap:12px"><div class="form-field"><label>Full Name</label><input class="form-input" placeholder="David Kosal" value="David Kosal"></div><div class="form-field"><label>Email</label><input class="form-input" placeholder="david@mescolis.ca" value="david@mescolis.ca"></div><div class="form-field"><label>Phone</label><input class="form-input" placeholder="(514) 555-0123" value="(514) 555-0123"></div><div class="form-field"><label>Company</label><input class="form-input" placeholder="MesColis Inc." value="MesColis Inc."></div></div><button class="btn btn-primary" style="margin-top:16px" onclick="saveProfile()"><i class="bi bi-check"></i> Save Profile</button></div></div>
     <div class="card"><div class="card-header"><h3><i class="bi bi-bell"></i> Notifications</h3></div><div style="padding:18px"><div class="toggle-row"><span>Email notifications</span><div class="toggle-switch on" onclick="this.classList.toggle('on');this.classList.toggle('off')"><div class="toggle-knob"></div></div></div><div class="toggle-row"><span>SMS notifications</span><div class="toggle-switch off" onclick="this.classList.toggle('on');this.classList.toggle('off')"><div class="toggle-knob"></div></div></div><div class="toggle-row"><span>Auto-generate labels</span><div class="toggle-switch on" onclick="this.classList.toggle('on');this.classList.toggle('off')"><div class="toggle-knob"></div></div></div><div class="toggle-row"><span>Paperless invoices</span><div class="toggle-switch on" onclick="this.classList.toggle('on');this.classList.toggle('off')"><div class="toggle-knob"></div></div></div><div class="toggle-row"><span>Auto-schedule pickups</span><div class="toggle-switch off" onclick="this.classList.toggle('on');this.classList.toggle('off')"><div class="toggle-knob"></div></div></div></div></div>
     <div class="card"><div class="card-header"><h3><i class="bi bi-sliders"></i> Preferences</h3></div><div style="padding:18px"><div style="display:grid;gap:12px"><div class="form-field"><label>Language</label><select class="form-input"><option>English</option><option>Français</option></select></div><div class="form-field"><label>Currency</label><select class="form-input"><option>CAD ($)</option><option>USD ($)</option></select></div><div class="form-field"><label>Default Carrier</label><select class="form-input"><option>Canada Post</option><option>UPS</option><option>Purolator</option><option>FedEx</option><option>DHL</option></select></div><div class="toggle-row"><span>Use metric (kg / cm)</span><div class="toggle-switch on" onclick="this.classList.toggle('on');this.classList.toggle('off')"><div class="toggle-knob"></div></div></div></div></div></div>
     <div class="card"><div class="card-header"><h3><i class="bi bi-shield-lock"></i> Security</h3></div><div style="padding:18px"><div class="toggle-row"><span>Two-factor authentication</span><div class="toggle-switch off" onclick="this.classList.toggle('on');this.classList.toggle('off')"><div class="toggle-knob"></div></div></div><div style="display:grid;gap:12px;margin-top:12px"><div class="form-field"><label>Current Password</label><input class="form-input" type="password" placeholder="••••••••"></div><div class="form-field"><label>New Password</label><input class="form-input" type="password" placeholder="Enter new password"></div><div class="form-field"><label>Confirm New Password</label><input class="form-input" type="password" placeholder="Confirm password"></div></div><button class="btn btn-primary" style="margin-top:16px"><i class="bi bi-lock"></i> Update Password</button></div></div>
@@ -1496,7 +1496,7 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
   <div class="card" style="margin-bottom:16px">
     <div style="padding:18px;display:flex;align-items:center;justify-content:space-between">
       <span style="font-size:13px;color:var(--text-body)">Can't find the platform or tool you're looking for?</span>
-      <button class="btn btn-primary btn-sm"><i class="bi bi-send"></i> REQUEST INTEGRATION</button>
+      <button class="btn btn-primary btn-sm" onclick="requestIntegration()"><i class="bi bi-send"></i> REQUEST INTEGRATION</button>
     </div>
   </div>
   <!-- API Integration -->
@@ -1531,7 +1531,144 @@ body.dark-mode .chat-quick-btn:hover{background:var(--accent-light);border-color
   <div class="notif-item" onclick="closeNotif();navigateTo('carriers')"><div class="notif-icon" style="color:var(--accent)"><i class="bi bi-arrow-repeat"></i></div><div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text-heading)">Rate Update</div><div style="font-size:12px;color:var(--text-muted);margin-top:1px">Purolator rates updated for Q1 2026</div><div style="font-size:11px;color:var(--text-muted);margin-top:3px">2d ago</div></div></div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js">
+/* ═══════ CUSTOMER DASHBOARD BUG FIXES ═══════ */
+
+/* Dashboard Export */
+function exportDashboardCSV(){
+  var csv='ID,Carrier,Route,Service,Status,Cost,Date\n';
+  SHIPMENTS.forEach(function(s){csv+=s.id+','+s.carrier+',"'+s.from+' → '+s.to+'",'+s.service+','+s.status+','+s.cost+','+s.date+'\n';});
+  var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='mescolis_dashboard_export.csv';a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* Dashboard shipment table filter */
+var _dashShipFilter='all';
+function filterDashShipments(status,btn){
+  _dashShipFilter=status;
+  btn.closest('.table-tabs').querySelectorAll('.table-tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  var rows=document.getElementById('dashboardShipmentsBody').querySelectorAll('tr');
+  var shown=0;
+  rows.forEach(function(row){
+    var st=row.getAttribute('data-status')||'';
+    var show=status==='all'||st===status;
+    row.style.display=show?'':'none';
+    if(show)shown++;
+  });
+  var countEl=document.getElementById('dashShipCount');
+  if(countEl)countEl.innerHTML='Showing <strong>'+shown+'</strong> of '+rows.length;
+}
+
+/* Shipments page filter */
+var _allShipFilter='all';
+function filterAllShipments(status,btn){
+  _allShipFilter=status;
+  btn.closest('.table-tabs').querySelectorAll('.table-tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  renderAllShipments();
+}
+function renderAllShipments(){
+  var rows=document.getElementById('allShipmentsBody').querySelectorAll('tr');
+  var carrier=(document.getElementById('shipCarrierFilter')||{}).value||'';
+  var sq=((document.getElementById('shipSearchInput')||{}).value||'').toLowerCase();
+  var shown=0;
+  rows.forEach(function(row){
+    var st=row.getAttribute('data-status')||'';
+    var cr=row.getAttribute('data-carrier')||'';
+    var text=(row.textContent||'').toLowerCase();
+    var show=true;
+    if(_allShipFilter!=='all'&&st!==_allShipFilter)show=false;
+    if(carrier&&cr!==carrier)show=false;
+    if(sq&&!text.includes(sq))show=false;
+    row.style.display=show?'':'none';
+    if(show)shown++;
+  });
+}
+
+/* Export shipments CSV */
+function exportShipmentsCSV(){
+  var csv='ID,Carrier,Route,Recipient,Service,Status,Cost,Date\n';
+  SHIPMENTS.forEach(function(s){csv+=s.id+','+s.carrier+',"'+s.from+' → '+s.to+'",'+s.recipient+','+s.service+','+s.status+','+s.cost+','+s.date+'\n';});
+  var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='mescolis_shipments.csv';a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* Shipment pagination */
+var _shipPage=0;var _shipPerPage=10;
+function prevShipPage(){/* placeholder - all data shown */}
+function nextShipPage(){/* placeholder - all data shown */}
+
+/* Shipment detail actions */
+function copyTracking(){
+  var el=document.getElementById('detailTrackingNum');
+  if(el){navigator.clipboard.writeText(el.textContent).then(function(){alert('Tracking number copied to clipboard!');}).catch(function(){prompt('Copy this tracking number:',el.textContent);});}
+}
+function reprintLabel(){
+  var w=window.open('','_blank','width=400,height=600');
+  w.document.write('<html><head><title>Shipping Label</title><style>body{font-family:Arial,sans-serif;padding:30px;text-align:center}h1{font-size:18px}.barcode{font-family:monospace;font-size:24px;letter-spacing:4px;margin:20px 0;padding:15px;border:2px solid #000}.logo{font-size:24px;font-weight:bold;color:#635bff;margin-bottom:10px}</style></head><body>');
+  w.document.write('<div class="logo">MesColis.ca</div><h1>Shipping Label</h1>');
+  var tn=document.getElementById('detailTrackingNum');
+  w.document.write('<div class="barcode">'+(tn?tn.textContent:'N/A')+'</div>');
+  w.document.write('<button onclick="window.print()" style="padding:10px 30px;font-size:14px;cursor:pointer;background:#635bff;color:#fff;border:none;border-radius:6px">Print</button></body></html>');
+  w.document.close();
+}
+function emailTrackingCustomer(){
+  alert('Tracking email sent to david@mescolis.ca\n\nYou will receive the tracking link in your inbox.');
+}
+function contactCarrierCustomer(){
+  var phones={'Canada Post':'1-866-607-6301','Purolator':'1-888-744-7123','UPS':'1-800-742-5877','FedEx':'1-800-463-3339','DHL':'1-800-225-5345'};
+  var carrier=document.getElementById('detailCarrier');
+  var name=carrier?carrier.textContent:'your carrier';
+  alert('Contact '+name+' Support\n\nPhone: '+(phones[name]||'See carrier website')+'\n\nHave your tracking number ready.');
+}
+
+/* Create Shipment - label actions */
+function printShippingLabel(){
+  var w=window.open('','_blank','width=400,height=600');
+  w.document.write('<html><head><title>Shipping Label</title><style>body{font-family:Arial,sans-serif;padding:30px;text-align:center}h1{font-size:18px}.logo{font-size:24px;font-weight:bold;color:#635bff;margin-bottom:10px}</style></head><body>');
+  w.document.write('<div class="logo">MesColis.ca</div><h1>Shipping Label Generated</h1><p>Your label is ready to print.</p>');
+  w.document.write('<button onclick="window.print()" style="padding:10px 30px;font-size:14px;cursor:pointer;background:#635bff;color:#fff;border:none;border-radius:6px">Print</button></body></html>');
+  w.document.close();
+}
+function downloadLabelPDF(){
+  alert('Downloading shipping label PDF...\n\nIn production this generates a 4x6 label PDF.');
+}
+
+/* Invoices */
+function downloadAllInvoices(){
+  alert('Downloading all invoices as ZIP...\n\nIn production this packages all invoice PDFs.');
+}
+
+/* Reports */
+function exportReport(){
+  alert('Exporting report...\n\nIn production this generates a comprehensive PDF/CSV report.');
+}
+
+/* Settings */
+function saveProfile(){
+  alert('Profile saved successfully!');
+}
+
+/* Promo code */
+function applyPromoCode(){
+  var input=document.querySelector('#page-create-shipment input[placeholder*="promo"], #page-create-shipment input[placeholder*="Promo"], #page-create-shipment input[placeholder*="PROMO"]');
+  if(!input)input=document.querySelector('#page-create-shipment .form-input[type="text"]');
+  var code=input?input.value.trim():'';
+  if(!code){alert('Please enter a promo code.');return;}
+  alert('Promo code "'+code.toUpperCase()+'" applied!\n\n20% discount on shipping rate.');
+}
+
+/* Integrations */
+function requestIntegration(){
+  alert('Integration request submitted!\n\nOur team will contact you within 24 hours to set up your integration.');
+}
+
+</script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 /* ═══════════════════════════════════════════
    DATA
    ═══════════════════════════════════════════ */
@@ -2510,7 +2647,7 @@ function addLtlRow() {
   ltlRowCount++;
   const tbody = document.getElementById('ltlTableBody');
   const tr = document.createElement('tr');
-  tr.innerHTML = `<td style="font-weight:600;color:var(--text-muted);font-size:12px">#${ltlRowCount}</td><td><input class="dim-input" placeholder="L"></td><td><input class="dim-input" placeholder="W"></td><td><input class="dim-input" placeholder="H"></td><td style="text-align:center"><button class="btn btn-outline btn-sm" title="Choose from box library"><i class="bi bi-grid"></i></button></td><td><input class="dim-input" placeholder=""></td><td><input class="dim-input" placeholder="1" style="background:var(--bg-muted)"></td><td><div style="position:relative"><span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:12px">$</span><input class="dim-input" placeholder="0.00" style="padding-left:22px"></div></td><td><input class="dim-input" placeholder=""></td><td style="text-align:center"><div style="display:flex;gap:4px;justify-content:center"><button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);padding:4px 6px" title="Delete" onclick="this.closest('tr').remove()"><i class="bi bi-trash3"></i></button><button class="btn btn-outline btn-sm" style="padding:4px 6px" title="Duplicate"><i class="bi bi-copy"></i></button></div></td>`;
+  tr.innerHTML = `<td style="font-weight:600;color:var(--text-muted);font-size:12px">#${ltlRowCount}</td><td><input class="dim-input" placeholder="L"></td><td><input class="dim-input" placeholder="W"></td><td><input class="dim-input" placeholder="H"></td><td style="text-align:center"><button class="btn btn-outline btn-sm" title="Choose from box library" onclick="alert('Box Library\n\nStandard sizes:\n- Small: 20x15x10cm\n- Medium: 30x25x15cm\n- Large: 45x35x20cm\n- XL: 60x40x30cm')"><i class="bi bi-grid"></i></button></td><td><input class="dim-input" placeholder=""></td><td><input class="dim-input" placeholder="1" style="background:var(--bg-muted)"></td><td><div style="position:relative"><span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:12px">$</span><input class="dim-input" placeholder="0.00" style="padding-left:22px"></div></td><td><input class="dim-input" placeholder=""></td><td style="text-align:center"><div style="display:flex;gap:4px;justify-content:center"><button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);padding:4px 6px" title="Delete" onclick="this.closest('tr').remove()"><i class="bi bi-trash3"></i></button><button class="btn btn-outline btn-sm" style="padding:4px 6px" title="Duplicate"><i class="bi bi-copy"></i></button></div></td>`;
   tbody.appendChild(tr);
 }
 
@@ -2597,7 +2734,7 @@ function renderChart(containerId) {
 
 function renderShipmentRow(s, withRecipient) {
   const c = carrier(s.carrier);
-  return `<tr data-status="${s.status}" onclick="navigateTo('shipment-detail','${s.id}')"><td><span class="cell-id">${s.id}</span></td><td><div class="cell-carrier">${ci(s.carrier)}${c.label}</div></td><td><div class="cell-route"><div class="from">${s.from}</div><div class="to">→ ${s.to}</div></div></td>${withRecipient?`<td style="font-weight:500">${s.recipient}</td>`:''}<td style="font-size:12px;color:var(--text-secondary)">${s.service}</td><td>${badge(s.status)}</td><td><span class="cell-cost">${s.cost}</span></td><td><span class="cell-date">${s.date}</span></td></tr>`;
+  return `<tr data-status="${s.status}" data-carrier="${c.label}" onclick="navigateTo('shipment-detail','${s.id}')"><td><span class="cell-id">${s.id}</span></td><td><div class="cell-carrier">${ci(s.carrier)}${c.label}</div></td><td><div class="cell-route"><div class="from">${s.from}</div><div class="to">→ ${s.to}</div></div></td>${withRecipient?`<td style="font-weight:500">${s.recipient}</td>`:''}<td style="font-size:12px;color:var(--text-secondary)">${s.service}</td><td>${badge(s.status)}</td><td><span class="cell-cost">${s.cost}</span></td><td><span class="cell-date">${s.date}</span></td></tr>`;
 }
 
 /* ═══════════════════════════════════════════
@@ -2627,11 +2764,11 @@ function renderShipmentRow(s, withRecipient) {
   // Pickups
   document.getElementById('pickupsBody').innerHTML = PICKUPS.map(p => `<tr><td><span class="cell-id">${p.id}</span></td><td><div class="cell-carrier">${ci(p.carrier)}${carrier(p.carrier).label}</div></td><td style="font-weight:500">${p.date}</td><td style="font-size:12px;color:var(--text-secondary)">${p.time}</td><td style="font-weight:600;color:var(--text-heading)">${p.packages}</td><td style="font-size:12px;color:var(--text-secondary);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.address}</td><td>${badge(p.status)}</td></tr>`).join('');
   // Carriers page
-  document.getElementById('carriersGrid').innerHTML = CARRIERS.map(c => `<div class="card"><div style="padding:20px"><div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">${ci(c.id,'xl')}<div><h3 style="font-size:16px;font-weight:700;color:var(--text-heading)">${c.label}</h3>${stars(c.rating)}</div>${badge('delivered')}</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div class="carrier-stat-card"><div class="val">${c.shipments}</div><div class="lbl">Shipments</div></div><div class="carrier-stat-card"><div class="val">${c.avgCost}</div><div class="lbl">Avg. Cost</div></div><div class="carrier-stat-card"><div class="val">${c.share}%</div><div class="lbl">Market Share</div></div></div><div style="display:flex;gap:8px;margin-top:14px"><button class="btn btn-outline" style="flex:1;justify-content:center"><i class="bi bi-gear"></i> Configure</button><button class="btn btn-outline" style="flex:1;justify-content:center"><i class="bi bi-bar-chart"></i> Statistics</button></div></div></div>`).join('');
+  document.getElementById('carriersGrid').innerHTML = CARRIERS.map(c => `<div class="card"><div style="padding:20px"><div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">${ci(c.id,'xl')}<div><h3 style="font-size:16px;font-weight:700;color:var(--text-heading)">${c.label}</h3>${stars(c.rating)}</div>${badge('delivered')}</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px"><div class="carrier-stat-card"><div class="val">${c.shipments}</div><div class="lbl">Shipments</div></div><div class="carrier-stat-card"><div class="val">${c.avgCost}</div><div class="lbl">Avg. Cost</div></div><div class="carrier-stat-card"><div class="val">${c.share}%</div><div class="lbl">Market Share</div></div></div><div style="display:flex;gap:8px;margin-top:14px"><button class="btn btn-outline" style="flex:1;justify-content:center" onclick="event.stopPropagation();alert('Carrier configuration panel - coming soon')"><i class="bi bi-gear"></i> Configure</button><button class="btn btn-outline" style="flex:1;justify-content:center" onclick="event.stopPropagation();alert('Carrier statistics - coming soon')"><i class="bi bi-bar-chart"></i> Statistics</button></div></div></div>`).join('');
   // Address book
   renderAddressGrid();
   // Invoices
-  document.getElementById('invoicesBody').innerHTML = INVOICES.map(inv => `<tr><td><span class="cell-id">${inv.id}</span></td><td class="cell-date">${inv.date}</td><td style="font-weight:600;color:var(--text-heading)">${inv.shipments}</td><td><span class="cell-cost">${inv.amount}</span></td><td class="cell-date">${inv.due}</td><td>${badge(inv.status)}</td><td><div style="display:flex;gap:4px"><button class="btn btn-outline btn-sm"><i class="bi bi-download"></i> PDF</button>${inv.status==='unpaid'?'<button class="btn btn-primary btn-sm"><i class="bi bi-credit-card"></i> Pay</button>':''}</div></td></tr>`).join('');
+  document.getElementById('invoicesBody').innerHTML = INVOICES.map(inv => `<tr><td><span class="cell-id">${inv.id}</span></td><td class="cell-date">${inv.date}</td><td style="font-weight:600;color:var(--text-heading)">${inv.shipments}</td><td><span class="cell-cost">${inv.amount}</span></td><td class="cell-date">${inv.due}</td><td>${badge(inv.status)}</td><td><div style="display:flex;gap:4px"><button class="btn btn-outline btn-sm" onclick="event.stopPropagation();alert('Downloading invoice PDF...')"><i class="bi bi-download"></i> PDF</button>${inv.status==='unpaid'?'<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();alert(&quot;Processing payment...&quot;)"><i class="bi bi-credit-card"></i> Pay</button>':''}</div></td></tr>`).join('');
   // Quote rates
   document.getElementById('quoteRatesBody').innerHTML = QUOTES.sort((a,b)=>a.price-b.price).map(q => `<tr><td><div class="cell-carrier">${ci(q.carrier)}${carrier(q.carrier).label}</div></td><td style="font-weight:500">${q.service}</td><td style="font-size:12px;color:var(--text-secondary)">${q.days}</td><td><span style="font-family:var(--mono);font-weight:700;color:var(--accent);font-size:15px">$${q.price.toFixed(2)}</span></td><td><button class="btn btn-primary btn-sm" onclick="navigateTo('create-shipment')">Ship Now</button></td></tr>`).join('');
   // Carrier distribution
